@@ -1,50 +1,64 @@
 #pragma once
 #include "Component.hpp"
 #include "ResourceIdentifiers.hpp"
-#include "ResourceHolder.hpp"
+#include "State.hpp"
 
-#include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Text.hpp>
 
 #include <vector>
 #include <string>
 #include <memory>
 #include <functional>
 
+class SoundPlayer;
+
 namespace GUI
 {
+
 	class Button : public Component
 	{
 	public:
-		typedef std::shared_ptr<Button> Ptr;
-		typedef std::function<void()> Callback;
+		typedef std::shared_ptr<Button>		Ptr;
+		typedef std::function<void()>		Callback;
 
-	public: 
-		Button(const FontHolder& fonts, const TextureHolder& textures);
+		enum Type
+		{
+			Normal,
+			Selected,
+			Pressed,
+			ButtonCount
+		};
 
-		void setCallback(Callback callback);
-		void setText(const std::string& text);
-		void setToggle(bool flag);
 
-		virtual bool isSelectable() const;
-		virtual void select();
-		virtual void deselect();
+	public:
+		Button(State::Context context);
 
-		virtual void activate();
-		virtual void deactivate();
+		void					setCallback(Callback callback);
+		void					setText(const std::string& text);
+		void					setToggle(bool flag);
 
-		virtual void handleEvent(const sf::Event& event);
+		virtual bool			isSelectable() const;
+		virtual void			select();
+		virtual void			deselect();
+
+		virtual void			activate();
+		virtual void			deactivate();
+
+		virtual void			handleEvent(const sf::Event& event);
+
 
 	private:
-		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+		virtual void			draw(sf::RenderTarget& target, sf::RenderStates states) const;
+		void					changeTexture(Type buttonType);
+
 
 	private:
-		Callback mCallback;
-		const sf::Texture& mNormalTexture;
-		const sf::Texture& mSelectedTexture;
-		const sf::Texture& mPressedTexture;
-		sf::Sprite mSprite;
-		sf::Text mText;
-		bool mIsToggle;
+		Callback				mCallback;
+		sf::Sprite				mSprite;
+		sf::Text				mText;
+		bool					mIsToggle;
+		SoundPlayer&			mSounds;
 	};
+
 }

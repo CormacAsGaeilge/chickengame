@@ -1,12 +1,18 @@
 #include "GameState.hpp"
+#include "MusicPlayer.hpp"
 
+#include <SFML/Graphics/RenderWindow.hpp>
 
 GameState::GameState(StateStack& stack, Context context)
 	: State(stack, context)
-	, mWorld(*context.window, *context.fonts)
-	, mPlayer(*context.player)
+	, mWorld(*context.window, *context.fonts, *context.sounds, false)
+	, mPlayer(nullptr, 1, context.keys1)
 {
+	mWorld.addAircraft(1);
 	mPlayer.setMissionStatus(Player::MissionRunning);
+
+	// Play game theme
+	context.music->play(Music::MissionTheme);
 }
 
 void GameState::draw()

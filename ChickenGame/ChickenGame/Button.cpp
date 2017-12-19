@@ -1,5 +1,7 @@
 #include "Button.hpp"
 #include "Utility.hpp"
+#include "SoundPlayer.hpp"
+#include "ResourceHolder.hpp"
 
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
@@ -8,16 +10,14 @@
 namespace GUI
 {
 
-	Button::Button(const FontHolder& fonts, const TextureHolder& textures)
+	Button::Button(State::Context context)
 		: mCallback()
-		, mNormalTexture(textures.get(Textures::ButtonNormal))
-		, mSelectedTexture(textures.get(Textures::ButtonSelected))
-		, mPressedTexture(textures.get(Textures::ButtonPressed))
-		, mSprite()
-		, mText("", fonts.get(Fonts::Main), 16)
+		, mSprite(context.textures->get(Textures::Buttons))
+		, mText("", context.fonts->get(Fonts::Main), 16)
 		, mIsToggle(false)
+		, mSounds(*context.sounds)
 	{
-		mSprite.setTexture(mNormalTexture);
+		changeTexture(Normal);
 
 		sf::FloatRect bounds = mSprite.getLocalBounds();
 		mText.setPosition(bounds.width / 2.f, bounds.height / 2.f);
@@ -48,14 +48,14 @@ namespace GUI
 	{
 		Component::select();
 
-		mSprite.setTexture(mSelectedTexture);
+		changeTexture(Selected);
 	}
 
 	void Button::deselect()
 	{
 		Component::deselect();
 
-		mSprite.setTexture(mNormalTexture);
+		changeTexture(Normal);
 	}
 
 	void Button::activate()
@@ -64,7 +64,7 @@ namespace GUI
 
 		// If we are toggle then we should show that the button is pressed and thus "toggled".
 		if (mIsToggle)
-			mSprite.setTexture(mPressedTexture);
+			changeTexture(Pressed);
 
 		if (mCallback)
 			mCallback();
@@ -72,6 +72,8 @@ namespace GUI
 		// If we are not a toggle then deactivate the button since we are just momentarily activated.
 		if (!mIsToggle)
 			deactivate();
+
+		mSounds.play(SoundEffect::Button);
 	}
 
 	void Button::deactivate()
@@ -82,9 +84,9 @@ namespace GUI
 		{
 			// Reset texture to right one depending on if we are selected or not.
 			if (isSelected())
-				mSprite.setTexture(mSelectedTexture);
+				changeTexture(Selected);
 			else
-				mSprite.setTexture(mNormalTexture);
+				changeTexture(Normal);
 		}
 	}
 
@@ -99,4 +101,9 @@ namespace GUI
 		target.draw(mText, states);
 	}
 
+	void Button::changeTexture(Type buttonType)
+	{
+		sf::IntRect textureRect(0, 50 * buttonType, 200, 50);
+		mSprite.setTextureRect(textureRect);
+	}
 }

@@ -4,6 +4,7 @@
 #include "ResourceIdentifiers.hpp"
 #include "Projectile.hpp"
 #include "TextNode.hpp"
+#include "Animation.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 
@@ -25,9 +26,12 @@ public:
 
 	virtual unsigned int	getCategory() const;
 	virtual sf::FloatRect	getBoundingRect() const;
+	virtual void			remove();
 	virtual bool 			isMarkedForRemoval() const;
 	bool					isAllied() const;
+	bool					isBoosting() const;
 	float					getMaxSpeed() const;
+	void					disablePickups();
 
 	void					increaseFireRate();
 	void					increaseSpread();
@@ -35,6 +39,13 @@ public:
 
 	void 					fire();
 	void					launchMissile();
+	void					chargeBoost();
+	void					releaseBoost();
+	void					playLocalSound(CommandQueue& commands, SoundEffect::ID effect);
+	int						getIdentifier();
+	void					setIdentifier(int identifier);
+	int						getMissileAmmo() const;
+	void					setMissileAmmo(int ammo);
 
 
 private:
@@ -49,17 +60,24 @@ private:
 	void					createPickup(SceneNode& node, const TextureHolder& textures) const;
 
 	void					updateTexts();
+	void					updateRollAnimation();
 
 
 private:
 	Type					mType;
 	sf::Sprite				mSprite;
+	Animation				mExplosion;
 	Command 				mFireCommand;
 	Command					mMissileCommand;
 	sf::Time				mFireCountdown;
 	bool 					mIsFiring;
 	bool					mIsLaunchingMissile;
-	bool 					mIsMarkedForRemoval;
+	bool					mIsBoosting;
+	bool 					mShowExplosion;
+	bool					mExplosionBegan;
+	bool					mPlayedExplosionSound;
+	bool					mSpawnedPickup;
+	bool					mPickupsEnabled;
 
 	int						mFireRateLevel;
 	int						mSpreadLevel;
@@ -67,7 +85,11 @@ private:
 
 	Command 				mDropPickupCommand;
 	float					mTravelledDistance;
+	float					mBoost;
+	float					mMaxBoost = 1.25f;
 	std::size_t				mDirectionIndex;
 	TextNode*				mHealthDisplay;
 	TextNode*				mMissileDisplay;
+
+	int						mIdentifier;
 };

@@ -16,7 +16,7 @@ namespace
 Pickup::Pickup(Type type, const TextureHolder& textures)
 	: Entity(1)
 	, mType(type)
-	, mSprite(textures.get(Table[type].texture))
+	, mSprite(textures.get(Table[type].texture), Table[type].textureRect)
 {
 	centerOrigin(mSprite);
 }

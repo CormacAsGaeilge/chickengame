@@ -8,6 +8,7 @@ TextNode::TextNode(const FontHolder& fonts, const std::string& text)
 {
 	mText.setFont(fonts.get(Fonts::Main));
 	mText.setCharacterSize(20);
+	mText.setColor(sf::Color::Magenta);
 	setString(text);
 }
 

@@ -5,8 +5,8 @@ MusicPlayer::MusicPlayer()
 	, mFilenames()
 	, mVolume(100.f)
 {
-	mFilenames[Music::MenuTheme] = "Media/Music/jazzloop.wav";
-	mFilenames[Music::MissionTheme] = "Media/Music/jazzloop.wav";
+	mFilenames[Music::MenuTheme] = "Media/Music/chickenTheme.wav";
+	mFilenames[Music::MissionTheme] = "Media/Music/chickenTheme.wav";
 }
 
 void MusicPlayer::play(Music::ID theme)

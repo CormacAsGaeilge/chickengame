@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Texture.hpp>
+#include <SFML/Window/Keyboard.hpp>
 
 
 Animation::Animation()
@@ -66,6 +67,16 @@ sf::Time Animation::getDuration() const
 	return mDuration;
 }
 
+void Animation::setDirection(float direction)
+{
+	mDirection = direction;
+}
+
+float Animation::getDirection() const
+{
+	return mDirection;
+}
+
 void Animation::setRepeating(bool flag)
 {
 	mRepeat = flag;
@@ -104,21 +115,87 @@ void Animation::update(sf::Time dt)
 	sf::Vector2i textureBounds(mSprite.getTexture()->getSize());
 	sf::IntRect textureRect = mSprite.getTextureRect();
 
-	if (mCurrentFrame == 0)
-		textureRect = sf::IntRect(0, 0, mFrameSize.x, mFrameSize.y);
+	if (mCurrentFrame == 0 && mDirection == 1) //left
+		textureRect = sf::IntRect(1, 36, 30, 25);
+	else if (mCurrentFrame == 0 && mDirection == 2) //right
+		textureRect = sf::IntRect(1, 100, 30, 25);
+	else if (mCurrentFrame == 0 && mDirection == 3) //up
+		textureRect = sf::IntRect(6, 2, 20, 25);
+	else if (mCurrentFrame == 0 && mDirection == 4) //down
+		textureRect = sf::IntRect(6, 66, 20, 26);
 
-	// While we have a frame to process
 	while (mElapsedTime >= timePerFrame && (mCurrentFrame <= mNumFrames || mRepeat))
 	{
 		// Move the texture rect left
-		textureRect.left += textureRect.width;
-
-		// If we reach the end of the texture
-		if (textureRect.left + textureRect.width > textureBounds.x)
+		if (mDirection == 1)
 		{
-			// Move it down one line
-			textureRect.left = 0;
-			textureRect.top += textureRect.height;
+			if (mCurrentFrame == 1) {
+				textureRect = sf::IntRect(32, 37, 31, 24);
+			}else if (mCurrentFrame == 2) {
+				textureRect = sf::IntRect(65, 36, 30, 26);
+			}else if (mCurrentFrame == 3) {
+				textureRect = sf::IntRect(96, 37, 31, 25);
+			}else {
+				textureRect = sf::IntRect(1, 36, 30, 25);
+			}
+			if (textureRect.left + textureRect.width > textureBounds.x) // If we reach the end of the texture
+			{
+				textureRect = sf::IntRect(1, 36, 30, 25); // Move it down one line
+			}
+		}
+		else if (mDirection == 2) //move right
+		{
+			if (mCurrentFrame == 1) {
+				textureRect = sf::IntRect(33, 100, 31, 24);
+			}else if (mCurrentFrame == 2) {
+				textureRect = sf::IntRect(65, 101, 30, 26);
+			}else if (mCurrentFrame == 3) {
+				textureRect = sf::IntRect(97, 100, 31, 25);
+			}else {
+				textureRect = sf::IntRect(1, 100, 30, 25);
+			}
+			if (textureRect.left + textureRect.width > textureBounds.x) // If we reach the end of the texture
+			{
+				textureRect = sf::IntRect(1, 100, 30, 25); // Move it down one line
+			}
+		}
+		else if (mDirection == 3) //MOVE UP
+		{
+			if (mCurrentFrame == 1) {
+				textureRect = sf::IntRect(38, 2, 20, 28);
+			}
+			else if (mCurrentFrame == 2) {
+				textureRect = sf::IntRect(70, 1, 20, 25);
+			}
+			else if (mCurrentFrame == 3) {
+				textureRect = sf::IntRect(102, 2, 20, 28);
+			}
+			else {
+				textureRect = sf::IntRect(6, 2, 20, 25);
+			}
+			if (textureRect.left + textureRect.width > textureBounds.x) // If we reach the end of the texture
+			{
+				textureRect = sf::IntRect(6, 2, 20, 25); // Move it down one line
+			}
+		}
+		else if (mDirection == 4) //MOVE DOWN
+		{
+			if (mCurrentFrame == 1) {
+				textureRect = sf::IntRect(38, 66, 20, 29);
+			}
+			else if (mCurrentFrame == 2) {
+				textureRect = sf::IntRect(70, 66, 20, 26);
+			}
+			else if (mCurrentFrame == 3) {
+				textureRect = sf::IntRect(102, 66, 20, 29);
+			}
+			else {
+				textureRect = sf::IntRect(6, 66, 20, 26);
+			}
+			if (textureRect.left + textureRect.width > textureBounds.x) // If we reach the end of the texture
+			{
+				textureRect = sf::IntRect(6, 66, 20, 26); // Move it down one line
+			}
 		}
 
 		// And progress to next frame
@@ -127,8 +204,14 @@ void Animation::update(sf::Time dt)
 		{
 			mCurrentFrame = (mCurrentFrame + 1) % mNumFrames;
 
-			if (mCurrentFrame == 0)
-				textureRect = sf::IntRect(0, 0, mFrameSize.x, mFrameSize.y);
+			if (mCurrentFrame == 0 && mDirection == 1) //left
+				textureRect = sf::IntRect(1, 36, 30, 25);
+			else if (mCurrentFrame == 0 && mDirection == 2) //right
+				textureRect = sf::IntRect(1, 100, 30, 25);
+			else if (mCurrentFrame == 0 && mDirection == 3) //up
+				textureRect = sf::IntRect(6, 2, 20, 25);
+			else if (mCurrentFrame == 0 && mDirection == 4) //down
+				textureRect = sf::IntRect(6, 66, 20, 26);
 		}
 		else
 		{

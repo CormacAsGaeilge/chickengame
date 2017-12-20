@@ -8,10 +8,12 @@
 #include "NetworkNode.hpp"
 #include "Utility.hpp"
 #include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/ConvexShape.hpp>
 
 #include <algorithm>
 #include <cmath>
 #include <limits>
+#include <iostream>
 
 
 World::World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sounds, bool networked)
@@ -23,7 +25,7 @@ World::World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sou
 	, mSounds(sounds)
 	, mSceneGraph()
 	, mSceneLayers()
-	, mWorldBounds(0.f, 0.f, mWorldView.getSize().x, 5000.f)
+	, mWorldBounds(0.0f, 0.0f, mWorldView.getSize().x, 5000.0f/*250.f, 200.f, 650.f, 800.f*/)
 	, mSpawnPosition(mWorldView.getSize().x / 2.f, mWorldBounds.height - mWorldView.getSize().y / 2.f)
 	, mScrollSpeed(-50.f)
 	, mScrollSpeedCompensation(1.f)
@@ -34,7 +36,7 @@ World::World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sou
 	, mNetworkNode(nullptr)
 	, mFinishSprite(nullptr)
 {
-	mSceneTexture.create(mTarget.getSize().x, mTarget.getSize().y);
+	mSceneTexture.create(1024, 768);
 
 	loadTextures();
 	buildScene();
@@ -176,8 +178,9 @@ bool World::hasPlayerReachedEnd() const
 
 void World::loadTextures()
 {
+	mTextures.load(Textures::Chicken, "Media/Textures/chicken.png");
 	mTextures.load(Textures::Entities, "Media/Textures/Entities.png");
-	mTextures.load(Textures::Jungle, "Media/Textures/island_animated.gif");
+	mTextures.load(Textures::Jungle, "Media/Textures/ForNow.png");
 	mTextures.load(Textures::Explosion, "Media/Textures/Explosion.png");
 	mTextures.load(Textures::Particle, "Media/Textures/Particle.png");
 	mTextures.load(Textures::FinishLine, "Media/Textures/FinishLine.png");
@@ -187,7 +190,7 @@ void World::adaptPlayerPosition()
 {
 	// Keep player's position inside the screen bounds, at least borderDistance units from the border
 	sf::FloatRect viewBounds = getViewBounds();
-	const float borderDistance = 40.f;
+	const float borderDistance = 40.f; // place player in arean
 
 	FOREACH(Aircraft* aircraft, mPlayerAircrafts)
 	{
@@ -352,7 +355,7 @@ void World::buildScene()
 
 	// Add the background sprite to the scene
 	std::unique_ptr<SpriteNode> jungleSprite(new SpriteNode(jungleTexture, textureRect));
-	jungleSprite->setPosition(mWorldBounds.left, mWorldBounds.top - viewHeight);
+	jungleSprite->setPosition(mWorldBounds.left, mWorldBounds.top - 200.0f);
 	mSceneLayers[Background]->attachChild(std::move(jungleSprite));
 
 	// Add the finish line to the scene
@@ -392,31 +395,7 @@ void World::addEnemies()
 
 	// Add enemies to the spawn point container
 	addEnemy(Aircraft::Raptor, 70.f, 0.f);
-	addEnemy(Aircraft::Raptor, 0.f, 1000.f);
-	addEnemy(Aircraft::Raptor, +100.f, 1150.f);
-	addEnemy(Aircraft::Raptor, -100.f, 1150.f);
-	addEnemy(Aircraft::Avenger, 70.f, 1500.f);
-	addEnemy(Aircraft::Avenger, -70.f, 1500.f);
-	addEnemy(Aircraft::Avenger, -70.f, 1710.f);
-	addEnemy(Aircraft::Avenger, 70.f, 1700.f);
-	addEnemy(Aircraft::Avenger, 30.f, 1850.f);
-	addEnemy(Aircraft::Raptor, 300.f, 2200.f);
-	addEnemy(Aircraft::Raptor, -300.f, 2200.f);
-	addEnemy(Aircraft::Raptor, 0.f, 2200.f);
-	addEnemy(Aircraft::Raptor, 0.f, 2500.f);
-	addEnemy(Aircraft::Avenger, -300.f, 2700.f);
-	addEnemy(Aircraft::Avenger, -300.f, 2700.f);
-	addEnemy(Aircraft::Raptor, 0.f, 3000.f);
-	addEnemy(Aircraft::Raptor, 250.f, 3250.f);
-	addEnemy(Aircraft::Raptor, -250.f, 3250.f);
-	addEnemy(Aircraft::Avenger, 0.f, 3500.f);
-	addEnemy(Aircraft::Avenger, 0.f, 3700.f);
-	addEnemy(Aircraft::Raptor, 0.f, 3800.f);
-	addEnemy(Aircraft::Avenger, 0.f, 4000.f);
-	addEnemy(Aircraft::Avenger, -200.f, 4200.f);
-	addEnemy(Aircraft::Raptor, 200.f, 4200.f);
-	addEnemy(Aircraft::Raptor, 0.f, 4400.f);
-
+	addEnemy(Aircraft::Avenger, 0.f, 200.f);
 
 	// Sort all enemies according to their y value, such that lower enemies are checked first for spawning
 	sortEnemies();

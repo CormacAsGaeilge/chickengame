@@ -12,6 +12,7 @@ namespace Textures
 {
 	enum ID
 	{
+		Chicken,
 		Entities,
 		Jungle,
 		TitleScreen,
@@ -19,6 +20,7 @@ namespace Textures
 		Explosion,
 		Particle,
 		FinishLine,
+		chicken,
 	};
 }
 

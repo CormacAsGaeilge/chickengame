@@ -20,11 +20,14 @@ namespace
 	const std::vector<AircraftData> Table = initializeAircraftData();
 }
 
+
+
 Aircraft::Aircraft(Type type, const TextureHolder& textures, const FontHolder& fonts)
 	: Entity(Table[type].hitpoints)
 	, mType(type)
 	, mSprite(textures.get(Table[type].texture), Table[type].textureRect)
 	, mExplosion(textures.get(Textures::Explosion))
+	, mChicken(textures.get(Textures::Chicken))
 	, mFireCommand()
 	, mMissileCommand()
 	, mFireCountdown(sf::Time::Zero)
@@ -53,7 +56,11 @@ Aircraft::Aircraft(Type type, const TextureHolder& textures, const FontHolder& f
 	mExplosion.setNumFrames(16);
 	mExplosion.setDuration(sf::seconds(1));
 
+	mChicken.setFrameSize(sf::Vector2i(30, 25));
+
+
 	centerOrigin(mSprite);
+	centerOrigin(mChicken);
 	centerOrigin(mExplosion);
 
 	mFireCommand.category = Category::SceneAirLayer;
@@ -103,8 +110,8 @@ void Aircraft::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) co
 {
 	if (isDestroyed() && mShowExplosion)
 		target.draw(mExplosion, states);
-	else
-		target.draw(mSprite, states);
+	else 
+		target.draw(mChicken, states);
 }
 
 void Aircraft::disablePickups()
@@ -116,7 +123,7 @@ void Aircraft::updateCurrent(sf::Time dt, CommandQueue& commands)
 {
 	// Update texts and roll animation
 	updateTexts();
-	updateRollAnimation();
+	updateRollAnimation(dt);
 
 	// Entity has been destroyed: Possibly drop pickup, mark for removal
 	if (isDestroyed())
@@ -415,20 +422,54 @@ void Aircraft::updateTexts()
 	}
 }
 
-void Aircraft::updateRollAnimation()
+
+
+
+void Aircraft::updateRollAnimation(sf::Time dt)
 {
 	if (Table[mType].hasRollAnimation)
 	{
 		sf::IntRect textureRect = Table[mType].textureRect;
-
-		// Roll left: Texture rect offset once
+		
 		if (getVelocity().x < 0.f)
-			textureRect.left += textureRect.width;
-
-		// Roll right: Texture rect offset twice
-		else if (getVelocity().x > 0.f)
-			textureRect.left += 2 * textureRect.width;
-
+		{
+			textureRect = sf::IntRect(1, 36, 30, 25);
+			mChicken.setDirection(1);
+			mChicken.setNumFrames(4);
+			mChicken.setDuration(sf::seconds(0.8f));
+			mChicken.setRepeating(true);
+			mChicken.update(dt);
+			//mChicken.restart();
+		}
+		else if (getVelocity().x > 0.f) {
+			textureRect = sf::IntRect(1, 100, 30, 25);
+			mChicken.setDirection(2);
+			mChicken.setNumFrames(4);
+			mChicken.setDuration(sf::seconds(0.8f));
+			mChicken.setRepeating(true);
+			mChicken.update(dt);
+			//mChicken.restart();
+		}
+		else if (getVelocity().y < 0.f) {
+			textureRect = sf::IntRect(6, 2, 20, 25);
+			mChicken.setDirection(3);
+			mChicken.setNumFrames(4);
+			mChicken.setDuration(sf::seconds(0.8f));
+			mChicken.setRepeating(true);
+			mChicken.update(dt);
+			//mChicken.restart();
+		}
+		else if (getVelocity().y > 0.f) {
+			textureRect = sf::IntRect(6, 66, 20, 26);
+			mChicken.setDirection(4);
+			mChicken.setNumFrames(4);
+			mChicken.setDuration(sf::seconds(0.8f));
+			mChicken.setRepeating(true);
+			//mChicken.restart();
+			mChicken.update(dt);
+		}
+		
 		mSprite.setTextureRect(textureRect);
+		
 	}
 }

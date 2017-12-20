@@ -27,6 +27,9 @@ public:
 	void 					restart();
 	bool 					isFinished() const;
 
+	void					setDirection(const float);
+	float					getDirection() const;
+
 	sf::FloatRect 			getLocalBounds() const;
 	sf::FloatRect 			getGlobalBounds() const;
 
@@ -45,4 +48,5 @@ private:
 	sf::Time 				mDuration;
 	sf::Time 				mElapsedTime;
 	bool 					mRepeat;
+	float					mDirection;
 };

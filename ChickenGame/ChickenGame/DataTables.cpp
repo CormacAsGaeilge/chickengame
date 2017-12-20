@@ -14,10 +14,9 @@ std::vector<AircraftData> initializeAircraftData()
 	data[Aircraft::Eagle].hitpoints = 100;
 	data[Aircraft::Eagle].speed = 40.f;
 	data[Aircraft::Eagle].fireInterval = sf::seconds(1);
-	data[Aircraft::Eagle].texture = Textures::Entities;
-	data[Aircraft::Eagle].textureRect = sf::IntRect(0, 0, 48, 64);
+	data[Aircraft::Eagle].texture = Textures::Chicken;
+	data[Aircraft::Eagle].textureRect = sf::IntRect(6, 2, 20, 25);
 	data[Aircraft::Eagle].hasRollAnimation = true;
-
 
 	data[Aircraft::Raptor].hitpoints = 20;
 	data[Aircraft::Raptor].speed = 80.f;
@@ -39,7 +38,9 @@ std::vector<AircraftData> initializeAircraftData()
 	data[Aircraft::Avenger].directions.push_back(Direction(0.f, 50.f));
 	data[Aircraft::Avenger].directions.push_back(Direction(+45.f, 50.f));
 	data[Aircraft::Avenger].fireInterval = sf::seconds(2);
-	data[Aircraft::Raptor].hasRollAnimation = false;
+	data[Aircraft::Avenger].hasRollAnimation = false;
+
+	
 
 	return data;
 }

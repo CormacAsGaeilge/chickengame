@@ -61,13 +61,13 @@ private:
 	void					createPickup(SceneNode& node, const TextureHolder& textures) const;
 
 	void					updateTexts();
-	void					updateRollAnimation();
-
+	void					updateRollAnimation(sf::Time dt);
 
 private:
 	Type					mType;
 	sf::Sprite				mSprite;
 	Animation				mExplosion;
+	Animation				mChicken;
 	Command 				mFireCommand;
 	Command					mMissileCommand;
 	sf::Time				mFireCountdown;

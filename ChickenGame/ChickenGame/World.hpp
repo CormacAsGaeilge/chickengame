@@ -59,6 +59,7 @@ private:
 	void adaptPlayerPosition();
 	void adaptPlayerVelocity();
 	void handleCollisions();
+	void handleBounceCollision(Aircraft & player, Aircraft & enemy);
 	void updateSounds();
 
 	void buildScene();

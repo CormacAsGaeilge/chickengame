@@ -249,8 +249,9 @@ void World::handleCollisions()
 			auto& enemy = static_cast<Aircraft&>(*pair.second);
 
 			// Collision: Player damage = enemy's remaining HP
-			player.damage(enemy.getHitpoints());
-			enemy.destroy();
+			/*player.damage(enemy.getHitpoints());
+			enemy.destroy();*/
+			handleBounceCollision(player, enemy);
 		}
 
 		else if (matchesCategories(pair, Category::PlayerAircraft, Category::Pickup))
@@ -275,6 +276,31 @@ void World::handleCollisions()
 			projectile.destroy();
 		}
 	}
+}
+
+void World::handleBounceCollision(Aircraft& player, Aircraft& enemy) {
+	//Dynamic circle to circle collision
+	//each chicken in the game can bounce off each other
+
+	float cx1 = player.getWorldPosition().x;
+	float cx2 = enemy.getWorldPosition().x;
+	float cy1 = player.getWorldPosition().y;
+	float cy2 = enemy.getWorldPosition().y;
+
+	float distance = sqrt(pow(cx1 - cx2, 2) + pow(cy1 - cy2, 2));
+	float nx = (cx2 - cx1) / distance;
+	float ny = (cy2 - cy1) / distance;
+	float p = 2 * (player.getVelocity().x * nx + player.getVelocity().y * ny - enemy.getVelocity().x * nx - enemy.getVelocity().y * ny) /
+		(player.getMass() + enemy.getMass());
+	float vx1 = player.getVelocity().x - p * player.getMass() * nx;
+	float vy1 = player.getVelocity().y - p * player.getMass() * ny;
+	float vx2 = enemy.getVelocity().x + p * enemy.getMass() * nx;
+	float vy2 = enemy.getVelocity().y + p * enemy.getMass() * ny;
+	sf::Vector2f vector1 = sf::Vector2f(vx1, vy1);
+	sf::Vector2f vector2 = sf::Vector2f(vx2, vy2);
+
+	player.accelerate(vector1);
+	enemy.accelerate(vector2);
 }
 
 void World::updateSounds()
@@ -365,7 +391,7 @@ void World::addEnemies()
 		return;
 
 	// Add enemies to the spawn point container
-	addEnemy(Aircraft::Raptor, 0.f, 500.f);
+	addEnemy(Aircraft::Raptor, 70.f, 0.f);
 	addEnemy(Aircraft::Raptor, 0.f, 1000.f);
 	addEnemy(Aircraft::Raptor, +100.f, 1150.f);
 	addEnemy(Aircraft::Raptor, -100.f, 1150.f);

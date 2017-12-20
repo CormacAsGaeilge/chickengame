@@ -31,6 +31,7 @@ public:
 	bool					isAllied() const;
 	bool					isBoosting() const;
 	float					getMaxSpeed() const;
+	float					getMass() const;
 	void					disablePickups();
 
 	void					increaseFireRate();
@@ -87,6 +88,7 @@ private:
 	float					mTravelledDistance;
 	float					mBoost;
 	float					mMaxBoost = 1.25f;
+	float					mMass;
 	std::size_t				mDirectionIndex;
 	TextNode*				mHealthDisplay;
 	TextNode*				mMissileDisplay;

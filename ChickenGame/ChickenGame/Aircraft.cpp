@@ -45,6 +45,10 @@ Aircraft::Aircraft(Type type, const TextureHolder& textures, const FontHolder& f
 	, mIsBoosting(false)
 	, mBoost(1)
 {
+
+	mMass = 5.972f;
+	if(type == Type::Raptor)
+		mMass = 35.972f;
 	mExplosion.setFrameSize(sf::Vector2i(256, 256));
 	mExplosion.setNumFrames(16);
 	mExplosion.setDuration(sf::seconds(1));
@@ -203,6 +207,11 @@ bool Aircraft::isBoosting() const
 float Aircraft::getMaxSpeed() const
 {
 	return Table[mType].speed;
+}
+
+float Aircraft::getMass() const
+{
+	return mMass;
 }
 
 void Aircraft::increaseFireRate()

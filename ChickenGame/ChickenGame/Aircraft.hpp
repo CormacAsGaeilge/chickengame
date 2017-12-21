@@ -28,6 +28,7 @@ public:
 	virtual sf::FloatRect	getBoundingRect() const;
 	virtual void			remove();
 	virtual bool 			isMarkedForRemoval() const;
+	bool					getMoving() const;
 	bool					isAllied() const;
 	bool					isBoosting() const;
 	float					getMaxSpeed() const;
@@ -79,6 +80,7 @@ private:
 	bool					mPlayedExplosionSound;
 	bool					mSpawnedPickup;
 	bool					mPickupsEnabled;
+	bool					mMoving;
 
 	int						mFireRateLevel;
 	int						mSpreadLevel;

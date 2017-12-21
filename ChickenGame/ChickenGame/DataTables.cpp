@@ -22,9 +22,9 @@ std::vector<AircraftData> initializeAircraftData()
 	data[Aircraft::Raptor].speed = 80.f;
 	data[Aircraft::Raptor].texture = Textures::Entities;
 	data[Aircraft::Raptor].textureRect = sf::IntRect(144, 0, 84, 64);
-	/*data[Aircraft::Raptor].directions.push_back(Direction(+45.f, 80.f));
-	data[Aircraft::Raptor].directions.push_back(Direction(-45.f, 160.f));
-	data[Aircraft::Raptor].directions.push_back(Direction(+45.f, 80.f));*/
+	//data[Aircraft::Raptor].directions.push_back(Direction(+45.f, 80.f));
+	//data[Aircraft::Raptor].directions.push_back(Direction(-45.f, 160.f));
+	//data[Aircraft::Raptor].directions.push_back(Direction(+45.f, 80.f));
 	data[Aircraft::Raptor].fireInterval = sf::Time::Zero;
 	data[Aircraft::Raptor].hasRollAnimation = false;
 

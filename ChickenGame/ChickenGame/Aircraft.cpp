@@ -47,7 +47,7 @@ Aircraft::Aircraft(Type type, const TextureHolder& textures, const FontHolder& f
 	, mIdentifier(0)
 	, mIsBoosting(false)
 	, mBoost(1)
-{
+{ 
 
 	mMass = 5.972f;
 	if(type == Type::Raptor)
@@ -124,6 +124,35 @@ void Aircraft::updateCurrent(sf::Time dt, CommandQueue& commands)
 	// Update texts and roll animation
 	updateTexts();
 	updateRollAnimation(dt);
+
+	//add friction
+	if ((getVelocity().x > 1 || getVelocity().x < -1) || (getVelocity().y > 1 || getVelocity().y < -1)) {
+		if (getVelocity().x != 0) {
+			if (getVelocity().x > 0) {
+				if(getVelocity().x - (mFriction* dt.asSeconds()) < 0)
+					setVelocity(0, getVelocity().y);
+				else
+					setVelocity(getVelocity().x - (mFriction* dt.asSeconds()), getVelocity().y);
+			}
+			else {
+				if (getVelocity().x + (mFriction* dt.asSeconds()) > 0)
+					setVelocity(0, getVelocity().y);
+				else
+					setVelocity(getVelocity().x + (mFriction* dt.asSeconds()), getVelocity().y);
+			}
+		}
+		if (getVelocity().y != 0) {
+			if (getVelocity().y > 0) {
+				setVelocity(getVelocity().x, getVelocity().y - (mFriction* dt.asSeconds()));
+			}
+			else {
+				setVelocity(getVelocity().x, getVelocity().y + (mFriction* dt.asSeconds()));
+			}
+		}
+	}
+	else {
+		setVelocity(0.f, 0.f);
+	}
 
 	// Entity has been destroyed: Possibly drop pickup, mark for removal
 	if (isDestroyed())
@@ -312,6 +341,8 @@ void Aircraft::updateMovementPattern(sf::Time dt)
 
 		mTravelledDistance += getMaxSpeed() * dt.asSeconds();
 	}
+
+
 }
 
 void Aircraft::checkPickupDrop(CommandQueue& commands)
@@ -404,22 +435,25 @@ void Aircraft::createPickup(SceneNode& node, const TextureHolder& textures) cons
 
 void Aircraft::updateTexts()
 {
+	sf::Vector2f velocity(0, 0);
+	velocity = getVelocity();
 	// Display hitpoints
 	if (isDestroyed())
 		mHealthDisplay->setString("");
 	else
-		mHealthDisplay->setString(toString(mBoost) + " BOOST");
+		mHealthDisplay->setString(toString(mBoost) + " BOOST|" + "Velocity: (" + toString(velocity.x) + "," + toString(velocity.x) + ")");
 	mHealthDisplay->setPosition(0.f, 50.f);
 	mHealthDisplay->setRotation(-getRotation());
-
-	// Display missiles, if available
-	if (mMissileDisplay)
-	{
-		if (mMissileAmmo == 0 || isDestroyed())
-			mMissileDisplay->setString("");
-		else
-			mMissileDisplay->setString("M: " + toString(mMissileAmmo));
-	}
+	/*if (mMissileDisplay)
+		mMissileDisplay->setString("Velocity: (" + toString(velocity.x) + "," + toString(velocity.x) + ")");
+	*///// Display missiles, if available
+	//if (mMissileDisplay)
+	//{
+	//	if (mMissileAmmo == 0 || isDestroyed())
+	//		mMissileDisplay->setString("");
+	//	else
+	//		mMissileDisplay->setString("M: " + toString(mMissileAmmo));
+	//}
 }
 
 
@@ -427,6 +461,7 @@ void Aircraft::updateTexts()
 
 void Aircraft::updateRollAnimation(sf::Time dt)
 {
+
 	if (Table[mType].hasRollAnimation)
 	{
 		sf::IntRect textureRect = Table[mType].textureRect;

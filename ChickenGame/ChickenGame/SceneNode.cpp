@@ -3,6 +3,7 @@
 #include "Foreach.hpp"
 #include "Utility.hpp"
 
+#include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -15,6 +16,7 @@ SceneNode::SceneNode(Category::Type category)
 	: mChildren()
 	, mParent(nullptr)
 	, mDefaultCategory(category)
+	, mRadius(8.f)
 {
 }
 
@@ -63,6 +65,9 @@ void SceneNode::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 	// Draw bounding rectangle - disabled by default
 	drawBoundingRect(target, states);
+
+	//Draw circle bounds
+	drawCircleBounds(target, states);
 }
 
 void SceneNode::drawCurrent(sf::RenderTarget&, sf::RenderStates) const
@@ -88,6 +93,16 @@ void SceneNode::drawBoundingRect(sf::RenderTarget& target, sf::RenderStates) con
 	shape.setOutlineThickness(1.f);
 
 	target.draw(shape);
+}
+
+void SceneNode::drawCircleBounds(sf::RenderTarget& target, sf::RenderStates) const
+{
+	sf::CircleShape circle(mRadius);
+	circle.setPosition(getPosition());
+	circle.setFillColor(sf::Color::Transparent);
+	circle.setOutlineColor(sf::Color::Red);
+	circle.setOutlineThickness(1.f);
+	target.draw(circle);
 }
 
 sf::Vector2f SceneNode::getWorldPosition() const
@@ -163,6 +178,16 @@ bool SceneNode::isDestroyed() const
 {
 	// By default, scene node needn't be removed
 	return false;
+}
+
+float SceneNode::getRadius() const
+{
+	return mRadius;
+}
+
+void SceneNode::setRadius(float radius) 
+{
+	mRadius = radius;
 }
 
 bool collision(const SceneNode& lhs, const SceneNode& rhs)

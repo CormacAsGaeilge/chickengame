@@ -43,7 +43,8 @@ public:
 	virtual sf::FloatRect	getBoundingRect() const;
 	virtual bool			isMarkedForRemoval() const;
 	virtual bool			isDestroyed() const;
-
+	float					getRadius() const;
+	void					setRadius(float radius);
 
 private:
 	virtual void			updateCurrent(sf::Time dt, CommandQueue& commands);
@@ -53,12 +54,14 @@ private:
 	virtual void			drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;
 	void					drawChildren(sf::RenderTarget& target, sf::RenderStates states) const;
 	void					drawBoundingRect(sf::RenderTarget& target, sf::RenderStates states) const;
+	void					drawCircleBounds(sf::RenderTarget& target, sf::RenderStates states) const;
 
 
 private:
 	std::vector<Ptr>		mChildren;
 	SceneNode*				mParent;
 	Category::Type			mDefaultCategory;
+	float					mRadius;
 };
 
 bool	collision(const SceneNode& lhs, const SceneNode& rhs);

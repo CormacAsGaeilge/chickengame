@@ -60,6 +60,7 @@ private:
 	void adaptPlayerVelocity();
 	void handleCollisions();
 	void handleBounceCollision(Aircraft & player, Aircraft & enemy);
+	bool handleCircleCollision(Aircraft & player, Aircraft & enemy);
 	void updateSounds();
 
 	void buildScene();

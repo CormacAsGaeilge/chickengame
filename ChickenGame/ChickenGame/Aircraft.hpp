@@ -89,6 +89,7 @@ private:
 	float					mBoost;
 	float					mMaxBoost = 1.25f;
 	float					mMass;
+	float					mFriction = 50.f;
 	std::size_t				mDirectionIndex;
 	TextNode*				mHealthDisplay;
 	TextNode*				mMissileDisplay;

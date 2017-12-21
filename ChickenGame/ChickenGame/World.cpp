@@ -284,26 +284,38 @@ void World::handleCollisions()
 void World::handleBounceCollision(Aircraft& player, Aircraft& enemy) {
 	//Dynamic circle to circle collision
 	//each chicken in the game can bounce off each other
+	bool isCircleCollision = handleCircleCollision(player, enemy);
+	if (isCircleCollision) {
+		float cx1 = player.getPosition().x;
+		float cx2 = enemy.getPosition().x;
+		float cy1 = player.getPosition().y;
+		float cy2 = enemy.getPosition().y;
 
-	float cx1 = player.getWorldPosition().x;
-	float cx2 = enemy.getWorldPosition().x;
-	float cy1 = player.getWorldPosition().y;
-	float cy2 = enemy.getWorldPosition().y;
+		float distance = sqrt(pow(cx1 - cx2, 2) + pow(cy1 - cy2, 2));
+		float nx = (cx2 - cx1) / distance;
+		float ny = (cy2 - cy1) / distance;
+		float p = 2 * (player.getVelocity().x * nx + player.getVelocity().y * ny - enemy.getVelocity().x * nx - enemy.getVelocity().y * ny) /
+			(player.getMass() + enemy.getMass());
+		float vx1 = player.getVelocity().x - p * player.getMass() * nx;
+		float vy1 = player.getVelocity().y - p * player.getMass() * ny;
+		float vx2 = enemy.getVelocity().x + p * enemy.getMass() * nx;
+		float vy2 = enemy.getVelocity().y + p * enemy.getMass() * ny;
+		sf::Vector2f vector1 = sf::Vector2f(vx1, vy1);
+		sf::Vector2f vector2 = sf::Vector2f(vx2, vy2);
 
-	float distance = sqrt(pow(cx1 - cx2, 2) + pow(cy1 - cy2, 2));
-	float nx = (cx2 - cx1) / distance;
-	float ny = (cy2 - cy1) / distance;
-	float p = 2 * (player.getVelocity().x * nx + player.getVelocity().y * ny - enemy.getVelocity().x * nx - enemy.getVelocity().y * ny) /
-		(player.getMass() + enemy.getMass());
-	float vx1 = player.getVelocity().x - p * player.getMass() * nx;
-	float vy1 = player.getVelocity().y - p * player.getMass() * ny;
-	float vx2 = enemy.getVelocity().x + p * enemy.getMass() * nx;
-	float vy2 = enemy.getVelocity().y + p * enemy.getMass() * ny;
-	sf::Vector2f vector1 = sf::Vector2f(vx1, vy1);
-	sf::Vector2f vector2 = sf::Vector2f(vx2, vy2);
+		player.setVelocity(sf::Vector2f(0, 0));
+		enemy.setVelocity(sf::Vector2f(0, 0));
 
-	player.accelerate(vector1);
-	enemy.accelerate(vector2);
+		player.accelerate(vector1);
+		enemy.accelerate(vector2);
+	}
+}
+
+bool World::handleCircleCollision(Aircraft & player, Aircraft & enemy)
+{
+	float originDistance = pow((enemy.getPosition().x - player.getPosition().x), 2) + pow((enemy.getPosition().y - player.getPosition().y), 2);
+	float radiusVal = pow((player.getRadius() + enemy.getRadius()), 2);
+	return originDistance <= radiusVal;
 }
 
 void World::updateSounds()
@@ -395,7 +407,7 @@ void World::addEnemies()
 
 	// Add enemies to the spawn point container
 	addEnemy(Aircraft::Raptor, 70.f, 0.f);
-	addEnemy(Aircraft::Avenger, 0.f, 200.f);
+	//addEnemy(Aircraft::Avenger, 0.f, 200.f);
 
 	// Sort all enemies according to their y value, such that lower enemies are checked first for spawning
 	sortEnemies();

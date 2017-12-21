@@ -132,34 +132,7 @@ void Aircraft::updateCurrent(sf::Time dt, CommandQueue& commands)
 	updateTexts();
 	updateRollAnimation(dt);
 
-	//add friction
-	if ((getVelocity().x > 1 || getVelocity().x < -1) || (getVelocity().y > 1 || getVelocity().y < -1)) {
-		if (getVelocity().x != 0) {
-			if (getVelocity().x > 0) {
-				if(getVelocity().x - (mFriction* dt.asSeconds()) < 0)
-					setVelocity(0, getVelocity().y);
-				else
-					setVelocity(getVelocity().x - (mFriction* dt.asSeconds()), getVelocity().y);
-			}
-			else {
-				if (getVelocity().x + (mFriction* dt.asSeconds()) > 0)
-					setVelocity(0, getVelocity().y);
-				else
-					setVelocity(getVelocity().x + (mFriction* dt.asSeconds()), getVelocity().y);
-			}
-		}
-		if (getVelocity().y != 0) {
-			if (getVelocity().y > 0) {
-				setVelocity(getVelocity().x, getVelocity().y - (mFriction* dt.asSeconds()));
-			}
-			else {
-				setVelocity(getVelocity().x, getVelocity().y + (mFriction* dt.asSeconds()));
-			}
-		}
-	}
-	else {
-		setVelocity(0.f, 0.f);
-	}
+	updateFriction(dt);
 
 	// Entity has been destroyed: Possibly drop pickup, mark for removal
 	if (isDestroyed())
@@ -203,7 +176,8 @@ void Aircraft::updateCurrent(sf::Time dt, CommandQueue& commands)
 	}
 	else {
 		if (mBoost > 1.f) {
-			accelerate(Aircraft::getVelocity()*(mBoost*Aircraft::getMaxSpeed()));
+			sf::Vector2f boostVelocity = Aircraft::getVelocity()*(mBoost*Aircraft::getMaxSpeed());
+			accelerate(boostVelocity);
 			mBoost -= 0.03f;
 		}
 	}
@@ -211,6 +185,37 @@ void Aircraft::updateCurrent(sf::Time dt, CommandQueue& commands)
 	// Update enemy movement pattern; apply velocity
 	updateMovementPattern(dt);
 	Entity::updateCurrent(dt, commands);
+}
+
+void Aircraft::updateFriction(sf::Time dt) {
+	//add friction
+	if ((getVelocity().x > 1 || getVelocity().x < -1) || (getVelocity().y > 1 || getVelocity().y < -1)) {
+		if (getVelocity().x != 0) {
+			if (getVelocity().x > 0) {
+				if (getVelocity().x - (mFriction* dt.asSeconds()) < 0)
+					setVelocity(0, getVelocity().y);
+				else
+					setVelocity(getVelocity().x - (mFriction* dt.asSeconds()), getVelocity().y);
+			}
+			else {
+				if (getVelocity().x + (mFriction* dt.asSeconds()) > 0)
+					setVelocity(0, getVelocity().y);
+				else
+					setVelocity(getVelocity().x + (mFriction* dt.asSeconds()), getVelocity().y);
+			}
+		}
+		if (getVelocity().y != 0) {
+			if (getVelocity().y > 0) {
+				setVelocity(getVelocity().x, getVelocity().y - (mFriction* dt.asSeconds()));
+			}
+			else {
+				setVelocity(getVelocity().x, getVelocity().y + (mFriction* dt.asSeconds()));
+			}
+		}
+	}
+	else {
+		setVelocity(0.f, 0.f);
+	}
 }
 
 unsigned int Aircraft::getCategory() const

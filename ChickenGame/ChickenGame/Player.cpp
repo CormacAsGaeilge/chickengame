@@ -21,13 +21,24 @@ struct AircraftMover
 
 	void operator() (Aircraft& aircraft, sf::Time) const
 	{
+		float speedLimit = 62.f;
 		if (aircraft.getIdentifier() == aircraftID) {
 			float speed = aircraft.getMaxSpeed();
-			if (aircraft.isBoosting())
+			if (aircraft.isBoosting()) {
 				speed *= 0.5f;
+				speedLimit *= 0.5;
+			}
+
 			aircraft.accelerate(velocity * speed);
-		}
+			float newMagnitude = sqrt(aircraft.getVelocity().x*aircraft.getVelocity().x + aircraft.getVelocity().y*aircraft.getVelocity().y);
+			if (newMagnitude > speedLimit) {
+
+				sf::Vector2f direction(aircraft.getVelocity().x / newMagnitude, aircraft.getVelocity().y / newMagnitude);
+
+				aircraft.setVelocity(direction * speedLimit);
+			}
 			
+		}
 	}
 
 	sf::Vector2f velocity;

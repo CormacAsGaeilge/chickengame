@@ -6,10 +6,13 @@
 GameState::GameState(StateStack& stack, Context context)
 	: State(stack, context)
 	, mWorld(*context.window, *context.fonts, *context.sounds, false)
-	, mPlayer(nullptr, 1, context.keys1)
+	, mPlayerOne(nullptr, 1, context.keys1)
+	, mPlayerTwo(nullptr, 2, context.keys2)
 {
 	mWorld.addAircraft(1);
-	mPlayer.setMissionStatus(Player::MissionRunning);
+	mWorld.addAircraft(2);
+	mPlayerOne.setMissionStatus(Player::MissionRunning);
+	mPlayerTwo.setMissionStatus(Player::MissionRunning);
 
 	// Play game theme
 	context.music->play(Music::MissionTheme);
@@ -26,17 +29,20 @@ bool GameState::update(sf::Time dt)
 
 	if (!mWorld.hasAlivePlayer())
 	{
-		mPlayer.setMissionStatus(Player::MissionFailure);
+		mPlayerOne.setMissionStatus(Player::MissionFailure);
+		mPlayerTwo.setMissionStatus(Player::MissionFailure);
 		requestStackPush(States::GameOver);
 	}
 	else if (mWorld.hasPlayerReachedEnd())
 	{
-		mPlayer.setMissionStatus(Player::MissionSuccess);
+		mPlayerOne.setMissionStatus(Player::MissionSuccess);
+		mPlayerTwo.setMissionStatus(Player::MissionSuccess);
 		requestStackPush(States::GameOver);
 	}
 
 	CommandQueue& commands = mWorld.getCommandQueue();
-	mPlayer.handleRealtimeInput(commands);
+	mPlayerOne.handleRealtimeInput(commands);
+	mPlayerTwo.handleRealtimeInput(commands);
 
 	return true;
 }
@@ -45,7 +51,8 @@ bool GameState::handleEvent(const sf::Event& event)
 {
 	// Game input handling
 	CommandQueue& commands = mWorld.getCommandQueue();
-	mPlayer.handleEvent(event, commands);
+	mPlayerOne.handleEvent(event, commands);
+	mPlayerTwo.handleEvent(event, commands);
 
 	// Escape pressed, trigger the pause screen
 	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)

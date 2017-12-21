@@ -55,8 +55,8 @@ void World::update(sf::Time dt)
 	// Scroll the world, reset player velocity
 	//mWorldView.move(0.f, mScrollSpeed * dt.asSeconds() * mScrollSpeedCompensation);
 	
-	FOREACH(Aircraft* a, mPlayerAircrafts)
-		a->setVelocity(0.f, 0.f);
+	/*FOREACH(Aircraft* a, mPlayerAircrafts)
+		a->setVelocity(0.f, 0.f);*/
 
 	// Setup commands to destroy entities, and guide missiles
 	destroyEntitiesOutsideView();
@@ -130,8 +130,12 @@ void World::removeAircraft(int identifier)
 
 Aircraft* World::addAircraft(int identifier)
 {
+
+	sf::Vector2f startPos(mWorldView.getCenter().x + (identifier*25), mWorldView.getCenter().y + (identifier * 25));
+
 	std::unique_ptr<Aircraft> player(new Aircraft(Aircraft::Eagle, mTextures, mFonts));
-	player->setPosition(mWorldView.getCenter());
+
+	player->setPosition(startPos);
 	player->setIdentifier(identifier);
 
 	mPlayerAircrafts.push_back(player.get());
@@ -180,7 +184,7 @@ void World::loadTextures()
 {
 	mTextures.load(Textures::Chicken, "Media/Textures/chicken.png");
 	mTextures.load(Textures::Entities, "Media/Textures/Entities.png");
-	mTextures.load(Textures::Jungle, "Media/Textures/ForNow.png");
+	mTextures.load(Textures::Jungle, "Media/Textures/ArenaOneO.png");
 	mTextures.load(Textures::Explosion, "Media/Textures/Explosion.png");
 	mTextures.load(Textures::Particle, "Media/Textures/Particle.png");
 	mTextures.load(Textures::FinishLine, "Media/Textures/FinishLine.png");
@@ -254,6 +258,14 @@ void World::handleCollisions()
 			// Collision: Player damage = enemy's remaining HP
 			/*player.damage(enemy.getHitpoints());
 			enemy.destroy();*/
+			handleBounceCollision(player, enemy);
+		}
+
+		else if (matchesCategories(pair, Category::PlayerAircraft, Category::PlayerAircraft))
+		{
+			auto& player = static_cast<Aircraft&>(*pair.first);
+			auto& enemy = static_cast<Aircraft&>(*pair.second);
+
 			handleBounceCollision(player, enemy);
 		}
 

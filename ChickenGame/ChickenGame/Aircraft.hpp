@@ -48,11 +48,12 @@ public:
 	void					setIdentifier(int identifier);
 	int						getMissileAmmo() const;
 	void					setMissileAmmo(int ammo);
-
+	void					updateFriction(sf::Time dt);
 
 private:
 	virtual void			drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;
 	virtual void 			updateCurrent(sf::Time dt, CommandQueue& commands);
+	
 	void					updateMovementPattern(sf::Time dt);
 	void					checkPickupDrop(CommandQueue& commands);
 	void					checkProjectileLaunch(sf::Time dt, CommandQueue& commands);
@@ -89,7 +90,7 @@ private:
 	Command 				mDropPickupCommand;
 	float					mTravelledDistance;
 	float					mBoost;
-	float					mMaxBoost = 1.25f;
+	float					mMaxBoost = 1.1f;
 	float					mMass;
 	float					mFriction = 50.f;
 	std::size_t				mDirectionIndex;

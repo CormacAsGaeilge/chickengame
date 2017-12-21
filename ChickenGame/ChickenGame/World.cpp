@@ -395,7 +395,7 @@ void World::addEnemies()
 
 	// Add enemies to the spawn point container
 	addEnemy(Aircraft::Raptor, 70.f, 0.f);
-	addEnemy(Aircraft::Avenger, 0.f, 200.f);
+	//addEnemy(Aircraft::Avenger, 0.f, 200.f);
 
 	// Sort all enemies according to their y value, such that lower enemies are checked first for spawning
 	sortEnemies();

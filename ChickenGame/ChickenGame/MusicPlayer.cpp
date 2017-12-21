@@ -18,7 +18,7 @@ void MusicPlayer::play(Music::ID theme)
 	}
 	mMusic.setVolume(mVolume);
 	mMusic.setLoop(true);
-	mMusic.play();
+	//mMusic.play();
 }
 
 void MusicPlayer::stop()

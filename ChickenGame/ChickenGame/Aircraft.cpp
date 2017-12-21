@@ -37,6 +37,7 @@ Aircraft::Aircraft(Type type, const TextureHolder& textures, const FontHolder& f
 	, mExplosionBegan(false)
 	, mSpawnedPickup(false)
 	, mPickupsEnabled(true)
+	, mMoving(false)
 	, mFireRateLevel(1)
 	, mSpreadLevel(1)
 	, mMissileAmmo(2)
@@ -56,8 +57,8 @@ Aircraft::Aircraft(Type type, const TextureHolder& textures, const FontHolder& f
 	mExplosion.setNumFrames(16);
 	mExplosion.setDuration(sf::seconds(1));
 
-	mChicken.setFrameSize(sf::Vector2i(30, 25));
-
+	mChicken.setFrameSize(sf::Vector2i(20, 25));
+	//mChicken.getPosition();
 
 	centerOrigin(mSprite);
 	centerOrigin(mChicken);
@@ -110,8 +111,14 @@ void Aircraft::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) co
 {
 	if (isDestroyed() && mShowExplosion)
 		target.draw(mExplosion, states);
-	else 
+	else if (mMoving)
+	{
 		target.draw(mChicken, states);
+	}
+	else
+	{
+		target.draw(mSprite, states);
+	}
 }
 
 void Aircraft::disablePickups()
@@ -204,6 +211,11 @@ void Aircraft::remove()
 bool Aircraft::isAllied() const
 {
 	return mType == Eagle;
+}
+
+bool Aircraft::getMoving() const
+{
+	return mMoving;
 }
 
 bool Aircraft::isBoosting() const
@@ -433,40 +445,45 @@ void Aircraft::updateRollAnimation(sf::Time dt)
 		
 		if (getVelocity().x < 0.f)
 		{
+			mMoving = true;
 			textureRect = sf::IntRect(1, 36, 30, 25);
 			mChicken.setDirection(1);
 			mChicken.setNumFrames(4);
 			mChicken.setDuration(sf::seconds(0.8f));
 			mChicken.setRepeating(true);
 			mChicken.update(dt);
-			//mChicken.restart();
 		}
 		else if (getVelocity().x > 0.f) {
+			mMoving = true;
 			textureRect = sf::IntRect(1, 100, 30, 25);
 			mChicken.setDirection(2);
 			mChicken.setNumFrames(4);
 			mChicken.setDuration(sf::seconds(0.8f));
 			mChicken.setRepeating(true);
 			mChicken.update(dt);
-			//mChicken.restart();
 		}
 		else if (getVelocity().y < 0.f) {
+			mMoving = true;
 			textureRect = sf::IntRect(6, 2, 20, 25);
 			mChicken.setDirection(3);
 			mChicken.setNumFrames(4);
 			mChicken.setDuration(sf::seconds(0.8f));
 			mChicken.setRepeating(true);
 			mChicken.update(dt);
-			//mChicken.restart();
 		}
 		else if (getVelocity().y > 0.f) {
+			mMoving = true;
 			textureRect = sf::IntRect(6, 66, 20, 26);
 			mChicken.setDirection(4);
 			mChicken.setNumFrames(4);
 			mChicken.setDuration(sf::seconds(0.8f));
 			mChicken.setRepeating(true);
-			//mChicken.restart();
 			mChicken.update(dt);
+		}
+		else
+		{
+			mMoving = false;
+			textureRect = sf::IntRect(6, 2, 20, 25);
 		}
 		
 		mSprite.setTextureRect(textureRect);

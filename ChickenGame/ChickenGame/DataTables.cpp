@@ -3,6 +3,7 @@
 #include "Projectile.hpp"
 #include "Pickup.hpp"
 #include "Particle.hpp"
+#include "Ball.hpp"
 
 // For std::bind() placeholders _1, _2, ...
 using namespace std::placeholders;
@@ -22,25 +23,28 @@ std::vector<ChickenData> initializeChickenData()
 	data[Chicken::Raptor].speed = 80.f;
 	data[Chicken::Raptor].texture = Textures::Chicken;
 	data[Chicken::Raptor].textureRect = sf::IntRect(1, 131, 38, 38);
-	//data[Chicken::Raptor].directions.push_back(Direction(+45.f, 80.f));
-	//data[Chicken::Raptor].directions.push_back(Direction(-45.f, 160.f));
-	//data[Chicken::Raptor].directions.push_back(Direction(+45.f, 80.f));
 	data[Chicken::Raptor].fireInterval = sf::Time::Zero;
 	data[Chicken::Raptor].hasRollAnimation = false;
 
 	data[Chicken::Avenger].hitpoints = 40;
 	data[Chicken::Avenger].speed = 50.f;
 	data[Chicken::Avenger].texture = Textures::Chicken;
-	data[Chicken::Avenger].textureRect = sf::IntRect(228, 0, 60, 59);
-	data[Chicken::Avenger].directions.push_back(Direction(+45.f, 50.f));
-	data[Chicken::Avenger].directions.push_back(Direction(0.f, 50.f));
-	data[Chicken::Avenger].directions.push_back(Direction(-45.f, 100.f));
-	data[Chicken::Avenger].directions.push_back(Direction(0.f, 50.f));
-	data[Chicken::Avenger].directions.push_back(Direction(+45.f, 50.f));
 	data[Chicken::Avenger].fireInterval = sf::seconds(2);
 	data[Chicken::Avenger].hasRollAnimation = false;
 
 	
+
+	return data;
+}
+
+std::vector<BallData> initializeBallData()
+{
+
+	std::vector<BallData> data(Ball::TypeCount);
+
+	data[Ball::Main].speed = 300.f;
+	data[Ball::Main].texture = Textures::Entities;
+	data[Ball::Main].textureRect = sf::IntRect(175, 64, 3, 14);
 
 	return data;
 }

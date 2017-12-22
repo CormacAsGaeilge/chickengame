@@ -33,6 +33,13 @@ struct ChickenData
 	bool hasRollAnimation;
 };
 
+struct BallData
+{
+	float speed;
+	Textures::ID texture;
+	sf::IntRect textureRect;
+};
+
 struct ProjectileData
 {
 	int damage;
@@ -66,4 +73,4 @@ std::vector<ChickenData> initializeChickenData();
 std::vector<ProjectileData> initializeProjectileData();
 std::vector<PickupData> initializePickupData();
 std::vector<ParticleData> initializeParticleData();
-//std::vector<ChickenData> initializeChickenData();
+std::vector<BallData> initializeBallData();

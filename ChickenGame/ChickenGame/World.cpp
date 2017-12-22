@@ -5,19 +5,18 @@
 #include "TextNode.hpp"
 #include "ParticleNode.hpp"
 #include "SoundNode.hpp"
-#include "NetworkNode.hpp"
+#include "Goals.hpp"
 #include "Utility.hpp"
+#include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/ConvexShape.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
-
 #include <algorithm>
 #include <cmath>
 #include <limits>
 #include <iostream>
 
 
-World::World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sounds, bool networked)
+World::World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sounds)
 	: mTarget(outputTarget)
 	, mSceneTexture()
 	, mWorldView(outputTarget.getDefaultView())
@@ -162,11 +161,6 @@ void World::createPickup(sf::Vector2f position, Pickup::Type type)
 	mSceneLayers[UpperAir]->attachChild(std::move(pickup));
 }
 
-bool World::pollGameAction(GameActions::Action& out)
-{
-	return mNetworkNode->pollGameAction(out);
-}
-
 void World::setCurrentBattleFieldPosition(float lineY)
 {
 	mWorldView.setCenter(mWorldView.getCenter().x, lineY - mWorldView.getSize().y / 2);
@@ -195,7 +189,7 @@ void World::loadTextures()
 {
 	mTextures.load(Textures::Chicken, "Media/Textures/chicken.png");
 	mTextures.load(Textures::Entities, "Media/Textures/Entities.png");
-	mTextures.load(Textures::Jungle, "Media/Textures/FootBallPitch.png");
+	mTextures.load(Textures::FootballPitch, "Media/Textures/FootBallPitch.png");
 	mTextures.load(Textures::Explosion, "Media/Textures/Explosion.png");
 	mTextures.load(Textures::Particle, "Media/Textures/Particle.png");
 	mTextures.load(Textures::FinishLine, "Media/Textures/FinishLine.png");
@@ -205,7 +199,7 @@ void World::adaptPlayerPosition()
 {
 	// Keep player's position inside the screen bounds, at least borderDistance units from the border
 	sf::FloatRect viewBounds = getViewBounds();
-	const float borderDistance = 40.f; // place player in arean
+	const float borderDistance = 100.f; // place player in arean
 
 	FOREACH(Chicken* Chicken, mPlayerChickens)
 	{
@@ -313,8 +307,14 @@ void World::handleCollisions()
 			//// Apply projectile damage to Chicken, destroy projectile
 			//chicken.damage(projectile.getDamage());
 			//projectile.destroy();
+		} 
+		else if (matchesCategories(pair, Category::EnemyChicken, Category::Goal)) {
+			//Ball hit goal
+			int x = 5;
 		}
 	}
+
+
 }
 
 void World::handleBounceCollision(Chicken& player, Chicken& enemy) {
@@ -322,30 +322,30 @@ void World::handleBounceCollision(Chicken& player, Chicken& enemy) {
 	//each chicken in the game can bounce off each other
 	bool isCircleCollision = handleCircleCollision(player, enemy);
 	if (isCircleCollision) {
-		float cx1 = player.getPosition().x;
-		float cx2 = enemy.getPosition().x;
-		float cy1 = player.getPosition().y;
-		float cy2 = enemy.getPosition().y;
+		if (player.getVelocity().x != 0 || player.getVelocity().y != 0 || enemy.getVelocity().x != 0 || enemy.getVelocity().y != 0) {
+			float cx1 = player.getPosition().x;
+			float cx2 = enemy.getPosition().x;
+			float cy1 = player.getPosition().y;
+			float cy2 = enemy.getPosition().y;
 
-		float distance = sqrt(pow(cx1 - cx2, 2) + pow(cy1 - cy2, 2));
-		float nx = (cx2 - cx1) / distance;
-		float ny = (cy2 - cy1) / distance;
-		float p = 2 * (player.getVelocity().x * nx + player.getVelocity().y * ny - enemy.getVelocity().x * nx - enemy.getVelocity().y * ny) /
-			(player.getMass() + enemy.getMass());
-		float vx1 = player.getVelocity().x - p * player.getMass() * nx;
-		float vy1 = player.getVelocity().y - p * player.getMass() * ny;
-		float vx2 = enemy.getVelocity().x + p * enemy.getMass() * nx;
-		float vy2 = enemy.getVelocity().y + p * enemy.getMass() * ny;
-		sf::Vector2f vector1 = sf::Vector2f(vx1, vy1);
-		sf::Vector2f vector2 = sf::Vector2f(vx2, vy2);
+			float distance = sqrt(pow(cx1 - cx2, 2) + pow(cy1 - cy2, 2));
+			float nx = (cx2 - cx1) / distance;
+			float ny = (cy2 - cy1) / distance;
+			float p = 2 * (player.getVelocity().x * nx + player.getVelocity().y * ny - enemy.getVelocity().x * nx - enemy.getVelocity().y * ny) /
+				(player.getMass() + enemy.getMass());
+			float vx1 = player.getVelocity().x - p * player.getMass() * nx;
+			float vy1 = player.getVelocity().y - p * player.getMass() * ny;
+			float vx2 = enemy.getVelocity().x + p * enemy.getMass() * nx;
+			float vy2 = enemy.getVelocity().y + p * enemy.getMass() * ny;
+			sf::Vector2f vector1 = sf::Vector2f(vx1, vy1);
+			sf::Vector2f vector2 = sf::Vector2f(vx2, vy2);
 
-		player.setVelocity(sf::Vector2f(0, 0));
-		enemy.setVelocity(sf::Vector2f(0, 0));
+			player.setVelocity(sf::Vector2f(0, 0));
+			enemy.setVelocity(sf::Vector2f(0, 0));
 
 		player.accelerate(vector1);
 		enemy.accelerate(vector2*2.f);
 		player.playLocalSound(mCommandQueue, SoundEffect::Bump);
-		//mScoring.setP1Score(2);
 	}
 }
 
@@ -398,17 +398,17 @@ void World::buildScene()
 	}
 
 	// Prepare the tiled background
-	sf::Texture& jungleTexture = mTextures.get(Textures::Jungle);
-	jungleTexture.setRepeated(true);
+	sf::Texture& FootballPitchTexture = mTextures.get(Textures::FootballPitch);
+	FootballPitchTexture.setRepeated(true);
 
 	float viewHeight = mWorldView.getSize().y;
 	sf::IntRect textureRect(mWorldBounds);
 	textureRect.height += static_cast<int>(viewHeight);
 
 	// Add the background sprite to the scene
-	std::unique_ptr<SpriteNode> jungleSprite(new SpriteNode(jungleTexture, textureRect));
-	jungleSprite->setPosition(mWorldBounds.left, mWorldBounds.top - 280.0f);
-	mSceneLayers[Background]->attachChild(std::move(jungleSprite));
+	std::unique_ptr<SpriteNode> FootballPitchSprite(new SpriteNode(FootballPitchTexture, textureRect));
+	FootballPitchSprite->setPosition(mWorldBounds.left, mWorldBounds.top - 280.0f);
+	mSceneLayers[Background]->attachChild(std::move(FootballPitchSprite));
 
 	// Add the finish line to the scene
 	sf::Texture& finishTexture = mTextures.get(Textures::FinishLine);
@@ -427,25 +427,42 @@ void World::buildScene()
 	//Add sound effect node
 	std::unique_ptr<SoundNode> soundNode(new SoundNode(mSounds));
 	mSceneGraph.attachChild(std::move(soundNode));
-
 	
-	// Add network node, if necessary
-	if (mNetworkedWorld)
-	{
-		std::unique_ptr<NetworkNode> networkNode(new NetworkNode());
-		mNetworkNode = networkNode.get();
-		mSceneGraph.attachChild(std::move(networkNode));
-	}
-
-	// Add enemy Chicken
+	// Add ball
 	addEnemies();
+
+	// Add Goals
+	addGoals();
+}
+
+void World::addGoals() {
+	/*sf::RectangleShape goalOne(sf::Vector2f(70.f, 110.f));
+	goalOne.setPosition(sf::Vector2f(30.f, 290.f));
+	goalOne.setOutlineThickness(1);
+	goalOne.setOutlineColor(sf::Color(250, 150, 100));
+
+	sf::RectangleShape goalTwo(sf::Vector2f(70.f, 110.f));
+	goalTwo.setPosition(sf::Vector2f(1090.f, 290.f));
+	goalTwo.setOutlineThickness(1);
+	goalTwo.setOutlineColor(sf::Color(250, 150, 100));*/
+
+	std::unique_ptr<Goals> goalOne(new Goals(30.f, 290.f, 70.f, 110.f));
+	//goalOne->setPosition(30.f, 290.f);
+	//goalOne->setScale(70.f, 110.f);
+	goalOne->setRotation(180.f);
+
+	mSceneLayers[UpperAir]->attachChild(std::move(goalOne));
+
+	std::unique_ptr<Goals> goalTwo(new Goals(1090.f, 290.f, 70.f, 110.f));
+	//goalTwo->setPosition(1090.f, 290.f);
+	//goalTwo->setScale(70.f, 110.f);
+	goalTwo->setRotation(180.f);
+
+	mSceneLayers[UpperAir]->attachChild(std::move(goalTwo));
 }
 
 void World::addEnemies()
 {
-	if (mNetworkedWorld)
-		return;
-
 	// Add enemies to the spawn point container
 	addEnemy(Chicken::Raptor, 0.f, 0.f);
 	//addEnemy(Chicken::Avenger, 0.f, 200.f);
@@ -480,8 +497,6 @@ void World::spawnEnemies()
 		std::unique_ptr<Chicken> enemy(new Chicken(spawn.type, mTextures, mFonts));
 		enemy->setPosition(spawn.x, spawn.y);
 		enemy->setRotation(180.f);
-
-		if (mNetworkedWorld) enemy->disablePickups();
 
 		mSceneLayers[UpperAir]->attachChild(std::move(enemy));
 

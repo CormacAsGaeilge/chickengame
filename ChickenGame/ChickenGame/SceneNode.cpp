@@ -39,6 +39,10 @@ SceneNode::Ptr SceneNode::detachChild(const SceneNode& node)
 
 void SceneNode::update(sf::Time dt, CommandQueue& commands)
 {
+	float newRadius = getBoundingRect().height*0.33f;
+	if(getBoundingRect().width<getBoundingRect().height)
+		newRadius = getBoundingRect().width*0.33f;
+	setRadius(newRadius);
 	updateCurrent(dt, commands);
 	updateChildren(dt, commands);
 }
@@ -98,7 +102,7 @@ void SceneNode::drawBoundingRect(sf::RenderTarget& target, sf::RenderStates) con
 void SceneNode::drawCircleBounds(sf::RenderTarget& target, sf::RenderStates) const
 {
 	sf::CircleShape circle(mRadius);
-	circle.setPosition(getPosition());
+	circle.setPosition(sf::Vector2f(getPosition().x - mRadius, getPosition().y - mRadius));
 	circle.setFillColor(sf::Color::Transparent);
 	circle.setOutlineColor(sf::Color::Red);
 	circle.setOutlineThickness(1.f);
@@ -140,7 +144,7 @@ void SceneNode::checkSceneCollision(SceneNode& sceneGraph, std::set<Pair>& colli
 {
 	checkNodeCollision(sceneGraph, collisionPairs);
 
-	FOREACH(Ptr& child, sceneGraph.mChildren)
+	FOREACH(Ptr& child, sceneGraph.mChildren) 
 		checkSceneCollision(*child, collisionPairs);
 }
 

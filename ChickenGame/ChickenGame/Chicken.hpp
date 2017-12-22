@@ -35,7 +35,7 @@ public:
 	float					getMaxSpeed() const;
 	float					getMass() const;
 	void					disablePickups();
-
+	void					checkIfGoal();
 	void					increaseFireRate();
 	void					increaseSpread();
 	void					collectMissiles(unsigned int count);
@@ -93,7 +93,7 @@ private:
 	float					mBoost;
 	float					mMaxBoost = 1.1f;
 	float					mMass;
-	float					mFriction = 50.f;
+	float					mFriction = 10.f;
 	std::size_t				mDirectionIndex;
 	TextNode*				mHealthDisplay;
 	TextNode*				mMissileDisplay;

@@ -17,7 +17,7 @@ namespace Category
 		EnemyProjectile     = 1 << 6,
 		ParticleSystem		= 1 << 7,
 		SoundEffect			= 1 << 8,
-		Network				= 1 << 9,
+		Goal				= 1 << 9,
 
 		Chicken = PlayerChicken | AlliedChicken | EnemyChicken,
 		Projectile = AlliedProjectile | EnemyProjectile,

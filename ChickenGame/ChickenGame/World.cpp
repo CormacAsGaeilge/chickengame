@@ -33,8 +33,6 @@ World::World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sou
 	, mEnemySpawnPoints()
 	, mActiveEnemies()
 	, mP1Score()
-	, mNetworkedWorld(networked)
-	, mNetworkNode(nullptr)
 	, mFinishSprite(nullptr)
 {
 	mSceneTexture.create(1024, 768);
@@ -343,9 +341,10 @@ void World::handleBounceCollision(Chicken& player, Chicken& enemy) {
 			player.setVelocity(sf::Vector2f(0, 0));
 			enemy.setVelocity(sf::Vector2f(0, 0));
 
-		player.accelerate(vector1);
-		enemy.accelerate(vector2*2.f);
-		player.playLocalSound(mCommandQueue, SoundEffect::Bump);
+			player.accelerate(vector1);
+			enemy.accelerate(vector2*2.f);
+			player.playLocalSound(mCommandQueue, SoundEffect::Bump);
+		}
 	}
 }
 

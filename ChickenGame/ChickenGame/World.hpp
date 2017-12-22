@@ -3,7 +3,7 @@
 #include "ResourceIdentifiers.hpp"
 #include "SceneNode.hpp"
 #include "SpriteNode.hpp"
-#include "Aircraft.hpp"
+#include "Chicken.hpp"
 #include "CommandQueue.hpp"
 #include "Command.hpp"
 #include "Pickup.hpp"
@@ -35,12 +35,12 @@ public:
 
 	sf::FloatRect getViewBounds() const;
 	CommandQueue& getCommandQueue();
-	Aircraft* addAircraft(int identifier);
-	void removeAircraft(int identifier);
+	Chicken* addChicken(int identifier);
+	void removeChicken(int identifier);
 	void setCurrentBattleFieldPosition(float lineY);
 	void setWorldHeight(float height);
 
-	void addEnemy(Aircraft::Type type, float relX, float relY);
+	void addEnemy(Chicken::Type type, float relX, float relY);
 	void sortEnemies();
 
 	bool hasAlivePlayer() const;
@@ -48,7 +48,7 @@ public:
 
 	void setWorldScrollCompensation(float compensation);
 
-	Aircraft* getAircraft(int identifier) const;
+	Chicken* getChicken(int identifier) const;
 	sf::FloatRect getBattlefieldBounds() const;
 
 	void createPickup(sf::Vector2f position, Pickup::Type type);
@@ -59,8 +59,8 @@ private:
 	void adaptPlayerPosition();
 	void adaptPlayerVelocity();
 	void handleCollisions();
-	void handleBounceCollision(Aircraft & player, Aircraft & enemy);
-	bool handleCircleCollision(Aircraft & player, Aircraft & enemy);
+	void handleBounceCollision(Chicken & player, Chicken & enemy);
+	bool handleCircleCollision(Chicken & player, Chicken & enemy);
 	void updateSounds();
 
 	void buildScene();
@@ -80,14 +80,14 @@ private:
 
 	struct SpawnPoint
 	{
-		SpawnPoint(Aircraft::Type type, float x, float y)
+		SpawnPoint(Chicken::Type type, float x, float y)
 			: type(type)
 			, x(x)
 			, y(y)
 		{
 		}
 
-		Aircraft::Type type;
+		Chicken::Type type;
 		float x;
 		float y;
 	};
@@ -109,10 +109,10 @@ private:
 	sf::Vector2f						mSpawnPosition;
 	float								mScrollSpeed;
 	float								mScrollSpeedCompensation;
-	std::vector<Aircraft*>				mPlayerAircrafts;
+	std::vector<Chicken*>				mPlayerChickens;
 
 	std::vector<SpawnPoint>				mEnemySpawnPoints;
-	std::vector<Aircraft*>				mActiveEnemies;
+	std::vector<Chicken*>				mActiveEnemies;
 
 	BloomEffect							mBloomEffect;
 

@@ -129,7 +129,7 @@ bool MultiplayerGameState::update(sf::Time dt)
 	{
 		mWorld.update(dt);
 
-		// Remove players whose aircrafts were destroyed
+		// Remove players whose Chickens were destroyed
 		bool foundLocalPlane = false;
 		for (auto itr = mPlayers.begin(); itr != mPlayers.end(); )
 		{
@@ -139,7 +139,7 @@ bool MultiplayerGameState::update(sf::Time dt)
 				foundLocalPlane = true;
 			}
 
-			if (!mWorld.getAircraft(itr->first))
+			if (!mWorld.getChicken(itr->first))
 			{
 				itr = mPlayers.erase(itr);
 
@@ -223,8 +223,8 @@ bool MultiplayerGameState::update(sf::Time dt)
 
 			FOREACH(sf::Int32 identifier, mLocalPlayerIdentifiers)
 			{
-				if (Aircraft* aircraft = mWorld.getAircraft(identifier))
-					positionUpdatePacket << identifier << aircraft->getPosition().x << aircraft->getPosition().y << static_cast<sf::Int32>(aircraft->getHitpoints()) << static_cast<sf::Int32>(aircraft->getMissileAmmo());
+				if (Chicken* Chicken = mWorld.getChicken(identifier))
+					positionUpdatePacket << identifier << Chicken->getPosition().x << Chicken->getPosition().y << static_cast<sf::Int32>(Chicken->getHitpoints()) << static_cast<sf::Int32>(Chicken->getMissileAmmo());
 			}
 
 			mSocket.send(positionUpdatePacket);
@@ -336,15 +336,15 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 	// Sent by the server to order to spawn player 1 airplane on connect
 	case Server::SpawnSelf:
 	{
-		sf::Int32 aircraftIdentifier;
-		sf::Vector2f aircraftPosition;
-		packet >> aircraftIdentifier >> aircraftPosition.x >> aircraftPosition.y;
+		sf::Int32 ChickenIdentifier;
+		sf::Vector2f ChickenPosition;
+		packet >> ChickenIdentifier >> ChickenPosition.x >> ChickenPosition.y;
 
-		Aircraft* aircraft = mWorld.addAircraft(aircraftIdentifier);
-		aircraft->setPosition(aircraftPosition);
+		Chicken* Chicken = mWorld.addChicken(ChickenIdentifier);
+		Chicken->setPosition(ChickenPosition);
 
-		mPlayers[aircraftIdentifier].reset(new Player(&mSocket, aircraftIdentifier, getContext().keys1));
-		mLocalPlayerIdentifiers.push_back(aircraftIdentifier);
+		mPlayers[ChickenIdentifier].reset(new Player(&mSocket, ChickenIdentifier, getContext().keys1));
+		mLocalPlayerIdentifiers.push_back(ChickenIdentifier);
 
 		mGameStarted = true;
 	} break;
@@ -352,73 +352,73 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 	// 
 	case Server::PlayerConnect:
 	{
-		sf::Int32 aircraftIdentifier;
-		sf::Vector2f aircraftPosition;
-		packet >> aircraftIdentifier >> aircraftPosition.x >> aircraftPosition.y;
+		sf::Int32 ChickenIdentifier;
+		sf::Vector2f ChickenPosition;
+		packet >> ChickenIdentifier >> ChickenPosition.x >> ChickenPosition.y;
 
-		Aircraft* aircraft = mWorld.addAircraft(aircraftIdentifier);
-		aircraft->setPosition(aircraftPosition);
+		Chicken* Chicken = mWorld.addChicken(ChickenIdentifier);
+		Chicken->setPosition(ChickenPosition);
 
-		mPlayers[aircraftIdentifier].reset(new Player(&mSocket, aircraftIdentifier, nullptr));
+		mPlayers[ChickenIdentifier].reset(new Player(&mSocket, ChickenIdentifier, nullptr));
 	} break;
 
 	// 
 	case Server::PlayerDisconnect:
 	{
-		sf::Int32 aircraftIdentifier;
-		packet >> aircraftIdentifier;
+		sf::Int32 ChickenIdentifier;
+		packet >> ChickenIdentifier;
 
-		mWorld.removeAircraft(aircraftIdentifier);
-		mPlayers.erase(aircraftIdentifier);
+		mWorld.removeChicken(ChickenIdentifier);
+		mPlayers.erase(ChickenIdentifier);
 	} break;
 
 	// 
 	case Server::InitialState:
 	{
-		sf::Int32 aircraftCount;
+		sf::Int32 ChickenCount;
 		float worldHeight, currentScroll;
 		packet >> worldHeight >> currentScroll;
 
 		mWorld.setWorldHeight(worldHeight);
 		mWorld.setCurrentBattleFieldPosition(currentScroll);
 
-		packet >> aircraftCount;
-		for (sf::Int32 i = 0; i < aircraftCount; ++i)
+		packet >> ChickenCount;
+		for (sf::Int32 i = 0; i < ChickenCount; ++i)
 		{
-			sf::Int32 aircraftIdentifier;
+			sf::Int32 ChickenIdentifier;
 			sf::Int32 hitpoints;
 			sf::Int32 missileAmmo;
-			sf::Vector2f aircraftPosition;
-			packet >> aircraftIdentifier >> aircraftPosition.x >> aircraftPosition.y >> hitpoints >> missileAmmo;
+			sf::Vector2f ChickenPosition;
+			packet >> ChickenIdentifier >> ChickenPosition.x >> ChickenPosition.y >> hitpoints >> missileAmmo;
 
-			Aircraft* aircraft = mWorld.addAircraft(aircraftIdentifier);
-			aircraft->setPosition(aircraftPosition);
-			aircraft->setHitpoints(hitpoints);
-			aircraft->setMissileAmmo(missileAmmo);
+			Chicken* Chicken = mWorld.addChicken(ChickenIdentifier);
+			Chicken->setPosition(ChickenPosition);
+			Chicken->setHitpoints(hitpoints);
+			Chicken->setMissileAmmo(missileAmmo);
 
-			mPlayers[aircraftIdentifier].reset(new Player(&mSocket, aircraftIdentifier, nullptr));
+			mPlayers[ChickenIdentifier].reset(new Player(&mSocket, ChickenIdentifier, nullptr));
 		}
 	} break;
 
 	//
 	case Server::AcceptCoopPartner:
 	{
-		sf::Int32 aircraftIdentifier;
-		packet >> aircraftIdentifier;
+		sf::Int32 ChickenIdentifier;
+		packet >> ChickenIdentifier;
 
-		mWorld.addAircraft(aircraftIdentifier);
-		mPlayers[aircraftIdentifier].reset(new Player(&mSocket, aircraftIdentifier, getContext().keys2));
-		mLocalPlayerIdentifiers.push_back(aircraftIdentifier);
+		mWorld.addChicken(ChickenIdentifier);
+		mPlayers[ChickenIdentifier].reset(new Player(&mSocket, ChickenIdentifier, getContext().keys2));
+		mLocalPlayerIdentifiers.push_back(ChickenIdentifier);
 	} break;
 
 	// Player event (like missile fired) occurs
 	case Server::PlayerEvent:
 	{
-		sf::Int32 aircraftIdentifier;
+		sf::Int32 ChickenIdentifier;
 		sf::Int32 action;
-		packet >> aircraftIdentifier >> action;
+		packet >> ChickenIdentifier >> action;
 
-		auto itr = mPlayers.find(aircraftIdentifier);
+		auto itr = mPlayers.find(ChickenIdentifier);
 		if (itr != mPlayers.end())
 			itr->second->handleNetworkEvent(static_cast<Player::Action>(action), mWorld.getCommandQueue());
 	} break;
@@ -426,12 +426,12 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 	// Player's movement or fire keyboard state changes
 	case Server::PlayerRealtimeChange:
 	{
-		sf::Int32 aircraftIdentifier;
+		sf::Int32 ChickenIdentifier;
 		sf::Int32 action;
 		bool actionEnabled;
-		packet >> aircraftIdentifier >> action >> actionEnabled;
+		packet >> ChickenIdentifier >> action >> actionEnabled;
 
-		auto itr = mPlayers.find(aircraftIdentifier);
+		auto itr = mPlayers.find(ChickenIdentifier);
 		if (itr != mPlayers.end())
 			itr->second->handleNetworkRealtimeChange(static_cast<Player::Action>(action), actionEnabled);
 	} break;
@@ -444,7 +444,7 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 		float relativeX;
 		packet >> type >> height >> relativeX;
 
-		mWorld.addEnemy(static_cast<Aircraft::Type>(type), relativeX, height);
+		mWorld.addEnemy(static_cast<Chicken::Type>(type), relativeX, height);
 		mWorld.sortEnemies();
 	} break;
 
@@ -468,26 +468,26 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 	case Server::UpdateClientState:
 	{
 		float currentWorldPosition;
-		sf::Int32 aircraftCount;
-		packet >> currentWorldPosition >> aircraftCount;
+		sf::Int32 ChickenCount;
+		packet >> currentWorldPosition >> ChickenCount;
 
 		float currentViewPosition = mWorld.getViewBounds().top + mWorld.getViewBounds().height;
 
 		// Set the world's scroll compensation according to whether the view is behind or too advanced
 		mWorld.setWorldScrollCompensation(currentViewPosition / currentWorldPosition);
 
-		for (sf::Int32 i = 0; i < aircraftCount; ++i)
+		for (sf::Int32 i = 0; i < ChickenCount; ++i)
 		{
-			sf::Vector2f aircraftPosition;
-			sf::Int32 aircraftIdentifier;
-			packet >> aircraftIdentifier >> aircraftPosition.x >> aircraftPosition.y;
+			sf::Vector2f ChickenPosition;
+			sf::Int32 ChickenIdentifier;
+			packet >> ChickenIdentifier >> ChickenPosition.x >> ChickenPosition.y;
 
-			Aircraft* aircraft = mWorld.getAircraft(aircraftIdentifier);
-			bool isLocalPlane = std::find(mLocalPlayerIdentifiers.begin(), mLocalPlayerIdentifiers.end(), aircraftIdentifier) != mLocalPlayerIdentifiers.end();
-			if (aircraft && !isLocalPlane)
+			Chicken* Chicken = mWorld.getChicken(ChickenIdentifier);
+			bool isLocalPlane = std::find(mLocalPlayerIdentifiers.begin(), mLocalPlayerIdentifiers.end(), ChickenIdentifier) != mLocalPlayerIdentifiers.end();
+			if (Chicken && !isLocalPlane)
 			{
-				sf::Vector2f interpolatedPosition = aircraft->getPosition() + (aircraftPosition - aircraft->getPosition()) * 0.1f;
-				aircraft->setPosition(interpolatedPosition);
+				sf::Vector2f interpolatedPosition = Chicken->getPosition() + (ChickenPosition - Chicken->getPosition()) * 0.1f;
+				Chicken->setPosition(interpolatedPosition);
 			}
 		}
 	} break;

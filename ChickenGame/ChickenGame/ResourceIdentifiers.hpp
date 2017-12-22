@@ -63,6 +63,7 @@ namespace SoundEffect
 		LaunchMissile,
 		CollectPickup,
 		Button,
+		Bump
 	};
 }
 

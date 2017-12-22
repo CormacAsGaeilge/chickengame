@@ -9,7 +9,7 @@
 #include <SFML/Graphics/Sprite.hpp>
 
 
-class Aircraft : public Entity
+class Chicken : public Entity
 {
 public:
 	enum Type
@@ -23,7 +23,7 @@ public:
 
 
 public:
-	Aircraft(Type type, const TextureHolder& textures, const FontHolder& fonts);
+	Chicken(Type type, const TextureHolder& textures, const FontHolder& fonts);
 
 	virtual unsigned int	getCategory() const;
 	virtual sf::FloatRect	getBoundingRect() const;

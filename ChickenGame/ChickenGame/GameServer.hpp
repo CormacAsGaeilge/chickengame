@@ -19,9 +19,9 @@ public:
 	explicit							GameServer(sf::Vector2f battlefieldSize);
 	~GameServer();
 
-	void								notifyPlayerSpawn(sf::Int32 aircraftIdentifier);
-	void								notifyPlayerRealtimeChange(sf::Int32 aircraftIdentifier, sf::Int32 action, bool actionEnabled);
-	void								notifyPlayerEvent(sf::Int32 aircraftIdentifier, sf::Int32 action);
+	void								notifyPlayerSpawn(sf::Int32 ChickenIdentifier);
+	void								notifyPlayerRealtimeChange(sf::Int32 ChickenIdentifier, sf::Int32 action, bool actionEnabled);
+	void								notifyPlayerEvent(sf::Int32 ChickenIdentifier, sf::Int32 action);
 
 
 private:
@@ -32,13 +32,13 @@ private:
 
 		sf::TcpSocket			socket;
 		sf::Time				lastPacketTime;
-		std::vector<sf::Int32>	aircraftIdentifiers;
+		std::vector<sf::Int32>	ChickenIdentifiers;
 		bool					ready;
 		bool					timedOut;
 	};
 
-	// Structure to store information about current aircraft state
-	struct AircraftInfo
+	// Structure to store information about current Chicken state
+	struct ChickenInfo
 	{
 		sf::Vector2f				position;
 		sf::Int32					hitpoints;
@@ -82,11 +82,11 @@ private:
 	sf::FloatRect						mBattleFieldRect;
 	float								mBattleFieldScrollSpeed;
 
-	std::size_t							mAircraftCount;
-	std::map<sf::Int32, AircraftInfo>	mAircraftInfo;
+	std::size_t							mChickenCount;
+	std::map<sf::Int32, ChickenInfo>	mChickenInfo;
 
 	std::vector<PeerPtr>				mPeers;
-	sf::Int32							mAircraftIdentifierCounter;
+	sf::Int32							mChickenIdentifierCounter;
 	bool								mWaitingThreadEnd;
 
 	sf::Time							mLastSpawnTime;

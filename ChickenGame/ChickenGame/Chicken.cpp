@@ -1,4 +1,4 @@
-#include "Aircraft.hpp"
+#include "Chicken.hpp"
 #include "DataTables.hpp"
 #include "Utility.hpp"
 #include "Pickup.hpp"
@@ -17,12 +17,12 @@ using namespace std::placeholders;
 
 namespace
 {
-	const std::vector<AircraftData> Table = initializeAircraftData();
+	const std::vector<ChickenData> Table = initializeChickenData();
 }
 
 
 
-Aircraft::Aircraft(Type type, const TextureHolder& textures, const FontHolder& fonts)
+Chicken::Chicken(Type type, const TextureHolder& textures, const FontHolder& fonts)
 	: Entity(Table[type].hitpoints)
 	, mType(type)
 	, mSprite(textures.get(Table[type].texture), Table[type].textureRect)
@@ -86,7 +86,7 @@ Aircraft::Aircraft(Type type, const TextureHolder& textures, const FontHolder& f
 	mHealthDisplay = healthDisplay.get();
 	attachChild(std::move(healthDisplay));
 
-	if (getCategory() == Category::PlayerAircraft)
+	if (getCategory() == Category::PlayerChicken)
 	{
 		std::unique_ptr<TextNode> missileDisplay(new TextNode(fonts, ""));
 		missileDisplay->setPosition(0, 70);
@@ -97,17 +97,17 @@ Aircraft::Aircraft(Type type, const TextureHolder& textures, const FontHolder& f
 	updateTexts();
 }
 
-int Aircraft::getMissileAmmo() const
+int Chicken::getMissileAmmo() const
 {
 	return mMissileAmmo;
 }
 
-void Aircraft::setMissileAmmo(int ammo)
+void Chicken::setMissileAmmo(int ammo)
 {
 	mMissileAmmo = ammo;
 }
 
-void Aircraft::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
+void Chicken::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	if (isDestroyed() && mShowExplosion)
 		target.draw(mExplosion, states);
@@ -121,12 +121,12 @@ void Aircraft::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) co
 	}
 }
 
-void Aircraft::disablePickups()
+void Chicken::disablePickups()
 {
 	mPickupsEnabled = false;
 }
 
-void Aircraft::updateCurrent(sf::Time dt, CommandQueue& commands)
+void Chicken::updateCurrent(sf::Time dt, CommandQueue& commands)
 {
 	// Update texts and roll animation
 	updateTexts();
@@ -176,7 +176,7 @@ void Aircraft::updateCurrent(sf::Time dt, CommandQueue& commands)
 	}
 	else {
 		if (mBoost > 1.f) {
-			sf::Vector2f boostVelocity = Aircraft::getVelocity()*(mBoost*Aircraft::getMaxSpeed());
+			sf::Vector2f boostVelocity = Chicken::getVelocity()*(mBoost*Chicken::getMaxSpeed());
 			accelerate(boostVelocity);
 			mBoost -= 0.03f;
 		}
@@ -187,7 +187,7 @@ void Aircraft::updateCurrent(sf::Time dt, CommandQueue& commands)
 	Entity::updateCurrent(dt, commands);
 }
 
-void Aircraft::updateFriction(sf::Time dt) {
+void Chicken::updateFriction(sf::Time dt) {
 	//add friction
 	if ((getVelocity().x > 1 || getVelocity().x < -1) || (getVelocity().y > 1 || getVelocity().y < -1)) {
 		if (getVelocity().x != 0) {
@@ -218,80 +218,80 @@ void Aircraft::updateFriction(sf::Time dt) {
 	}
 }
 
-unsigned int Aircraft::getCategory() const
+unsigned int Chicken::getCategory() const
 {
 	if (isAllied())
-		return Category::PlayerAircraft;
+		return Category::PlayerChicken;
 	else
-		return Category::EnemyAircraft;
+		return Category::EnemyChicken;
 }
 
-sf::FloatRect Aircraft::getBoundingRect() const
+sf::FloatRect Chicken::getBoundingRect() const
 {
 	return getWorldTransform().transformRect(mSprite.getGlobalBounds());
 }
 
-bool Aircraft::isMarkedForRemoval() const
+bool Chicken::isMarkedForRemoval() const
 {
 	return isDestroyed() && (mExplosion.isFinished() || !mShowExplosion);
 }
 
-void Aircraft::remove()
+void Chicken::remove()
 {
 	Entity::remove();
 	mShowExplosion = false;
 }
 
-bool Aircraft::isAllied() const
+bool Chicken::isAllied() const
 {
 	return mType == Eagle;
 }
 
-bool Aircraft::getMoving() const
+bool Chicken::getMoving() const
 {
 	return mMoving;
 }
 
-bool Aircraft::isBoosting() const
+bool Chicken::isBoosting() const
 {
 	return mIsBoosting;
 }
 
-float Aircraft::getMaxSpeed() const
+float Chicken::getMaxSpeed() const
 {
 	return Table[mType].speed;
 }
 
-float Aircraft::getMass() const
+float Chicken::getMass() const
 {
 	return mMass;
 }
 
-void Aircraft::increaseFireRate()
+void Chicken::increaseFireRate()
 {
 	if (mFireRateLevel < 10)
 		++mFireRateLevel;
 }
 
-void Aircraft::increaseSpread()
+void Chicken::increaseSpread()
 {
 	if (mSpreadLevel < 3)
 		++mSpreadLevel;
 }
 
-void Aircraft::collectMissiles(unsigned int count)
+void Chicken::collectMissiles(unsigned int count)
 {
 	mMissileAmmo += count;
 }
 
-void Aircraft::fire()
+void Chicken::fire()
 {
 	// Only ships with fire interval != 0 are able to fire
 	if (Table[mType].fireInterval != sf::Time::Zero)
 		mIsFiring = true;
 }
 
-void Aircraft::launchMissile()
+void Chicken::launchMissile()
 {
 	if (mMissileAmmo > 0)
 	{
@@ -300,18 +300,18 @@ void Aircraft::launchMissile()
 	}
 }
 
-void Aircraft::chargeBoost()
+void Chicken::chargeBoost()
 {
 	if (mBoost < mMaxBoost)
 		mIsBoosting = true;
 }
 
-void Aircraft::releaseBoost()
+void Chicken::releaseBoost()
 {
 	mIsBoosting = false;
 }
 
-void Aircraft::playLocalSound(CommandQueue& commands, SoundEffect::ID effect)
+void Chicken::playLocalSound(CommandQueue& commands, SoundEffect::ID effect)
 {
 	sf::Vector2f worldPosition = getWorldPosition();
 
@@ -326,17 +326,17 @@ void Aircraft::playLocalSound(CommandQueue& commands, SoundEffect::ID effect)
 	commands.push(command);
 }
 
-int	Aircraft::getIdentifier()
+int	Chicken::getIdentifier()
 {
 	return mIdentifier;
 }
 
-void Aircraft::setIdentifier(int identifier)
+void Chicken::setIdentifier(int identifier)
 {
 	mIdentifier = identifier;
 }
 
-void Aircraft::updateMovementPattern(sf::Time dt)
+void Chicken::updateMovementPattern(sf::Time dt)
 {
 	// Enemy airplane: Movement pattern
 	const std::vector<Direction>& directions = Table[mType].directions;
@@ -362,7 +362,7 @@ void Aircraft::updateMovementPattern(sf::Time dt)
 
 }
 
-void Aircraft::checkPickupDrop(CommandQueue& commands)
+void Chicken::checkPickupDrop(CommandQueue& commands)
 {
 	if (!isAllied() && randomInt(3) == 0 && !mSpawnedPickup)
 		commands.push(mDropPickupCommand);
@@ -370,7 +370,7 @@ void Aircraft::checkPickupDrop(CommandQueue& commands)
 	mSpawnedPickup = true;
 }
 
-void Aircraft::checkProjectileLaunch(sf::Time dt, CommandQueue& commands)
+void Chicken::checkProjectileLaunch(sf::Time dt, CommandQueue& commands)
 {
 	// Enemies try to fire all the time
 	if (!isAllied())
@@ -404,7 +404,7 @@ void Aircraft::checkProjectileLaunch(sf::Time dt, CommandQueue& commands)
 
 }
 
-void Aircraft::createBullets(SceneNode& node, const TextureHolder& textures) const
+void Chicken::createBullets(SceneNode& node, const TextureHolder& textures) const
 {
 	Projectile::Type type = isAllied() ? Projectile::AlliedBullet : Projectile::EnemyBullet;
 
@@ -427,7 +427,7 @@ void Aircraft::createBullets(SceneNode& node, const TextureHolder& textures) con
 	}
 }
 
-void Aircraft::createProjectile(SceneNode& node, Projectile::Type type, float xOffset, float yOffset, const TextureHolder& textures) const
+void Chicken::createProjectile(SceneNode& node, Projectile::Type type, float xOffset, float yOffset, const TextureHolder& textures) const
 {
 	std::unique_ptr<Projectile> projectile(new Projectile(type, textures));
 
@@ -440,7 +440,7 @@ void Aircraft::createProjectile(SceneNode& node, Projectile::Type type, float xO
 	node.attachChild(std::move(projectile));
 }
 
-void Aircraft::createPickup(SceneNode& node, const TextureHolder& textures) const
+void Chicken::createPickup(SceneNode& node, const TextureHolder& textures) const
 {
 	auto type = static_cast<Pickup::Type>(randomInt(Pickup::TypeCount));
 
@@ -450,7 +450,7 @@ void Aircraft::createPickup(SceneNode& node, const TextureHolder& textures) cons
 	node.attachChild(std::move(pickup));
 }
 
-void Aircraft::updateTexts()
+void Chicken::updateTexts()
 {
 	sf::Vector2f velocity(0, 0);
 	velocity = getVelocity();
@@ -476,7 +476,7 @@ void Aircraft::updateTexts()
 
 
 
-void Aircraft::updateRollAnimation(sf::Time dt)
+void Chicken::updateRollAnimation(sf::Time dt)
 {
 
 	if (Table[mType].hasRollAnimation)

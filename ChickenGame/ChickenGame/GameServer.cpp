@@ -3,7 +3,7 @@
 #include "Foreach.hpp"
 #include "Utility.hpp"
 #include "Pickup.hpp"
-#include "Aircraft.hpp"
+#include "Chicken.hpp"
 
 #include <SFML/Network/Packet.hpp>
 
@@ -23,9 +23,9 @@ GameServer::GameServer(sf::Vector2f battlefieldSize)
 	, mWorldHeight(5000.f)
 	, mBattleFieldRect(0.f, mWorldHeight - battlefieldSize.y, battlefieldSize.x, battlefieldSize.y)
 	, mBattleFieldScrollSpeed(-50.f)
-	, mAircraftCount(0)
+	, mChickenCount(0)
 	, mPeers(1)
-	, mAircraftIdentifierCounter(1)
+	, mChickenIdentifierCounter(1)
 	, mWaitingThreadEnd(false)
 	, mLastSpawnTime(sf::Time::Zero)
 	, mTimeForNextSpawn(sf::seconds(5.f))
@@ -41,7 +41,7 @@ GameServer::~GameServer()
 	mThread.wait();
 }
 
-void GameServer::notifyPlayerRealtimeChange(sf::Int32 aircraftIdentifier, sf::Int32 action, bool actionEnabled)
+void GameServer::notifyPlayerRealtimeChange(sf::Int32 ChickenIdentifier, sf::Int32 action, bool actionEnabled)
 {
 	for (std::size_t i = 0; i < mConnectedPlayers; ++i)
 	{
@@ -49,7 +49,7 @@ void GameServer::notifyPlayerRealtimeChange(sf::Int32 aircraftIdentifier, sf::In
 		{
 			sf::Packet packet;
 			packet << static_cast<sf::Int32>(Server::PlayerRealtimeChange);
-			packet << aircraftIdentifier;
+			packet << ChickenIdentifier;
 			packet << action;
 			packet << actionEnabled;
 
@@ -58,7 +58,7 @@ void GameServer::notifyPlayerRealtimeChange(sf::Int32 aircraftIdentifier, sf::In
 	}
 }
 
-void GameServer::notifyPlayerEvent(sf::Int32 aircraftIdentifier, sf::Int32 action)
+void GameServer::notifyPlayerEvent(sf::Int32 ChickenIdentifier, sf::Int32 action)
 {
 	for (std::size_t i = 0; i < mConnectedPlayers; ++i)
 	{
@@ -66,7 +66,7 @@ void GameServer::notifyPlayerEvent(sf::Int32 aircraftIdentifier, sf::Int32 actio
 		{
 			sf::Packet packet;
 			packet << static_cast<sf::Int32>(Server::PlayerEvent);
-			packet << aircraftIdentifier;
+			packet << ChickenIdentifier;
 			packet << action;
 
 			mPeers[i]->socket.send(packet);
@@ -74,7 +74,7 @@ void GameServer::notifyPlayerEvent(sf::Int32 aircraftIdentifier, sf::Int32 actio
 	}
 }
 
-void GameServer::notifyPlayerSpawn(sf::Int32 aircraftIdentifier)
+void GameServer::notifyPlayerSpawn(sf::Int32 ChickenIdentifier)
 {
 	for (std::size_t i = 0; i < mConnectedPlayers; ++i)
 	{
@@ -82,7 +82,7 @@ void GameServer::notifyPlayerSpawn(sf::Int32 aircraftIdentifier)
 		{
 			sf::Packet packet;
 			packet << static_cast<sf::Int32>(Server::PlayerConnect);
-			packet << aircraftIdentifier << mAircraftInfo[aircraftIdentifier].position.x << mAircraftInfo[aircraftIdentifier].position.y;
+			packet << ChickenIdentifier << mChickenInfo[ChickenIdentifier].position.x << mChickenInfo[ChickenIdentifier].position.y;
 			mPeers[i]->socket.send(packet);
 		}
 	}
@@ -148,25 +148,25 @@ void GameServer::tick()
 	updateClientState();
 
 	// Check for mission success = all planes with position.y < offset
-	bool allAircraftsDone = true;
-	FOREACH(auto pair, mAircraftInfo)
+	bool allChickensDone = true;
+	FOREACH(auto pair, mChickenInfo)
 	{
 		// As long as one player has not crossed the finish line yet, set variable to false
 		if (pair.second.position.y > 0.f)
-			allAircraftsDone = false;
+			allChickensDone = false;
 	}
-	if (allAircraftsDone)
+	if (allChickensDone)
 	{
 		sf::Packet missionSuccessPacket;
 		missionSuccessPacket << static_cast<sf::Int32>(Server::MissionSuccess);
 		sendToAll(missionSuccessPacket);
 	}
 
-	// Remove IDs of aircraft that have been destroyed (relevant if a client has two, and loses one)
-	for (auto itr = mAircraftInfo.begin(); itr != mAircraftInfo.end(); )
+	// Remove IDs of Chicken that have been destroyed (relevant if a client has two, and loses one)
+	for (auto itr = mChickenInfo.begin(); itr != mChickenInfo.end(); )
 	{
 		if (itr->second.hitpoints <= 0)
-			mAircraftInfo.erase(itr++);
+			mChickenInfo.erase(itr++);
 		else
 			++itr;
 	}
@@ -196,7 +196,7 @@ void GameServer::tick()
 			{
 				sf::Packet packet;
 				packet << static_cast<sf::Int32>(Server::SpawnEnemy);
-				packet << static_cast<sf::Int32>(1 + randomInt(Aircraft::TypeCount - 1));
+				packet << static_cast<sf::Int32>(1 + randomInt(Chicken::TypeCount - 1));
 				packet << mWorldHeight - mBattleFieldRect.top + 500;
 				packet << nextSpawnPosition;
 
@@ -262,38 +262,38 @@ void GameServer::handleIncomingPacket(sf::Packet& packet, RemotePeer& receivingP
 
 	case Client::PlayerEvent:
 	{
-		sf::Int32 aircraftIdentifier;
+		sf::Int32 ChickenIdentifier;
 		sf::Int32 action;
-		packet >> aircraftIdentifier >> action;
+		packet >> ChickenIdentifier >> action;
 
-		notifyPlayerEvent(aircraftIdentifier, action);
+		notifyPlayerEvent(ChickenIdentifier, action);
 	} break;
 
 	case Client::PlayerRealtimeChange:
 	{
-		sf::Int32 aircraftIdentifier;
+		sf::Int32 ChickenIdentifier;
 		sf::Int32 action;
 		bool actionEnabled;
-		packet >> aircraftIdentifier >> action >> actionEnabled;
-		mAircraftInfo[aircraftIdentifier].realtimeActions[action] = actionEnabled;
-		notifyPlayerRealtimeChange(aircraftIdentifier, action, actionEnabled);
+		packet >> ChickenIdentifier >> action >> actionEnabled;
+		mChickenInfo[ChickenIdentifier].realtimeActions[action] = actionEnabled;
+		notifyPlayerRealtimeChange(ChickenIdentifier, action, actionEnabled);
 	} break;
 
 	case Client::RequestCoopPartner:
 	{
-		receivingPeer.aircraftIdentifiers.push_back(mAircraftIdentifierCounter);
-		mAircraftInfo[mAircraftIdentifierCounter].position = sf::Vector2f(mBattleFieldRect.width / 2, mBattleFieldRect.top + mBattleFieldRect.height / 2);
-		mAircraftInfo[mAircraftIdentifierCounter].hitpoints = 100;
-		mAircraftInfo[mAircraftIdentifierCounter].missileAmmo = 2;
+		receivingPeer.ChickenIdentifiers.push_back(mChickenIdentifierCounter);
+		mChickenInfo[mChickenIdentifierCounter].position = sf::Vector2f(mBattleFieldRect.width / 2, mBattleFieldRect.top + mBattleFieldRect.height / 2);
+		mChickenInfo[mChickenIdentifierCounter].hitpoints = 100;
+		mChickenInfo[mChickenIdentifierCounter].missileAmmo = 2;
 
 		sf::Packet requestPacket;
 		requestPacket << static_cast<sf::Int32>(Server::AcceptCoopPartner);
-		requestPacket << mAircraftIdentifierCounter;
-		requestPacket << mAircraftInfo[mAircraftIdentifierCounter].position.x;
-		requestPacket << mAircraftInfo[mAircraftIdentifierCounter].position.y;
+		requestPacket << mChickenIdentifierCounter;
+		requestPacket << mChickenInfo[mChickenIdentifierCounter].position.x;
+		requestPacket << mChickenInfo[mChickenIdentifierCounter].position.y;
 
 		receivingPeer.socket.send(requestPacket);
-		mAircraftCount++;
+		mChickenCount++;
 
 		// Inform every other peer about this new plane
 		FOREACH(PeerPtr& peer, mPeers)
@@ -302,30 +302,30 @@ void GameServer::handleIncomingPacket(sf::Packet& packet, RemotePeer& receivingP
 			{
 				sf::Packet notifyPacket;
 				notifyPacket << static_cast<sf::Int32>(Server::PlayerConnect);
-				notifyPacket << mAircraftIdentifierCounter;
-				notifyPacket << mAircraftInfo[mAircraftIdentifierCounter].position.x;
-				notifyPacket << mAircraftInfo[mAircraftIdentifierCounter].position.y;
+				notifyPacket << mChickenIdentifierCounter;
+				notifyPacket << mChickenInfo[mChickenIdentifierCounter].position.x;
+				notifyPacket << mChickenInfo[mChickenIdentifierCounter].position.y;
 				peer->socket.send(notifyPacket);
 			}
 		}
-		mAircraftIdentifierCounter++;
+		mChickenIdentifierCounter++;
 	} break;
 
 	case Client::PositionUpdate:
 	{
-		sf::Int32 numAircrafts;
-		packet >> numAircrafts;
+		sf::Int32 numChickens;
+		packet >> numChickens;
 
-		for (sf::Int32 i = 0; i < numAircrafts; ++i)
+		for (sf::Int32 i = 0; i < numChickens; ++i)
 		{
-			sf::Int32 aircraftIdentifier;
-			sf::Int32 aircraftHitpoints;
+			sf::Int32 ChickenIdentifier;
+			sf::Int32 ChickenHitpoints;
 			sf::Int32 missileAmmo;
-			sf::Vector2f aircraftPosition;
-			packet >> aircraftIdentifier >> aircraftPosition.x >> aircraftPosition.y >> aircraftHitpoints >> missileAmmo;
-			mAircraftInfo[aircraftIdentifier].position = aircraftPosition;
-			mAircraftInfo[aircraftIdentifier].hitpoints = aircraftHitpoints;
-			mAircraftInfo[aircraftIdentifier].missileAmmo = missileAmmo;
+			sf::Vector2f ChickenPosition;
+			packet >> ChickenIdentifier >> ChickenPosition.x >> ChickenPosition.y >> ChickenHitpoints >> missileAmmo;
+			mChickenInfo[ChickenIdentifier].position = ChickenPosition;
+			mChickenInfo[ChickenIdentifier].hitpoints = ChickenHitpoints;
+			mChickenInfo[ChickenIdentifier].missileAmmo = missileAmmo;
 		}
 	} break;
 
@@ -360,10 +360,10 @@ void GameServer::updateClientState()
 	sf::Packet updateClientStatePacket;
 	updateClientStatePacket << static_cast<sf::Int32>(Server::UpdateClientState);
 	updateClientStatePacket << static_cast<float>(mBattleFieldRect.top + mBattleFieldRect.height);
-	updateClientStatePacket << static_cast<sf::Int32>(mAircraftInfo.size());
+	updateClientStatePacket << static_cast<sf::Int32>(mChickenInfo.size());
 
-	FOREACH(auto aircraft, mAircraftInfo)
-		updateClientStatePacket << aircraft.first << aircraft.second.position.x << aircraft.second.position.y;
+	FOREACH(auto Chicken, mChickenInfo)
+		updateClientStatePacket << Chicken.first << Chicken.second.position.x << Chicken.second.position.y;
 
 	sendToAll(updateClientStatePacket);
 }
@@ -376,26 +376,26 @@ void GameServer::handleIncomingConnections()
 	if (mListenerSocket.accept(mPeers[mConnectedPlayers]->socket) == sf::TcpListener::Done)
 	{
 		// order the new client to spawn its own plane ( player 1 )
-		mAircraftInfo[mAircraftIdentifierCounter].position = sf::Vector2f(mBattleFieldRect.width / 2, mBattleFieldRect.top + mBattleFieldRect.height / 2);
-		mAircraftInfo[mAircraftIdentifierCounter].hitpoints = 100;
-		mAircraftInfo[mAircraftIdentifierCounter].missileAmmo = 2;
+		mChickenInfo[mChickenIdentifierCounter].position = sf::Vector2f(mBattleFieldRect.width / 2, mBattleFieldRect.top + mBattleFieldRect.height / 2);
+		mChickenInfo[mChickenIdentifierCounter].hitpoints = 100;
+		mChickenInfo[mChickenIdentifierCounter].missileAmmo = 2;
 
 		sf::Packet packet;
 		packet << static_cast<sf::Int32>(Server::SpawnSelf);
-		packet << mAircraftIdentifierCounter;
-		packet << mAircraftInfo[mAircraftIdentifierCounter].position.x;
-		packet << mAircraftInfo[mAircraftIdentifierCounter].position.y;
+		packet << mChickenIdentifierCounter;
+		packet << mChickenInfo[mChickenIdentifierCounter].position.x;
+		packet << mChickenInfo[mChickenIdentifierCounter].position.y;
 
-		mPeers[mConnectedPlayers]->aircraftIdentifiers.push_back(mAircraftIdentifierCounter);
+		mPeers[mConnectedPlayers]->ChickenIdentifiers.push_back(mChickenIdentifierCounter);
 
 		broadcastMessage("New player!");
 		informWorldState(mPeers[mConnectedPlayers]->socket);
-		notifyPlayerSpawn(mAircraftIdentifierCounter++);
+		notifyPlayerSpawn(mChickenIdentifierCounter++);
 
 		mPeers[mConnectedPlayers]->socket.send(packet);
 		mPeers[mConnectedPlayers]->ready = true;
 		mPeers[mConnectedPlayers]->lastPacketTime = now(); // prevent initial timeouts
-		mAircraftCount++;
+		mChickenCount++;
 		mConnectedPlayers++;
 
 		if (mConnectedPlayers >= mMaxConnectedPlayers)
@@ -412,15 +412,15 @@ void GameServer::handleDisconnections()
 		if ((*itr)->timedOut)
 		{
 			// Inform everyone of the disconnection, erase 
-			FOREACH(sf::Int32 identifier, (*itr)->aircraftIdentifiers)
+			FOREACH(sf::Int32 identifier, (*itr)->ChickenIdentifiers)
 			{
 				sendToAll(sf::Packet() << static_cast<sf::Int32>(Server::PlayerDisconnect) << identifier);
 
-				mAircraftInfo.erase(identifier);
+				mChickenInfo.erase(identifier);
 			}
 
 			mConnectedPlayers--;
-			mAircraftCount -= (*itr)->aircraftIdentifiers.size();
+			mChickenCount -= (*itr)->ChickenIdentifiers.size();
 
 			itr = mPeers.erase(itr);
 
@@ -446,14 +446,14 @@ void GameServer::informWorldState(sf::TcpSocket& socket)
 	sf::Packet packet;
 	packet << static_cast<sf::Int32>(Server::InitialState);
 	packet << mWorldHeight << mBattleFieldRect.top + mBattleFieldRect.height;
-	packet << static_cast<sf::Int32>(mAircraftCount);
+	packet << static_cast<sf::Int32>(mChickenCount);
 
 	for (std::size_t i = 0; i < mConnectedPlayers; ++i)
 	{
 		if (mPeers[i]->ready)
 		{
-			FOREACH(sf::Int32 identifier, mPeers[i]->aircraftIdentifiers)
-				packet << identifier << mAircraftInfo[identifier].position.x << mAircraftInfo[identifier].position.y << mAircraftInfo[identifier].hitpoints << mAircraftInfo[identifier].missileAmmo;
+			FOREACH(sf::Int32 identifier, mPeers[i]->ChickenIdentifiers)
+				packet << identifier << mChickenInfo[identifier].position.x << mChickenInfo[identifier].position.y << mChickenInfo[identifier].hitpoints << mChickenInfo[identifier].missileAmmo;
 		}
 	}
 

@@ -1,6 +1,6 @@
 #include "Player.hpp"
 #include "CommandQueue.hpp"
-#include "Aircraft.hpp"
+#include "Chicken.hpp"
 #include "Foreach.hpp"
 #include "NetworkProtocol.hpp"
 
@@ -12,112 +12,112 @@
 
 using namespace std::placeholders;
 
-struct AircraftMover
+struct ChickenMover
 {
-	AircraftMover(float vx, float vy, int identifier)
-		: velocity(vx, vy), aircraftID(identifier)
+	ChickenMover(float vx, float vy, int identifier)
+		: velocity(vx, vy), ChickenID(identifier)
 	{
 	}
 
-	void operator() (Aircraft& aircraft, sf::Time) const
+	void operator() (Chicken& Chicken, sf::Time) const
 	{
 		float speedLimit = 62.f;
-		if (aircraft.getIdentifier() == aircraftID) {
-			float speed = aircraft.getMaxSpeed();
-			if (aircraft.isBoosting()) {
+		if (Chicken.getIdentifier() == ChickenID) {
+			float speed = Chicken.getMaxSpeed();
+			if (Chicken.isBoosting()) {
 				speed *= 0.5f;
 				speedLimit *= 0.5;
 			}
 
-			aircraft.accelerate(velocity * speed);
-			float newMagnitude = sqrt(aircraft.getVelocity().x*aircraft.getVelocity().x + aircraft.getVelocity().y*aircraft.getVelocity().y);
+			Chicken.accelerate(velocity * speed);
+			float newMagnitude = sqrt(Chicken.getVelocity().x*Chicken.getVelocity().x + Chicken.getVelocity().y*Chicken.getVelocity().y);
 			if (newMagnitude > speedLimit) {
 
-				sf::Vector2f direction(aircraft.getVelocity().x / newMagnitude, aircraft.getVelocity().y / newMagnitude);
+				sf::Vector2f direction(Chicken.getVelocity().x / newMagnitude, Chicken.getVelocity().y / newMagnitude);
 
-				aircraft.setVelocity(direction * speedLimit);
+				Chicken.setVelocity(direction * speedLimit);
 			}
 			
 		}
 	}
 
 	sf::Vector2f velocity;
-	int aircraftID;
+	int ChickenID;
 };
 
-struct AircraftFireTrigger
+struct ChickenFireTrigger
 {
-	AircraftFireTrigger(int identifier)
-		: aircraftID(identifier)
+	ChickenFireTrigger(int identifier)
+		: ChickenID(identifier)
 	{
 	}
 
-	void operator() (Aircraft& aircraft, sf::Time) const
+	void operator() (Chicken& Chicken, sf::Time) const
 	{
-		if (aircraft.getIdentifier() == aircraftID)
-			aircraft.fire();
+		if (Chicken.getIdentifier() == ChickenID)
+			Chicken.fire();
 	}
 
-	int aircraftID;
+	int ChickenID;
 };
 
-struct AircraftMissileTrigger
+struct ChickenMissileTrigger
 {
-	AircraftMissileTrigger(int identifier)
-		: aircraftID(identifier)
+	ChickenMissileTrigger(int identifier)
+		: ChickenID(identifier)
 	{
 	}
 
-	void operator() (Aircraft& aircraft, sf::Time) const
+	void operator() (Chicken& Chicken, sf::Time) const
 	{
-		if (aircraft.getIdentifier() == aircraftID)
-			aircraft.launchMissile();
+		if (Chicken.getIdentifier() == ChickenID)
+			Chicken.launchMissile();
 	}
 
-	int aircraftID;
+	int ChickenID;
 };
 
 struct HoldBoostStart {
 	HoldBoostStart(int identifier)
-		: aircraftID(identifier)
+		: ChickenID(identifier)
 	{
 	}
 
-	void operator() (Aircraft& aircraft, sf::Time) const
+	void operator() (Chicken& Chicken, sf::Time) const
 	{
-		if (aircraft.getIdentifier() == aircraftID)
-			aircraft.chargeBoost();
+		if (Chicken.getIdentifier() == ChickenID)
+			Chicken.chargeBoost();
 	}
 
-	int aircraftID;
+	int ChickenID;
 };
 
 struct HoldBoostEnd {
 	HoldBoostEnd(int identifier)
-		: aircraftID(identifier)
+		: ChickenID(identifier)
 	{
 	}
 
-	void operator() (Aircraft& aircraft, sf::Time) const
+	void operator() (Chicken& Chicken, sf::Time) const
 	{
-		if (aircraft.getIdentifier() == aircraftID)
-			aircraft.releaseBoost();
+		if (Chicken.getIdentifier() == ChickenID)
+			Chicken.releaseBoost();
 	}
-	int aircraftID;
+	int ChickenID;
 };
 
 struct HandleBoost {
 	HandleBoost(int identifier)
-		: aircraftID(identifier)
+		: ChickenID(identifier)
 	{
 	}
 
-	void operator() (Aircraft& aircraft, sf::Time) const
+	void operator() (Chicken& Chicken, sf::Time) const
 	{
-		if (aircraft.getIdentifier() == aircraftID)
-			aircraft.releaseBoost();
+		if (Chicken.getIdentifier() == ChickenID)
+			Chicken.releaseBoost();
 	}
-	int aircraftID;
+	int ChickenID;
 };
 
 Player::Player(sf::TcpSocket* socket, sf::Int32 identifier, const KeyBinding* binding)
@@ -129,9 +129,9 @@ Player::Player(sf::TcpSocket* socket, sf::Int32 identifier, const KeyBinding* bi
 	// Set initial action bindings
 	initializeActions();
 
-	// Assign all categories to player's aircraft
+	// Assign all categories to player's Chicken
 	FOREACH(auto& pair, mActionBinding)
-		pair.second.category = Category::PlayerAircraft;
+		pair.second.category = Category::PlayerChicken;
 }
 
 void Player::handleEvent(const sf::Event& event, CommandQueue& commands)
@@ -269,15 +269,15 @@ Player::MissionStatus Player::getMissionStatus() const
 
 void Player::initializeActions()
 {
-	mActionBinding[PlayerAction::MoveLeft].action = derivedAction<Aircraft>(AircraftMover(-1, 0, mIdentifier));
-	mActionBinding[PlayerAction::MoveRight].action = derivedAction<Aircraft>(AircraftMover(+1, 0, mIdentifier));
-	mActionBinding[PlayerAction::MoveUp].action = derivedAction<Aircraft>(AircraftMover(0, -1, mIdentifier));
-	mActionBinding[PlayerAction::MoveDown].action = derivedAction<Aircraft>(AircraftMover(0, +1, mIdentifier));
-	mActionBinding[PlayerAction::Fire].action = derivedAction<Aircraft>(AircraftFireTrigger(mIdentifier));
-	mActionBinding[PlayerAction::LaunchMissile].action = derivedAction<Aircraft>(AircraftMissileTrigger(mIdentifier));
-	mActionBinding[PlayerAction::HoldBoost].action = derivedAction<Aircraft>(HoldBoostStart(mIdentifier));
-	mActionBinding[PlayerAction::ReleaseBoost].action = derivedAction<Aircraft>(HoldBoostEnd(mIdentifier));
-	mActionBinding[PlayerAction::HandleBoost].action = derivedAction<Aircraft>(HandleBoost(mIdentifier));
+	mActionBinding[PlayerAction::MoveLeft].action = derivedAction<Chicken>(ChickenMover(-1, 0, mIdentifier));
+	mActionBinding[PlayerAction::MoveRight].action = derivedAction<Chicken>(ChickenMover(+1, 0, mIdentifier));
+	mActionBinding[PlayerAction::MoveUp].action = derivedAction<Chicken>(ChickenMover(0, -1, mIdentifier));
+	mActionBinding[PlayerAction::MoveDown].action = derivedAction<Chicken>(ChickenMover(0, +1, mIdentifier));
+	mActionBinding[PlayerAction::Fire].action = derivedAction<Chicken>(ChickenFireTrigger(mIdentifier));
+	mActionBinding[PlayerAction::LaunchMissile].action = derivedAction<Chicken>(ChickenMissileTrigger(mIdentifier));
+	mActionBinding[PlayerAction::HoldBoost].action = derivedAction<Chicken>(HoldBoostStart(mIdentifier));
+	mActionBinding[PlayerAction::ReleaseBoost].action = derivedAction<Chicken>(HoldBoostEnd(mIdentifier));
+	mActionBinding[PlayerAction::HandleBoost].action = derivedAction<Chicken>(HandleBoost(mIdentifier));
 }
 
 

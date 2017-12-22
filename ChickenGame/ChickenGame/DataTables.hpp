@@ -9,7 +9,7 @@
 #include <vector>
 #include <functional>
 
-class Aircraft;
+class Chicken;
 //class Chicken;
 
 struct Direction
@@ -22,7 +22,7 @@ struct Direction
 	float distance;
 };
 
-struct AircraftData
+struct ChickenData
 {
 	int hitpoints;
 	float speed;
@@ -43,7 +43,7 @@ struct ProjectileData
 
 struct PickupData
 {
-	std::function<void(Aircraft&)> action;
+	std::function<void(Chicken&)> action;
 	Textures::ID texture;
 	sf::IntRect textureRect;
 };
@@ -62,7 +62,7 @@ struct ParticleData
 //	std::vector<Direction> directions;
 //};
 
-std::vector<AircraftData> initializeAircraftData();
+std::vector<ChickenData> initializeChickenData();
 std::vector<ProjectileData> initializeProjectileData();
 std::vector<PickupData> initializePickupData();
 std::vector<ParticleData> initializeParticleData();

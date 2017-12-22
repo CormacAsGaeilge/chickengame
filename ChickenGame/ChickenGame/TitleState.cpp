@@ -14,9 +14,10 @@ TitleState::TitleState(StateStack& stack, Context context)
 	mBackgroundSprite.setTexture(context.textures->get(Textures::TitleScreen));
 
 	mText.setFont(context.fonts->get(Fonts::Main));
+	mText.setPosition(730, 480);
 	mText.setString("Press any key to start");
 	centerOrigin(mText);
-	mText.setPosition(sf::Vector2f(context.window->getSize() / 2u));
+	//mText.setPosition(sf::Vector2f(context.window->getSize() / 2u));
 }
 
 void TitleState::draw()

@@ -41,6 +41,7 @@ namespace Fonts
 	enum ID
 	{
 		Main,
+		Digi,
 	};
 }
 

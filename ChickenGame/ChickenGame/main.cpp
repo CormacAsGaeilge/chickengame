@@ -5,6 +5,7 @@
 
 int main()
 {
+
 	try {
 		Application app;
 		app.run();

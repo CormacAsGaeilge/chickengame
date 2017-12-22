@@ -9,6 +9,7 @@
 #include "Utility.hpp"
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/ConvexShape.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
 
 #include <algorithm>
 #include <cmath>
@@ -32,6 +33,7 @@ World::World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sou
 	, mPlayerChickens()
 	, mEnemySpawnPoints()
 	, mActiveEnemies()
+	, mP1Score()
 	, mNetworkedWorld(networked)
 	, mNetworkNode(nullptr)
 	, mFinishSprite(nullptr)
@@ -40,6 +42,8 @@ World::World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sou
 
 	loadTextures();
 	buildScene();
+
+	
 
 
 	// Prepare the view
@@ -53,6 +57,8 @@ void World::setWorldScrollCompensation(float compensation)
 
 void World::update(sf::Time dt)
 {
+
+	setScore(3);
 	// Scroll the world, reset player velocity
 	//mWorldView.move(0.f, mScrollSpeed * dt.asSeconds() * mScrollSpeedCompensation);
 	
@@ -88,6 +94,10 @@ void World::update(sf::Time dt)
 
 void World::draw()
 {
+
+	//mWorld.draw();
+	//sf::RenderWindow& window = *getContext().window;
+	//window.draw(mP1ScoreText);
 	if (PostEffect::isSupported())
 	{
 		mSceneTexture.clear();
@@ -208,6 +218,16 @@ void World::adaptPlayerPosition()
 	}
 }
 
+void  World::setScore(float score)
+{
+	mP1Score = score;
+}
+
+float World::getScore() const
+{
+	return mP1Score;
+}
+
 void World::adaptPlayerVelocity()
 {
 	FOREACH(Chicken* Chicken, mPlayerChickens)
@@ -325,6 +345,7 @@ void World::handleBounceCollision(Chicken& player, Chicken& enemy) {
 		player.accelerate(vector1);
 		enemy.accelerate(vector2*2.f);
 		player.playLocalSound(mCommandQueue, SoundEffect::Bump);
+		//mScoring.setP1Score(2);
 	}
 }
 
@@ -339,7 +360,7 @@ void World::updateSounds()
 {
 	sf::Vector2f listenerPosition;
 
-	mSceneTexture.draw(mScoreText);
+	//mSceneTexture.draw(mP1ScoreText);
 
 	// 0 players (multiplayer mode, until server is connected) -> view center
 	if (mPlayerChickens.empty())

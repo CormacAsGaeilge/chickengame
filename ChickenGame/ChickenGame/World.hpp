@@ -43,8 +43,11 @@ public:
 	void addEnemy(Chicken::Type type, float relX, float relY);
 	void sortEnemies();
 
-	bool hasAlivePlayer() const;
-	bool hasPlayerReachedEnd() const;
+	bool  hasAlivePlayer() const;
+	bool  hasPlayerReachedEnd() const;
+	void  setScore(const float);
+	float getScore() const;
+
 
 	void setWorldScrollCompensation(float compensation);
 
@@ -97,7 +100,7 @@ private:
 	sf::RenderTarget&					mTarget;
 	sf::RenderTexture					mSceneTexture;
 	sf::View							mWorldView;
-	sf::Text							mScoreText;
+	
 	TextureHolder						mTextures;
 	FontHolder&							mFonts;
 	SoundPlayer&						mSounds;
@@ -108,6 +111,7 @@ private:
 
 	sf::FloatRect						mWorldBounds;
 	sf::Vector2f						mSpawnPosition;
+	float								mP1Score;
 	float								mScrollSpeed;
 	float								mScrollSpeedCompensation;
 	std::vector<Chicken*>				mPlayerChickens;

@@ -17,6 +17,7 @@ class Application
 public:
 	Application();
 	void					run();
+	float					goal;
 
 
 private:
@@ -44,4 +45,6 @@ private:
 	sf::Text				mStatisticsText;
 	sf::Time				mStatisticsUpdateTime;
 	std::size_t				mStatisticsNumFrames;
+	std::string				mWinner;
+
 };

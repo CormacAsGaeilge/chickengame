@@ -16,9 +16,6 @@ public:
 	virtual bool		update(sf::Time dt);
 	virtual bool		handleEvent(const sf::Event& event);
 
-
-
-
 private:
 	World				mWorld;
 	Player				mPlayerOne;
@@ -31,4 +28,7 @@ private:
 	float				mP1Score;
 	float				mP2Score;
 	float				mTimer;
+	float				mCountdown;
+	float				mHours;
+	float				mMins;
 };

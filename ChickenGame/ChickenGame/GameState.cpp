@@ -2,6 +2,7 @@
 #include "MusicPlayer.hpp"
 #include "Utility.hpp"
 
+
 #include <SFML/Graphics/RenderWindow.hpp>
 
 GameState::GameState(StateStack& stack, Context context)
@@ -11,8 +12,13 @@ GameState::GameState(StateStack& stack, Context context)
 	, mPlayerTwo(nullptr, 2, context.keys2)
 	, mP1ScoreText()
 	, mP2ScoreText()
+	, mP1Score()
+	, mP2Score()
 	, mGameTime()
-	, mTimer()
+	, mCountdown()
+	//, mWinner()
+	, mHours()
+	, mMins()
 
 {
 	mWorld.addChicken(1);
@@ -20,35 +26,52 @@ GameState::GameState(StateStack& stack, Context context)
 	mPlayerOne.setMissionStatus(Player::MissionRunning);
 	mPlayerTwo.setMissionStatus(Player::MissionRunning);
 
+	mHours = 300;
+	//mWinner = " ";
+	mP1Score = 0;
+	mP2Score = 0;
+
+	mP1Score = mWorld.getScore();
+
 	mP1ScoreText.setFont(context.fonts->get(Fonts::Digi));
 	mP1ScoreText.setCharacterSize(40u);
 	mP1ScoreText.setPosition(505, 40);
 	mP1ScoreText.setRotation(-12.f);
-	mP1ScoreText.setString("0");
+	mP1ScoreText.setString(toString(mP1Score));
 	centerOrigin(mP1ScoreText);
 
 	mP2ScoreText.setFont(context.fonts->get(Fonts::Digi));
 	mP2ScoreText.setCharacterSize(40u);
 	mP2ScoreText.setPosition(695, 40);
 	mP2ScoreText.setRotation(12.f);
-	mP2ScoreText.setString("0");
+	mP2ScoreText.setString(toString(mP2Score));
 	centerOrigin(mP2ScoreText);
 
 	mGameTime.setFont(context.fonts->get(Fonts::Digi));
 	mGameTime.setCharacterSize(40u);
-	mGameTime.setPosition(600, 30);
-	mGameTime.setString("5:00");
+	mGameTime.setPosition(550, 5);
+	//mGameTime.setString("5:00");
 	centerOrigin(mGameTime);
 
 	// Play game theme
 	context.music->play(Music::MissionTheme);
 }
 
+//void GameState::setWinner(std::string str)
+//{
+//	mWinner = str;
+//}
+//
+//std::string GameState::getWinner() const
+//{
+//	return mWinner;
+//}
+
 void GameState::draw()
 {
 	mWorld.draw();
 	sf::RenderWindow& window = *getContext().window;
-	window.draw(mP1ScoreText);
+	//window.draw(mP1ScoreText);
 	window.draw(mP2ScoreText);
 	window.draw(mGameTime);
 }
@@ -59,10 +82,33 @@ bool GameState::update(sf::Time dt)
 
 	
 
+	mMins = dt.asSeconds();
+	mHours -= mMins;
+	static_cast<int>(mHours);
+	//floor(mHours);
+
+	mGameTime.setString(toString(mHours));
+	if (mHours < 0)
+	{
+		//GAME ENDS 
+		if (mP1Score > mP2Score)
+		{
+			mPlayerOne.setMissionStatus(Player::MissionSuccess);
+			mPlayerTwo.setMissionStatus(Player::MissionSuccess);
+			requestStackPush(States::GameOver);
+		}
+		else
+		{
+			mPlayerOne.setMissionStatus(Player::MissionFailure);
+			mPlayerTwo.setMissionStatus(Player::MissionFailure);
+			requestStackPush(States::GameOver);
+		}
+		
+		
+	}
+
 	if (!mWorld.hasAlivePlayer())
 	{
-		mPlayerOne.setMissionStatus(Player::MissionFailure);
-		mPlayerTwo.setMissionStatus(Player::MissionFailure);
 		requestStackPush(States::GameOver);
 	}
 	else if (mWorld.hasPlayerReachedEnd())

@@ -112,6 +112,7 @@ void Application::updateStatistics(sf::Time dt)
 		mStatisticsUpdateTime -= sf::seconds(1.0f);
 		mStatisticsNumFrames = 0;
 	}
+
 }
 
 void Application::registerStates()
@@ -124,6 +125,6 @@ void Application::registerStates()
 	mStateStack.registerState<PauseState>(States::Pause);
 	mStateStack.registerState<PauseState>(States::NetworkPause, true);
 	mStateStack.registerState<SettingsState>(States::Settings);
-	mStateStack.registerState<GameOverState>(States::GameOver, "Mission Failed!");
-	mStateStack.registerState<GameOverState>(States::MissionSuccess, "Mission Successful!");
+	mStateStack.registerState<GameOverState>(States::GameOver, "Player Two Wins");
+	mStateStack.registerState<GameOverState>(States::MissionSuccess, "Player One Wins");
 }

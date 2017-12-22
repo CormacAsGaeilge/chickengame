@@ -4,6 +4,7 @@
 #include "SceneNode.hpp"
 #include "SpriteNode.hpp"
 #include "Chicken.hpp"
+#include "Ball.hpp"
 #include "CommandQueue.hpp"
 #include "Command.hpp"
 #include "Pickup.hpp"

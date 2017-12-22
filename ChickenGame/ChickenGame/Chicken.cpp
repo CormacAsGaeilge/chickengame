@@ -49,7 +49,6 @@ Chicken::Chicken(Type type, const TextureHolder& textures, const FontHolder& fon
 	, mIsBoosting(false)
 	, mBoost(1)
 { 
-
 	mMass = 5.972f;
 	if(type == Type::Raptor)
 		mMass = 35.972f;

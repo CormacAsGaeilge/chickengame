@@ -3,6 +3,7 @@
 #include "Projectile.hpp"
 #include "Pickup.hpp"
 #include "Particle.hpp"
+#include "Ball.hpp"
 
 // For std::bind() placeholders _1, _2, ...
 using namespace std::placeholders;
@@ -41,6 +42,18 @@ std::vector<ChickenData> initializeChickenData()
 	data[Chicken::Avenger].hasRollAnimation = false;
 
 	
+
+	return data;
+}
+
+std::vector<BallData> initializeBallData()
+{
+
+	std::vector<BallData> data(Ball::TypeCount);
+
+	data[Ball::Main].speed = 300.f;
+	data[Ball::Main].texture = Textures::Entities;
+	data[Ball::Main].textureRect = sf::IntRect(175, 64, 3, 14);
 
 	return data;
 }

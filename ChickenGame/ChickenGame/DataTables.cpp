@@ -21,8 +21,8 @@ std::vector<ChickenData> initializeChickenData()
 
 	data[Chicken::Raptor].hitpoints = 20;
 	data[Chicken::Raptor].speed = 80.f;
-	data[Chicken::Raptor].texture = Textures::Entities;
-	data[Chicken::Raptor].textureRect = sf::IntRect(144, 0, 84, 64);
+	data[Chicken::Raptor].texture = Textures::Chicken;
+	data[Chicken::Raptor].textureRect = sf::IntRect(1, 131, 38, 38);
 	//data[Chicken::Raptor].directions.push_back(Direction(+45.f, 80.f));
 	//data[Chicken::Raptor].directions.push_back(Direction(-45.f, 160.f));
 	//data[Chicken::Raptor].directions.push_back(Direction(+45.f, 80.f));
@@ -31,7 +31,7 @@ std::vector<ChickenData> initializeChickenData()
 
 	data[Chicken::Avenger].hitpoints = 40;
 	data[Chicken::Avenger].speed = 50.f;
-	data[Chicken::Avenger].texture = Textures::Entities;
+	data[Chicken::Avenger].texture = Textures::Chicken;
 	data[Chicken::Avenger].textureRect = sf::IntRect(228, 0, 60, 59);
 	data[Chicken::Avenger].directions.push_back(Direction(+45.f, 50.f));
 	data[Chicken::Avenger].directions.push_back(Direction(0.f, 50.f));

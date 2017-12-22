@@ -17,8 +17,18 @@ public:
 	virtual bool		handleEvent(const sf::Event& event);
 
 
+
+
 private:
 	World				mWorld;
 	Player				mPlayerOne;
 	Player				mPlayerTwo;
+	FontHolder			mFonts;
+	sf::Text			mP1ScoreText;
+	sf::Text			mP2ScoreText;
+	sf::Text			mGameTime;
+
+	float				mP1Score;
+	float				mP2Score;
+	float				mTimer;
 };

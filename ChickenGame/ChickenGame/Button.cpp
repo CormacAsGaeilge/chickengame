@@ -13,7 +13,7 @@ namespace GUI
 	Button::Button(State::Context context)
 		: mCallback()
 		, mSprite(context.textures->get(Textures::Buttons))
-		, mText("", context.fonts->get(Fonts::Main), 16)
+		, mText("", context.fonts->get(Fonts::Main), 20)
 		, mIsToggle(false)
 		, mSounds(*context.sounds)
 	{

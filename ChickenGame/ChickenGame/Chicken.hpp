@@ -17,7 +17,8 @@ public:
 		Eagle,
 		Raptor,
 		Avenger,
-		TypeCount
+		TypeCount, 
+		Number,
 	};
 
 

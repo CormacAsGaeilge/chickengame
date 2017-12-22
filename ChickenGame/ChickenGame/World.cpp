@@ -41,6 +41,7 @@ World::World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sou
 	loadTextures();
 	buildScene();
 
+
 	// Prepare the view
 	mWorldView.setCenter(mSpawnPosition);
 }
@@ -184,7 +185,7 @@ void World::loadTextures()
 {
 	mTextures.load(Textures::Chicken, "Media/Textures/chicken.png");
 	mTextures.load(Textures::Entities, "Media/Textures/Entities.png");
-	mTextures.load(Textures::Jungle, "Media/Textures/ArenaOneO.png");
+	mTextures.load(Textures::Jungle, "Media/Textures/FootBallPitch.png");
 	mTextures.load(Textures::Explosion, "Media/Textures/Explosion.png");
 	mTextures.load(Textures::Particle, "Media/Textures/Particle.png");
 	mTextures.load(Textures::FinishLine, "Media/Textures/FinishLine.png");
@@ -343,6 +344,8 @@ void World::updateSounds()
 {
 	sf::Vector2f listenerPosition;
 
+	mSceneTexture.draw(mScoreText);
+
 	// 0 players (multiplayer mode, until server is connected) -> view center
 	if (mPlayerChickens.empty())
 	{
@@ -388,7 +391,7 @@ void World::buildScene()
 
 	// Add the background sprite to the scene
 	std::unique_ptr<SpriteNode> jungleSprite(new SpriteNode(jungleTexture, textureRect));
-	jungleSprite->setPosition(mWorldBounds.left, mWorldBounds.top - 200.0f);
+	jungleSprite->setPosition(mWorldBounds.left, mWorldBounds.top - 280.0f);
 	mSceneLayers[Background]->attachChild(std::move(jungleSprite));
 
 	// Add the finish line to the scene
@@ -409,6 +412,7 @@ void World::buildScene()
 	std::unique_ptr<SoundNode> soundNode(new SoundNode(mSounds));
 	mSceneGraph.attachChild(std::move(soundNode));
 
+	
 	// Add network node, if necessary
 	if (mNetworkedWorld)
 	{
@@ -427,7 +431,7 @@ void World::addEnemies()
 		return;
 
 	// Add enemies to the spawn point container
-	addEnemy(Chicken::Raptor, 70.f, 0.f);
+	addEnemy(Chicken::Raptor, 0.f, 0.f);
 	//addEnemy(Chicken::Avenger, 0.f, 200.f);
 
 	// Sort all enemies according to their y value, such that lower enemies are checked first for spawning

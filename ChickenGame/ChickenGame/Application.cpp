@@ -15,7 +15,7 @@
 const sf::Time Application::TimePerFrame = sf::seconds(1.f / 60.f);
 
 Application::Application()
-	: mWindow(sf::VideoMode(1024, 768), "Chicken Game", sf::Style::Close)
+	: mWindow(sf::VideoMode(1200, 660), "Chicken Game", sf::Style::Close)
 	, mTextures()
 	, mFonts()
 	, mMusic()
@@ -31,6 +31,7 @@ Application::Application()
 	mWindow.setVerticalSyncEnabled(true);
 
 	mFonts.load(Fonts::Main, "Media/Sansation.ttf");
+	mFonts.load(Fonts::Digi, "Media/digital.ttf");
 
 	mTextures.load(Textures::TitleScreen, "Media/Textures/TitleScreen.png");
 	mTextures.load(Textures::Buttons, "Media/Textures/Buttons.png");

@@ -21,6 +21,7 @@ namespace Textures
 		Particle,
 		FinishLine,
 		chicken,
+		Score,
 	};
 }
 
@@ -40,6 +41,7 @@ namespace Fonts
 	enum ID
 	{
 		Main,
+		Digi,
 	};
 }
 

@@ -4,7 +4,6 @@
 #include "Pickup.hpp"
 #include "CommandQueue.hpp"
 #include "SoundNode.hpp"
-#include "NetworkNode.hpp"
 #include "ResourceHolder.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
@@ -125,6 +124,40 @@ void Chicken::disablePickups()
 	mPickupsEnabled = false;
 }
 
+void Chicken::checkIfGoal()
+{
+	bool isOutOfBounds = false;
+	sf::Vector2f pos = getPosition();
+	if (pos.x < 100.f) {
+		if (pos.y > 4600.f && pos.y < 4710.f) {
+			//Goal for Player 2
+			
+		}
+		//out of bounds
+		isOutOfBounds = true;
+	}
+
+	if (pos.x > 1090.f) {
+		if (pos.y > 4600.f && pos.y < 4710.f) {
+			//Goal for Player 1
+			
+		}
+		//out of bounds
+		isOutOfBounds = true;
+	}
+
+	if (pos.y > 4900.f || pos.y < 4340.f) {
+		//out of bounds
+		isOutOfBounds = true;
+	}
+
+
+	if (isOutOfBounds) {
+		setVelocity(0.f, 0.f);
+		setPosition(600.f, 4670.f);
+	}
+}
+
 void Chicken::updateCurrent(sf::Time dt, CommandQueue& commands)
 {
 	// Update texts and roll animation
@@ -132,7 +165,7 @@ void Chicken::updateCurrent(sf::Time dt, CommandQueue& commands)
 	updateRollAnimation(dt);
 
 	updateFriction(dt);
-
+	checkIfGoal();
 	// Entity has been destroyed: Possibly drop pickup, mark for removal
 	if (isDestroyed())
 	{
@@ -144,21 +177,6 @@ void Chicken::updateCurrent(sf::Time dt, CommandQueue& commands)
 		{
 			SoundEffect::ID soundEffect = (randomInt(2) == 0) ? SoundEffect::Explosion1 : SoundEffect::Explosion2;
 			playLocalSound(commands, soundEffect);
-
-			// Emit network game action for enemy explosions
-			if (!isAllied())
-			{
-				sf::Vector2f position = getWorldPosition();
-
-				Command command;
-				command.category = Category::Network;
-				command.action = derivedAction<NetworkNode>([position](NetworkNode& node, sf::Time)
-				{
-					node.notifyGameAction(GameActions::EnemyExplode, position);
-				});
-
-				commands.push(command);
-			}
 
 			mExplosionBegan = true;
 		}

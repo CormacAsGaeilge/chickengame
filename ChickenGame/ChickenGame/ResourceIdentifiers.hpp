@@ -14,7 +14,7 @@ namespace Textures
 	{
 		Chicken,
 		Entities,
-		Jungle,
+		FootballPitch,
 		TitleScreen,
 		Buttons,
 		Explosion,

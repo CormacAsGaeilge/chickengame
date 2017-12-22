@@ -4,7 +4,6 @@
 #include "Pickup.hpp"
 #include "CommandQueue.hpp"
 #include "SoundNode.hpp"
-#include "NetworkNode.hpp"
 #include "ResourceHolder.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
@@ -20,7 +19,7 @@ namespace
 	const std::vector<BallData> Table = initializeBallData();
 }
 Ball::Ball(Type type, const TextureHolder & textures, const FontHolder & fonts)
-	: Entity(100.f)
+	: Entity(100)
 	, mType(type)
 	, mSprite(textures.get(Table[type].texture), Table[type].textureRect)
 	, mMoving(false)

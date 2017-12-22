@@ -3,10 +3,11 @@
 #include "Utility.hpp"
 
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
 
 GameState::GameState(StateStack& stack, Context context)
 	: State(stack, context)
-	, mWorld(*context.window, *context.fonts, *context.sounds, false)
+	, mWorld(*context.window, *context.fonts, *context.sounds)
 	, mPlayerOne(nullptr, 1, context.keys1)
 	, mPlayerTwo(nullptr, 2, context.keys2)
 	, mP1ScoreText()
@@ -51,12 +52,23 @@ void GameState::draw()
 	window.draw(mP1ScoreText);
 	window.draw(mP2ScoreText);
 	window.draw(mGameTime);
+	/*sf::RectangleShape goalOne(sf::Vector2f(70.f, 110.f));
+	goalOne.setPosition(sf::Vector2f(30.f, 290.f));
+	goalOne.setOutlineThickness(1);
+	goalOne.setOutlineColor(sf::Color(250, 150, 100));
+	window.draw(goalOne);
+
+	sf::RectangleShape goalTwo(sf::Vector2f(70.f, 110.f));
+	goalTwo.setPosition(sf::Vector2f(1090.f, 290.f));
+	goalTwo.setOutlineThickness(1);
+	goalTwo.setOutlineColor(sf::Color(250, 150, 100));
+	window.draw(goalTwo);*/
 }
 
 bool GameState::update(sf::Time dt)
 {
 	mWorld.update(dt);
-
+	
 	
 
 	if (!mWorld.hasAlivePlayer())

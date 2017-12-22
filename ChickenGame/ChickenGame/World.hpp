@@ -25,12 +25,10 @@ namespace sf
 	class RenderTarget;
 }
 
-class NetworkNode;
-
 class World : private sf::NonCopyable
 {
 public:
-	explicit World(sf::RenderTarget& window, FontHolder& font, SoundPlayer& sounds, bool networked = false);
+	explicit World(sf::RenderTarget& window, FontHolder& font, SoundPlayer& sounds);
 	void update(sf::Time dt);
 	void draw();
 
@@ -53,7 +51,6 @@ public:
 	sf::FloatRect getBattlefieldBounds() const;
 
 	void createPickup(sf::Vector2f position, Pickup::Type type);
-	bool pollGameAction(GameActions::Action& out);
 
 private:
 	void loadTextures();
@@ -65,6 +62,7 @@ private:
 	void updateSounds();
 
 	void buildScene();
+	void addGoals();
 	void addEnemies();
 	void spawnEnemies();
 	void destroyEntitiesOutsideView();
@@ -118,7 +116,5 @@ private:
 
 	BloomEffect							mBloomEffect;
 
-	bool								mNetworkedWorld;
-	NetworkNode*						mNetworkNode;
 	SpriteNode*							mFinishSprite;
 };

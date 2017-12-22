@@ -27,6 +27,8 @@ bool GameState::update(sf::Time dt)
 {
 	mWorld.update(dt);
 
+	
+
 	if (!mWorld.hasAlivePlayer())
 	{
 		mPlayerOne.setMissionStatus(Player::MissionFailure);

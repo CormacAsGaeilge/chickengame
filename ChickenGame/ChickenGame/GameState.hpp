@@ -21,4 +21,6 @@ private:
 	World				mWorld;
 	Player				mPlayerOne;
 	Player				mPlayerTwo;
+	FontHolder			mFonts;
+	sf::Text			mScoreText;
 };

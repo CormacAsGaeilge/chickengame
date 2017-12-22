@@ -11,6 +11,9 @@ std::vector<AircraftData> initializeAircraftData()
 {
 	std::vector<AircraftData> data(Aircraft::TypeCount);
 
+	
+
+
 	data[Aircraft::Eagle].hitpoints = 100;
 	data[Aircraft::Eagle].speed = 40.f;
 	data[Aircraft::Eagle].fireInterval = sf::seconds(1);
@@ -30,15 +33,8 @@ std::vector<AircraftData> initializeAircraftData()
 
 	data[Aircraft::Avenger].hitpoints = 40;
 	data[Aircraft::Avenger].speed = 50.f;
-	data[Aircraft::Avenger].texture = Textures::Entities;
-	data[Aircraft::Avenger].textureRect = sf::IntRect(228, 0, 60, 59);
-	data[Aircraft::Avenger].directions.push_back(Direction(+45.f, 50.f));
-	data[Aircraft::Avenger].directions.push_back(Direction(0.f, 50.f));
-	data[Aircraft::Avenger].directions.push_back(Direction(-45.f, 100.f));
-	data[Aircraft::Avenger].directions.push_back(Direction(0.f, 50.f));
-	data[Aircraft::Avenger].directions.push_back(Direction(+45.f, 50.f));
-	data[Aircraft::Avenger].fireInterval = sf::seconds(2);
-	data[Aircraft::Avenger].hasRollAnimation = false;
+	data[Aircraft::Avenger].texture = Textures::Score;
+	data[Aircraft::Avenger].textureRect = sf::IntRect(6, 2, 20, 25);
 
 	
 

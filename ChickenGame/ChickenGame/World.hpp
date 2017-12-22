@@ -97,6 +97,7 @@ private:
 	sf::RenderTarget&					mTarget;
 	sf::RenderTexture					mSceneTexture;
 	sf::View							mWorldView;
+	sf::Text							mScoreText;
 	TextureHolder						mTextures;
 	FontHolder&							mFonts;
 	SoundPlayer&						mSounds;

@@ -1,6 +1,7 @@
 #pragma once
 #include "State.hpp"
 #include "Container.hpp"
+#include "Application.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>

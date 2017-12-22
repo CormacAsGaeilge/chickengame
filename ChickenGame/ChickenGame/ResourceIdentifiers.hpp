@@ -21,6 +21,7 @@ namespace Textures
 		Particle,
 		FinishLine,
 		chicken,
+		Score,
 	};
 }
 

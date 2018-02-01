@@ -21,6 +21,7 @@ namespace Category
 
 		Chicken = PlayerChicken | AlliedChicken | EnemyChicken,
 		Projectile = AlliedProjectile | EnemyProjectile,
+		Network
 	};
 }
 

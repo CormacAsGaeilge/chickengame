@@ -14,8 +14,9 @@ public:
 	virtual void draw();
 	virtual bool update(sf::Time dt);
 	virtual bool handleEvent(const sf::Event& event);
-
+	float getButtonPosition(int buttonIndex, Context context);
 private:
 	sf::Sprite mBackgroundSprite;
 	GUI::Container mGUIContainer;
+	int buttonCount = 5;
 };

@@ -14,7 +14,7 @@
 const sf::Time Application::TimePerFrame = sf::seconds(1.f / 60.f);
 
 Application::Application()
-	: mWindow(sf::VideoMode(1200, 660), "Chicken Game", sf::Style::Close)
+	: mWindow(sf::VideoMode(1920, 1080), "Chicken Game", sf::Style::Close)
 	, mTextures()
 	, mFonts()
 	, mMusic()
@@ -77,7 +77,6 @@ void Application::processInput()
 	while (mWindow.pollEvent(event))
 	{
 		mStateStack.handleEvent(event);
-
 		if (event.type == sf::Event::Closed)
 			mWindow.close();
 	}

@@ -27,7 +27,7 @@ sf::IpAddress getAddressFromFile()
 
 MultiplayerGameState::MultiplayerGameState(StateStack& stack, Context context, bool isHost)
 	: State(stack, context)
-	, mWorld(*context.window, *context.fonts, *context.sounds, true)
+	, mWorld(*context.window, *context.fonts, *context.sounds)
 	, mWindow(*context.window)
 	, mTextureHolder(*context.textures)
 	, mConnected(false)
@@ -40,7 +40,7 @@ MultiplayerGameState::MultiplayerGameState(StateStack& stack, Context context, b
 	, mTimeSinceLastPacket(sf::seconds(0.f))
 {
 	mBroadcastText.setFont(context.fonts->get(Fonts::Main));
-	mBroadcastText.setPosition(1024.f / 2, 100.f);
+	mBroadcastText.setPosition(1920.f / 2, 100.f);
 
 	mPlayerInvitationText.setFont(context.fonts->get(Fonts::Main));
 	mPlayerInvitationText.setCharacterSize(20);
@@ -202,7 +202,7 @@ bool MultiplayerGameState::update(sf::Time dt)
 			mPlayerInvitationTime = sf::Time::Zero;
 
 		// Events occurring in the game
-		GameActions::Action gameAction;
+		/*GameActions::Action gameAction;
 		while (mWorld.pollGameAction(gameAction))
 		{
 			sf::Packet packet;
@@ -212,7 +212,7 @@ bool MultiplayerGameState::update(sf::Time dt)
 			packet << gameAction.position.y;
 
 			mSocket.send(packet);
-		}
+		}*/
 
 		// Regular position updates
 		if (mTickClock.getElapsedTime() > sf::seconds(1.f / 20.f))

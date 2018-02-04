@@ -35,7 +35,7 @@ World::World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sou
 	, mP1Score()
 	, mFinishSprite(nullptr)
 {
-	mSceneTexture.create(1024, 768);
+	mSceneTexture.create(1920, 1080);
 
 	loadTextures();
 	buildScene();

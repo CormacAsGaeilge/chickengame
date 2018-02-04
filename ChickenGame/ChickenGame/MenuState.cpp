@@ -14,9 +14,10 @@ MenuState::MenuState(StateStack& stack, Context context)
 {
 	sf::Texture& texture = context.textures->get(Textures::TitleScreen);
 	mBackgroundSprite.setTexture(texture);
+	mBackgroundSprite.setPosition(sf::Vector2f((context.window->getSize().x / 2.f) - (context.textures->get(Textures::TitleScreen).getSize().x / 2.f), 0));
 
 	auto playButton = std::make_shared<GUI::Button>(context);
-	playButton->setPosition(100, 300);
+	playButton->setPosition(getButtonPosition(0,context), context.window->getSize().y * 0.85f);
 	playButton->setText("Play");
 	playButton->setCallback([this]()
 	{
@@ -24,8 +25,8 @@ MenuState::MenuState(StateStack& stack, Context context)
 		requestStackPush(States::Game);
 	});
 
-	/*auto hostPlayButton = std::make_shared<GUI::Button>(context);
-	hostPlayButton->setPosition(100, 350);
+	auto hostPlayButton = std::make_shared<GUI::Button>(context);
+	hostPlayButton->setPosition(getButtonPosition(1, context), context.window->getSize().y * 0.85f);
 	hostPlayButton->setText("Host");
 	hostPlayButton->setCallback([this]()
 	{
@@ -34,16 +35,16 @@ MenuState::MenuState(StateStack& stack, Context context)
 	});
 
 	auto joinPlayButton = std::make_shared<GUI::Button>(context);
-	joinPlayButton->setPosition(100, 400);
+	joinPlayButton->setPosition(getButtonPosition(2, context), context.window->getSize().y * 0.85f);
 	joinPlayButton->setText("Join");
 	joinPlayButton->setCallback([this]()
 	{
 		requestStackPop();
 		requestStackPush(States::JoinGame);
-	});*/
+	});
 
 	auto settingsButton = std::make_shared<GUI::Button>(context);
-	settingsButton->setPosition(100, 350);
+	settingsButton->setPosition(getButtonPosition(3, context), context.window->getSize().y * 0.85f);
 	settingsButton->setText("Settings");
 	settingsButton->setCallback([this]()
 	{
@@ -51,7 +52,7 @@ MenuState::MenuState(StateStack& stack, Context context)
 	});
 
 	auto exitButton = std::make_shared<GUI::Button>(context);
-	exitButton->setPosition(100, 400);
+	exitButton->setPosition(getButtonPosition(4, context), context.window->getSize().y * 0.85f);
 	exitButton->setText("Exit");
 	exitButton->setCallback([this]()
 	{
@@ -59,8 +60,8 @@ MenuState::MenuState(StateStack& stack, Context context)
 	});
 
 	mGUIContainer.pack(playButton);
-	//mGUIContainer.pack(hostPlayButton);
-	//mGUIContainer.pack(joinPlayButton);
+	mGUIContainer.pack(hostPlayButton);
+	mGUIContainer.pack(joinPlayButton);
 	mGUIContainer.pack(settingsButton);
 	mGUIContainer.pack(exitButton);
 
@@ -87,5 +88,12 @@ bool MenuState::handleEvent(const sf::Event& event)
 {
 	mGUIContainer.handleEvent(event);
 	return false;
+}
+
+float MenuState::getButtonPosition(int buttonIndex, Context context)
+{
+	return (context.window->getSize().x * 0.5f) 
+		- (buttonCount*0.5*200) 
+		+ (buttonIndex *200);
 }
 

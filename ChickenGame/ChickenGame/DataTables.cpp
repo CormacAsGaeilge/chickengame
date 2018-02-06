@@ -13,10 +13,10 @@ std::vector<ChickenData> initializeChickenData()
 	std::vector<ChickenData> data(Chicken::TypeCount);
 
 	data[Chicken::Eagle].hitpoints = 100;
-	data[Chicken::Eagle].speed = 40.f;
+	data[Chicken::Eagle].speed = 80.f;
 	data[Chicken::Eagle].fireInterval = sf::seconds(1);
 	data[Chicken::Eagle].texture = Textures::Chicken;
-	data[Chicken::Eagle].textureRect = sf::IntRect(6, 2, 20, 25);
+	data[Chicken::Eagle].textureRect = sf::IntRect(15, 19, 75, 73);
 	data[Chicken::Eagle].hasRollAnimation = true;
 
 	data[Chicken::Raptor].hitpoints = 20;

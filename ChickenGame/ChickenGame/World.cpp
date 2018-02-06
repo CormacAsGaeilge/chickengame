@@ -25,7 +25,7 @@ World::World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sou
 	, mSounds(sounds)
 	, mSceneGraph()
 	, mSceneLayers()
-	, mWorldBounds(0.0f, 0.0f, mWorldView.getSize().x, 5000.0f/*250.f, 200.f, 650.f, 800.f*/)
+	, mWorldBounds(250.f, 200.f, 650.f, 800.f)
 	, mSpawnPosition(mWorldView.getSize().x / 2.f, mWorldBounds.height - mWorldView.getSize().y / 2.f)
 	, mScrollSpeed(-50.f)
 	, mScrollSpeedCompensation(1.f)
@@ -185,7 +185,7 @@ bool World::hasPlayerReachedEnd() const
 
 void World::loadTextures()
 {
-	mTextures.load(Textures::Chicken, "Media/Textures/chicken.png");
+	mTextures.load(Textures::Chicken, "Media/Textures/spriteSheet.png");
 	mTextures.load(Textures::Entities, "Media/Textures/Entities.png");
 	mTextures.load(Textures::FootballPitch, "Media/Textures/FootBallPitch.png");
 	mTextures.load(Textures::Explosion, "Media/Textures/Explosion.png");

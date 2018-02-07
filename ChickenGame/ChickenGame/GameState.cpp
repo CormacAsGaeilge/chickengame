@@ -2,7 +2,6 @@
 #include "MusicPlayer.hpp"
 #include "Utility.hpp"
 
-
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 
@@ -18,8 +17,8 @@ GameState::GameState(StateStack& stack, Context context)
 	, mGameTime()
 	, mCountdown()
 	//, mWinner()
-	, mHours()
 	, mMins()
+	, mSec()
 
 {
 	mWorld.addChicken(1);
@@ -27,31 +26,33 @@ GameState::GameState(StateStack& stack, Context context)
 	mPlayerOne.setMissionStatus(Player::MissionRunning);
 	mPlayerTwo.setMissionStatus(Player::MissionRunning);
 
-	mHours = 300;
-	//mWinner = " ";
+	mLegth = 1920; // screen width
+	mMins = 240;
+	mSec = 60;
 	mP1Score = 0;
 	mP2Score = 0;
+	float mCountdown = 60;
 
 	mP1Score = mWorld.getScore();
 
 	mP1ScoreText.setFont(context.fonts->get(Fonts::Digi));
-	mP1ScoreText.setCharacterSize(40u);
-	mP1ScoreText.setPosition(505, 40);
-	mP1ScoreText.setRotation(-12.f);
+	mP1ScoreText.setCharacterSize(60u);
+	mP1ScoreText.setPosition((mLegth / 2) - 90, 40);
+	mP1ScoreText.setColor(sf::Color::Blue);
 	mP1ScoreText.setString(toString(mP1Score));
 	centerOrigin(mP1ScoreText);
 
 	mP2ScoreText.setFont(context.fonts->get(Fonts::Digi));
-	mP2ScoreText.setCharacterSize(40u);
-	mP2ScoreText.setPosition(695, 40);
-	mP2ScoreText.setRotation(12.f);
+	mP2ScoreText.setCharacterSize(60u);
+	mP2ScoreText.setPosition((mLegth / 2) + 90, 40);
+	mP2ScoreText.setColor(sf::Color::Red);
 	mP2ScoreText.setString(toString(mP2Score));
 	centerOrigin(mP2ScoreText);
 
 	mGameTime.setFont(context.fonts->get(Fonts::Digi));
-	mGameTime.setCharacterSize(40u);
-	mGameTime.setPosition(550, 5);
-	//mGameTime.setString("5:00");
+	mGameTime.setCharacterSize(45u);
+	mGameTime.setPosition((mLegth / 2 - 7), 40);
+	mGameTime.setString("5:00");
 	centerOrigin(mGameTime);
 
 	// Play game theme
@@ -72,7 +73,7 @@ void GameState::draw()
 {
 	mWorld.draw();
 	sf::RenderWindow& window = *getContext().window;
-	//window.draw(mP1ScoreText);
+	window.draw(mP1ScoreText);
 	window.draw(mP2ScoreText);
 	window.draw(mGameTime);
 	/*sf::RectangleShape goalOne(sf::Vector2f(70.f, 110.f));
@@ -94,13 +95,18 @@ bool GameState::update(sf::Time dt)
 	
 	
 
-	mMins = dt.asSeconds();
-	mHours -= mMins;
-	static_cast<int>(mHours);
-	//floor(mHours);
+	mCountdown = dt.asSeconds();
+	//mHours -= mMins;
+	mSec -= mCountdown;
 
-	mGameTime.setString(toString(mHours));
-	if (mHours < 0)
+	if (mSec < 0)
+	{
+		mSec = 60;
+		mMins -= 60;
+	}
+	mGameTime.setString((toString(mMins / 60)) + " : " + toString((int)mSec));
+
+	if (mMins < 0)
 	{
 		//GAME ENDS 
 		if (mP1Score > mP2Score)

@@ -53,9 +53,9 @@ Chicken::Chicken(Type type, const TextureHolder& textures, const FontHolder& fon
 		mMass = 35.972f;
 	mExplosion.setFrameSize(sf::Vector2i(256, 256));
 	mExplosion.setNumFrames(16);
-	mExplosion.setDuration(sf::seconds(1));
+	mExplosion.setDuration(sf::seconds(3));
 
-	mChicken.setFrameSize(sf::Vector2i(20, 25));
+	mChicken.setFrameSize(sf::Vector2i(75, 73));
 	//mChicken.getPosition();
 
 	centerOrigin(mSprite);
@@ -165,6 +165,8 @@ void Chicken::updateCurrent(sf::Time dt, CommandQueue& commands)
 	updateRollAnimation(dt);
 
 	updateFriction(dt);
+
+
 	checkIfGoal();
 	// Entity has been destroyed: Possibly drop pickup, mark for removal
 	if (isDestroyed())
@@ -502,37 +504,41 @@ void Chicken::updateRollAnimation(sf::Time dt)
 		
 		if (getVelocity().x < 0.f)
 		{
+			//Left
 			mMoving = true;
-			textureRect = sf::IntRect(1, 36, 30, 25);
+			textureRect = sf::IntRect(24, 190, 64, 74);
 			mChicken.setDirection(1);
-			mChicken.setNumFrames(4);
+			mChicken.setNumFrames(8  );
 			mChicken.setDuration(sf::seconds(0.8f));
 			mChicken.setRepeating(true);
 			mChicken.update(dt);
 		}
 		else if (getVelocity().x > 0.f) {
+			//right
 			mMoving = true;
-			textureRect = sf::IntRect(1, 100, 30, 25);
+			textureRect = sf::IntRect(25, 277, 63, 75);
 			mChicken.setDirection(2);
-			mChicken.setNumFrames(4);
+			mChicken.setNumFrames(8);
 			mChicken.setDuration(sf::seconds(0.8f));
 			mChicken.setRepeating(true);
 			mChicken.update(dt);
 		}
 		else if (getVelocity().y < 0.f) {
+			//up
 			mMoving = true;
-			textureRect = sf::IntRect(6, 2, 20, 25);
+			textureRect = sf::IntRect(14, 102, 78, 72);
 			mChicken.setDirection(3);
-			mChicken.setNumFrames(4);
+			mChicken.setNumFrames(8);
 			mChicken.setDuration(sf::seconds(0.8f));
 			mChicken.setRepeating(true);
 			mChicken.update(dt);
 		}
 		else if (getVelocity().y > 0.f) {
+			//down
 			mMoving = true;
-			textureRect = sf::IntRect(6, 66, 20, 26);
+			textureRect = sf::IntRect(15, 19, 75, 73);
 			mChicken.setDirection(4);
-			mChicken.setNumFrames(4);
+			mChicken.setNumFrames(8);
 			mChicken.setDuration(sf::seconds(0.8f));
 			mChicken.setRepeating(true);
 			mChicken.update(dt);
@@ -540,7 +546,7 @@ void Chicken::updateRollAnimation(sf::Time dt)
 		else
 		{
 			mMoving = false;
-			textureRect = sf::IntRect(6, 2, 20, 25);
+			textureRect = sf::IntRect(15, 19, 75, 73);
 		}
 		
 		mSprite.setTextureRect(textureRect);

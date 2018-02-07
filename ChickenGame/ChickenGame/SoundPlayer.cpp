@@ -45,7 +45,7 @@ void SoundPlayer::play(SoundEffect::ID effect, sf::Vector2f position)
 	sound.setPosition(position.x, -position.y, 0.f);
 	sound.setAttenuation(Attenuation);
 	sound.setMinDistance(MinDistance3D);
-	sound.play();    //sound for explosions or enemy gunfire
+	//sound.play();    //sound for explosions or enemy gunfire
 }
 
 void SoundPlayer::removeStoppedSounds()

@@ -25,10 +25,11 @@ private:
 	sf::Text			mP2ScoreText;
 	sf::Text			mGameTime;
 
+	float				mLegth;
 	float				mP1Score;
 	float				mP2Score;
 	float				mTimer;
 	float				mCountdown;
-	float				mHours;
 	float				mMins;
+	float				mSec;
 };

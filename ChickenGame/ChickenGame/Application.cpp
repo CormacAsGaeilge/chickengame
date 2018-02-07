@@ -119,6 +119,8 @@ void Application::registerStates()
 	mStateStack.registerState<MenuState>(States::Menu);
 	mStateStack.registerState<GameState>(States::Game);
 	mStateStack.registerState<PauseState>(States::Pause);
+	mStateStack.registerState<GameState>(States::HostGame);
+	mStateStack.registerState<GameState>(States::JoinGame);
 	mStateStack.registerState<SettingsState>(States::Settings);
 	mStateStack.registerState<GameOverState>(States::GameOver, "Player Two Wins");
 	mStateStack.registerState<GameOverState>(States::MissionSuccess, "Player One Wins");

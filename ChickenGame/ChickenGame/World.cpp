@@ -25,7 +25,7 @@ World::World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sou
 	, mSounds(sounds)
 	, mSceneGraph()
 	, mSceneLayers()
-	, mWorldBounds(250.f, 200.f, 650.f, 800.f)
+	, mWorldBounds(0.0f, 0.0f, mWorldView.getSize().x, 5000.0f/*250.f, 200.f, 650.f, 800.f*/)
 	, mSpawnPosition(mWorldView.getSize().x / 2.f, mWorldBounds.height - mWorldView.getSize().y / 2.f)
 	, mScrollSpeed(-50.f)
 	, mScrollSpeedCompensation(1.f)
@@ -40,7 +40,7 @@ World::World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sou
 	loadTextures();
 	buildScene();
 
-	
+
 
 
 	// Prepare the view
@@ -58,9 +58,9 @@ void World::update(sf::Time dt)
 	setScore(3);
 	// Scroll the world, reset player velocity
 	//mWorldView.move(0.f, mScrollSpeed * dt.asSeconds() * mScrollSpeedCompensation);
-	
+
 	/*FOREACH(Chicken* a, mPlayerChickens)
-		a->setVelocity(0.f, 0.f);*/
+	a->setVelocity(0.f, 0.f);*/
 
 	// Setup commands to destroy entities, and guide missiles
 	destroyEntitiesOutsideView();
@@ -139,7 +139,7 @@ void World::removeChicken(int identifier)
 Chicken* World::addChicken(int identifier)
 {
 
-	sf::Vector2f startPos(mWorldView.getCenter().x + (identifier*25), mWorldView.getCenter().y + (identifier * 25));
+	sf::Vector2f startPos(mWorldView.getCenter().x + (identifier * 25), mWorldView.getCenter().y + (identifier * 25));
 
 	std::unique_ptr<Chicken> player(new Chicken(Chicken::Eagle, mTextures, mFonts));
 
@@ -265,51 +265,50 @@ void World::handleCollisions()
 	{
 		/*auto& player = static_cast<Chicken&>(*pair.first);
 		auto& enemy = static_cast<Chicken&>(*pair.second);
-
 		handleBounceCollision(player, enemy)*/;
-			// Collision: Player damage = enemy's remaining HP
-			/*player.damage(enemy.getHitpoints());
-			enemy.destroy();*/
-		if (matchesCategories(pair, Category::PlayerChicken, Category::EnemyChicken))
-		{
-			auto& player = static_cast<Chicken&>(*pair.first);
-			auto& enemy = static_cast<Chicken&>(*pair.second);
-			
-			handleBounceCollision(player, enemy);
-		}
+		// Collision: Player damage = enemy's remaining HP
+		/*player.damage(enemy.getHitpoints());
+		enemy.destroy();*/
+	if (matchesCategories(pair, Category::PlayerChicken, Category::EnemyChicken))
+	{
+		auto& player = static_cast<Chicken&>(*pair.first);
+		auto& enemy = static_cast<Chicken&>(*pair.second);
 
-		else if (matchesCategories(pair, Category::PlayerChicken, Category::PlayerChicken))
-		{
-			auto& player = static_cast<Chicken&>(*pair.first);
-			auto& enemy = static_cast<Chicken&>(*pair.second);
+		handleBounceCollision(player, enemy);
+	}
 
-			handleBounceCollision(player, enemy);
-		}
+	else if (matchesCategories(pair, Category::PlayerChicken, Category::PlayerChicken))
+	{
+		auto& player = static_cast<Chicken&>(*pair.first);
+		auto& enemy = static_cast<Chicken&>(*pair.second);
 
-		else if (matchesCategories(pair, Category::PlayerChicken, Category::Pickup))
-		{
-			//auto& player = static_cast<Chicken&>(*pair.first);
-			//auto& pickup = static_cast<Pickup&>(*pair.second);
+		handleBounceCollision(player, enemy);
+	}
 
-			//// Apply pickup effect to player, destroy projectile
-			//pickup.apply(player);
-			//pickup.destroy();
-		}
+	else if (matchesCategories(pair, Category::PlayerChicken, Category::Pickup))
+	{
+		//auto& player = static_cast<Chicken&>(*pair.first);
+		//auto& pickup = static_cast<Pickup&>(*pair.second);
 
-		else if (matchesCategories(pair, Category::EnemyChicken, Category::AlliedProjectile)
-			|| matchesCategories(pair, Category::PlayerChicken, Category::EnemyProjectile))
-		{
-			//auto& chicken = static_cast<Chicken&>(*pair.first);
-			//auto& projectile = static_cast<Projectile&>(*pair.second);
+		//// Apply pickup effect to player, destroy projectile
+		//pickup.apply(player);
+		//pickup.destroy();
+	}
 
-			//// Apply projectile damage to Chicken, destroy projectile
-			//chicken.damage(projectile.getDamage());
-			//projectile.destroy();
-		} 
-		else if (matchesCategories(pair, Category::EnemyChicken, Category::Goal)) {
-			//Ball hit goal
-			int x = 5;
-		}
+	else if (matchesCategories(pair, Category::EnemyChicken, Category::AlliedProjectile)
+		|| matchesCategories(pair, Category::PlayerChicken, Category::EnemyProjectile))
+	{
+		//auto& chicken = static_cast<Chicken&>(*pair.first);
+		//auto& projectile = static_cast<Projectile&>(*pair.second);
+
+		//// Apply projectile damage to Chicken, destroy projectile
+		//chicken.damage(projectile.getDamage());
+		//projectile.destroy();
+	}
+	else if (matchesCategories(pair, Category::EnemyChicken, Category::Goal)) {
+		//Ball hit goal
+		int x = 5;
+	}
 	}
 
 
@@ -426,7 +425,7 @@ void World::buildScene()
 	//Add sound effect node
 	std::unique_ptr<SoundNode> soundNode(new SoundNode(mSounds));
 	mSceneGraph.attachChild(std::move(soundNode));
-	
+
 	// Add ball
 	addEnemies();
 
@@ -439,7 +438,6 @@ void World::addGoals() {
 	goalOne.setPosition(sf::Vector2f(30.f, 290.f));
 	goalOne.setOutlineThickness(1);
 	goalOne.setOutlineColor(sf::Color(250, 150, 100));
-
 	sf::RectangleShape goalTwo(sf::Vector2f(70.f, 110.f));
 	goalTwo.setPosition(sf::Vector2f(1090.f, 290.f));
 	goalTwo.setOutlineThickness(1);

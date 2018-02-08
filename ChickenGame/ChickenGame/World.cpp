@@ -59,8 +59,8 @@ void World::update(sf::Time dt)
 	// Scroll the world, reset player velocity
 	//mWorldView.move(0.f, mScrollSpeed * dt.asSeconds() * mScrollSpeedCompensation);
 
-	/*FOREACH(Chicken* a, mPlayerChickens)
-	a->setVelocity(0.f, 0.f);*/
+	FOREACH(Chicken* a, mPlayerChickens)
+	a->setVelocity(0.f, 0.f);
 
 	// Setup commands to destroy entities, and guide missiles
 	destroyEntitiesOutsideView();
@@ -199,15 +199,15 @@ void World::adaptPlayerPosition()
 	sf::FloatRect viewBounds = getViewBounds();
 	const float borderDistance = 100.f; // place player in arean
 
-	FOREACH(Chicken* Chicken, mPlayerChickens)
+	/*FOREACH(Chicken* Chicken, mPlayerChickens)
 	{
 		sf::Vector2f position = Chicken->getPosition();
-		position.x = std::max(position.x, viewBounds.left + borderDistance);
+		position.x = std::max(position.x, viewBounds.left + borderDistance);48
 		position.x = std::min(position.x, viewBounds.left + viewBounds.width - borderDistance);
 		position.y = std::max(position.y, viewBounds.top + borderDistance);
 		position.y = std::min(position.y, viewBounds.top + viewBounds.height - borderDistance);
 		Chicken->setPosition(position);
-	}
+	}*/
 }
 
 void  World::setScore(float score)

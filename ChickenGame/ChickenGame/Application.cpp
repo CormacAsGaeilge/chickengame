@@ -4,6 +4,7 @@
 #include "StateIdentifiers.hpp"
 #include "TitleState.hpp"
 #include "GameState.hpp"
+#include "MultiplayerGameState.hpp"
 #include "MenuState.hpp"
 #include "PauseState.hpp"
 #include "SettingsState.hpp"
@@ -20,8 +21,7 @@ Application::Application()
 	, mMusic()
 	, mSounds()
 	, mKeyBinding1(1)
-	, mKeyBinding2(2)
-	, mStateStack(State::Context(mWindow, mTextures, mFonts, mMusic, mSounds, mKeyBinding1, mKeyBinding2))
+	, mStateStack(State::Context(mWindow, mTextures, mFonts, mMusic, mSounds, mKeyBinding1))
 	, mStatisticsText()
 	, mStatisticsUpdateTime()
 	, mStatisticsNumFrames(0)
@@ -119,8 +119,8 @@ void Application::registerStates()
 	mStateStack.registerState<MenuState>(States::Menu);
 	mStateStack.registerState<GameState>(States::Game);
 	mStateStack.registerState<PauseState>(States::Pause);
-	mStateStack.registerState<GameState>(States::HostGame);
-	mStateStack.registerState<GameState>(States::JoinGame);
+	mStateStack.registerState<MultiplayerGameState>(States::HostGame,true);
+	mStateStack.registerState<MultiplayerGameState>(States::JoinGame,false);
 	mStateStack.registerState<SettingsState>(States::Settings);
 	mStateStack.registerState<GameOverState>(States::GameOver, "Player Two Wins");
 	mStateStack.registerState<GameOverState>(States::MissionSuccess, "Player One Wins");

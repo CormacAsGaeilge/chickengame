@@ -39,7 +39,6 @@ private:
 	SoundPlayer				mSounds;
 
 	KeyBinding				mKeyBinding1;
-	KeyBinding				mKeyBinding2;
 	StateStack				mStateStack;
 
 	sf::Text				mStatisticsText;

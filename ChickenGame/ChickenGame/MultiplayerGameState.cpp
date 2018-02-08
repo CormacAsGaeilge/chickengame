@@ -38,15 +38,24 @@ MultiplayerGameState::MultiplayerGameState(StateStack& stack, Context context, b
 	, mGameStarted(false)
 	, mClientTimeout(sf::seconds(2.f))
 	, mTimeSinceLastPacket(sf::seconds(0.f))
+	, mTeam1ScoreText()
+	, mTeam2ScoreText()
+	, mTeam1Score()
+	, mTeam2Score()
+	, mGameTime()
+	, mCountdown()
+	//, mWinner()
+	, mMins()
+	, mSec()
 {
 	mBroadcastText.setFont(context.fonts->get(Fonts::Main));
 	mBroadcastText.setPosition(1920.f / 2, 100.f);
 
-	mPlayerInvitationText.setFont(context.fonts->get(Fonts::Main));
+	/*mPlayerInvitationText.setFont(context.fonts->get(Fonts::Main));
 	mPlayerInvitationText.setCharacterSize(20);
 	mPlayerInvitationText.setColor(sf::Color::White);
 	mPlayerInvitationText.setString("Press Enter to spawn player 2");
-	mPlayerInvitationText.setPosition(1000 - mPlayerInvitationText.getLocalBounds().width, 760 - mPlayerInvitationText.getLocalBounds().height);
+	mPlayerInvitationText.setPosition(1000 - mPlayerInvitationText.getLocalBounds().width, 760 - mPlayerInvitationText.getLocalBounds().height);*/
 
 	// We reuse this text for "Attempt to connect" and "Failed to connect" messages
 	mFailedConnectionText.setFont(context.fonts->get(Fonts::Main));
@@ -81,6 +90,36 @@ MultiplayerGameState::MultiplayerGameState(StateStack& stack, Context context, b
 
 	mSocket.setBlocking(false);
 
+
+	mLegth = 1920; // screen width
+	mMins = 240;
+	mSec = 60;
+	mTeam1Score = 0;
+	mTeam2Score = 0;
+	float mCountdown = 60;
+
+	mTeam1Score = mWorld.getScore();
+
+	mTeam1ScoreText.setFont(context.fonts->get(Fonts::Digi));
+	mTeam1ScoreText.setCharacterSize(60u);
+	mTeam1ScoreText.setPosition((mLegth / 2) - 90, 40);
+	mTeam1ScoreText.setColor(sf::Color::Blue);
+	mTeam1ScoreText.setString(toString(mTeam1Score));
+	centerOrigin(mTeam1ScoreText);
+
+	mTeam2ScoreText.setFont(context.fonts->get(Fonts::Digi));
+	mTeam2ScoreText.setCharacterSize(60u);
+	mTeam2ScoreText.setPosition((mLegth / 2) + 90, 40);
+	mTeam2ScoreText.setColor(sf::Color::Red);
+	mTeam2ScoreText.setString(toString(mTeam2Score));
+	centerOrigin(mTeam2ScoreText);
+
+	mGameTime.setFont(context.fonts->get(Fonts::Digi));
+	mGameTime.setCharacterSize(45u);
+	mGameTime.setPosition((mLegth / 2 - 7), 40);
+	mGameTime.setString("5:00");
+	centerOrigin(mGameTime);
+
 	// Play game theme
 	context.music->play(Music::MissionTheme);
 }
@@ -90,6 +129,10 @@ void MultiplayerGameState::draw()
 	if (mConnected)
 	{
 		mWorld.draw();
+		sf::RenderWindow& window = *getContext().window;
+		window.draw(mTeam1ScoreText);
+		window.draw(mTeam2ScoreText);
+		window.draw(mGameTime);
 
 		// Broadcast messages in default view
 		mWindow.setView(mWindow.getDefaultView());
@@ -128,6 +171,34 @@ bool MultiplayerGameState::update(sf::Time dt)
 	if (mConnected)
 	{
 		mWorld.update(dt);
+
+		mCountdown = dt.asSeconds();
+		//mHours -= mMins;
+		mSec -= mCountdown;
+
+		if (mSec < 0)
+		{
+			mSec = 60;
+			mMins -= 60;
+		}
+		mGameTime.setString((toString(mMins / 60)) + " : " + toString((int)mSec));
+
+		if (mMins < 0)
+		{
+			//GAME ENDS 
+			if (mTeam1Score > mTeam2Score)
+			{
+				//mPlayerOne.setMissionStatus(Player::MissionSuccess);
+				requestStackPush(States::GameOver);
+			}
+			else
+			{
+				//mPlayerOne.setMissionStatus(Player::MissionFailure);
+				requestStackPush(States::GameOver);
+			}
+
+
+		}
 
 		// Remove players whose Chickens were destroyed
 		bool foundLocalPlane = false;
@@ -264,16 +335,16 @@ bool MultiplayerGameState::handleEvent(const sf::Event& event)
 	if (event.type == sf::Event::KeyPressed)
 	{
 		// Enter pressed, add second player co-op (only if we are one player)
-		if (event.key.code == sf::Keyboard::Return && mLocalPlayerIdentifiers.size() == 1)
+		/*if (event.key.code == sf::Keyboard::Return && mLocalPlayerIdentifiers.size() == 1)
 		{
 			sf::Packet packet;
 			packet << static_cast<sf::Int32>(Client::RequestCoopPartner);
 
 			mSocket.send(packet);
-		}
+		}*/
 
 		// Escape pressed, trigger the pause screen
-		else if (event.key.code == sf::Keyboard::Escape)
+		if (event.key.code == sf::Keyboard::Escape)
 		{
 			disableAllRealtimeActions();
 			requestStackPush(States::NetworkPause);
@@ -407,7 +478,7 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 		packet >> ChickenIdentifier;
 
 		mWorld.addChicken(ChickenIdentifier);
-		mPlayers[ChickenIdentifier].reset(new Player(&mSocket, ChickenIdentifier, getContext().keys2));
+		mPlayers[ChickenIdentifier].reset(new Player(&mSocket, ChickenIdentifier, getContext().keys1));
 		mLocalPlayerIdentifiers.push_back(ChickenIdentifier);
 	} break;
 

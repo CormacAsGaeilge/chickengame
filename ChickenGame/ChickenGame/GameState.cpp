@@ -9,7 +9,6 @@ GameState::GameState(StateStack& stack, Context context)
 	: State(stack, context)
 	, mWorld(*context.window, *context.fonts, *context.sounds)
 	, mPlayerOne(nullptr, 1, context.keys1)
-	, mPlayerTwo(nullptr, 2, context.keys2)
 	, mP1ScoreText()
 	, mP2ScoreText()
 	, mP1Score()
@@ -22,9 +21,7 @@ GameState::GameState(StateStack& stack, Context context)
 
 {
 	mWorld.addChicken(1);
-	mWorld.addChicken(2);
 	mPlayerOne.setMissionStatus(Player::MissionRunning);
-	mPlayerTwo.setMissionStatus(Player::MissionRunning);
 
 	mLegth = 1920; // screen width
 	mMins = 240;
@@ -112,13 +109,11 @@ bool GameState::update(sf::Time dt)
 		if (mP1Score > mP2Score)
 		{
 			mPlayerOne.setMissionStatus(Player::MissionSuccess);
-			mPlayerTwo.setMissionStatus(Player::MissionSuccess);
 			requestStackPush(States::GameOver);
 		}
 		else
 		{
 			mPlayerOne.setMissionStatus(Player::MissionFailure);
-			mPlayerTwo.setMissionStatus(Player::MissionFailure);
 			requestStackPush(States::GameOver);
 		}
 		
@@ -132,13 +127,11 @@ bool GameState::update(sf::Time dt)
 	else if (mWorld.hasPlayerReachedEnd())
 	{
 		mPlayerOne.setMissionStatus(Player::MissionSuccess);
-		mPlayerTwo.setMissionStatus(Player::MissionSuccess);
 		requestStackPush(States::GameOver);
 	}
 
 	CommandQueue& commands = mWorld.getCommandQueue();
 	mPlayerOne.handleRealtimeInput(commands);
-	mPlayerTwo.handleRealtimeInput(commands);
 
 	return true;
 }
@@ -148,7 +141,6 @@ bool GameState::handleEvent(const sf::Event& event)
 	// Game input handling
 	CommandQueue& commands = mWorld.getCommandQueue();
 	mPlayerOne.handleEvent(event, commands);
-	mPlayerTwo.handleEvent(event, commands);
 
 	// Escape pressed, trigger the pause screen
 	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)

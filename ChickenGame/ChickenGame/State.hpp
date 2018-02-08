@@ -27,14 +27,13 @@ public:
 	struct Context
 	{
 		Context(sf::RenderWindow& window, TextureHolder& textures,
-			FontHolder& fonts, MusicPlayer& music, SoundPlayer& sounds, KeyBinding& keys1, KeyBinding& keys2);
+			FontHolder& fonts, MusicPlayer& music, SoundPlayer& sounds, KeyBinding& keys1);
 		sf::RenderWindow* window;
 		TextureHolder* textures;
 		FontHolder* fonts;
 		MusicPlayer* music;
 		SoundPlayer* sounds;
 		KeyBinding*	keys1;
-		KeyBinding*	keys2;
 	};
 
 public:

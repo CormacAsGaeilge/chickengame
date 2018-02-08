@@ -61,9 +61,9 @@ bool SettingsState::handleEvent(const sf::Event& event)
 				if (i < PlayerAction::Count)
 					getContext().keys1->assignKey(static_cast<PlayerAction::Type>(i), event.key.code);
 
-				// Player 2
-				else
-					getContext().keys2->assignKey(static_cast<PlayerAction::Type>(i - PlayerAction::Count), event.key.code);
+				//// Player 2
+				//else
+				//	getContext().keys2->assignKey(static_cast<PlayerAction::Type>(i - PlayerAction::Count), event.key.code);
 
 				mBindingButtons[i]->deactivate();
 			}
@@ -88,11 +88,11 @@ void SettingsState::updateLabels()
 
 		// Get keys of both players
 		sf::Keyboard::Key key1 = getContext().keys1->getAssignedKey(action);
-		sf::Keyboard::Key key2 = getContext().keys2->getAssignedKey(action);
+		//sf::Keyboard::Key key2 = getContext().keys2->getAssignedKey(action);
 
 		// Assign both key strings to labels
 		mBindingLabels[i]->setText(toString(key1));
-		mBindingLabels[i + PlayerAction::Count]->setText(toString(key2));
+		//mBindingLabels[i + PlayerAction::Count]->setText(toString(key2));
 	}
 }
 

@@ -63,4 +63,15 @@ private:
 	bool						mGameStarted;
 	sf::Time					mClientTimeout;
 	sf::Time					mTimeSinceLastPacket;
+	sf::Text					mTeam1ScoreText;
+	sf::Text					mTeam2ScoreText;
+	sf::Text					mGameTime;
+
+	float						mLegth;
+	float						mTeam1Score;
+	float						mTeam2Score;
+	float						mTimer;
+	float						mCountdown;
+	float						mMins;
+	float						mSec;
 };

@@ -19,7 +19,6 @@ public:
 private:
 	World				mWorld;
 	Player				mPlayerOne;
-	Player				mPlayerTwo;
 	FontHolder			mFonts;
 	sf::Text			mP1ScoreText;
 	sf::Text			mP2ScoreText;

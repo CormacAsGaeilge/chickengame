@@ -60,7 +60,7 @@ void World::update(sf::Time dt)
 	//mWorldView.move(0.f, mScrollSpeed * dt.asSeconds() * mScrollSpeedCompensation);
 
 	FOREACH(Chicken* a, mPlayerChickens)
-	a->setVelocity(0.f, 0.f);
+		a->setVelocity(0.f, 0.f);
 
 	// Setup commands to destroy entities, and guide missiles
 	destroyEntitiesOutsideView();
@@ -201,12 +201,12 @@ void World::adaptPlayerPosition()
 
 	/*FOREACH(Chicken* Chicken, mPlayerChickens)
 	{
-		sf::Vector2f position = Chicken->getPosition();
-		position.x = std::max(position.x, viewBounds.left + borderDistance);48
-		position.x = std::min(position.x, viewBounds.left + viewBounds.width - borderDistance);
-		position.y = std::max(position.y, viewBounds.top + borderDistance);
-		position.y = std::min(position.y, viewBounds.top + viewBounds.height - borderDistance);
-		Chicken->setPosition(position);
+	sf::Vector2f position = Chicken->getPosition();
+	position.x = std::max(position.x, viewBounds.left + borderDistance);48
+	position.x = std::min(position.x, viewBounds.left + viewBounds.width - borderDistance);
+	position.y = std::max(position.y, viewBounds.top + borderDistance);
+	position.y = std::min(position.y, viewBounds.top + viewBounds.height - borderDistance);
+	Chicken->setPosition(position);
 	}*/
 }
 
@@ -492,7 +492,7 @@ void World::spawnEnemies()
 		SpawnPoint spawn = mEnemySpawnPoints.back();
 
 		std::unique_ptr<Chicken> enemy(new Chicken(spawn.type, mTextures, mFonts));
-		enemy->setPosition(spawn.x, spawn.y);
+		//enemy->setPosition(spawn.x, spawn.y);
 		enemy->setRotation(180.f);
 
 		mSceneLayers[UpperAir]->attachChild(std::move(enemy));
@@ -569,8 +569,8 @@ sf::FloatRect World::getBattlefieldBounds() const
 {
 	// Return view bounds + some area at top, where enemies spawn
 	sf::FloatRect bounds = getViewBounds();
-	bounds.top -= 100.f;
-	bounds.height += 100.f;
+	bounds.top =- 100.f;
+	bounds.height =+ 100.f;
 
 	return bounds;
 }

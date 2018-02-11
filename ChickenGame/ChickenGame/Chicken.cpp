@@ -134,7 +134,7 @@ void Chicken::checkIfGoal()
 			
 		}
 		//out of bounds
-		isOutOfBounds = true;
+		//isOutOfBounds = true;
 	}
 
 	if (pos.x > 1090.f) {
@@ -143,12 +143,12 @@ void Chicken::checkIfGoal()
 			
 		}
 		//out of bounds
-		isOutOfBounds = true;
+		//isOutOfBounds = true;
 	}
 
 	if (pos.y > 4900.f || pos.y < 4440.f) {
 		//out of bounds
-		isOutOfBounds = true;
+		//isOutOfBounds = true;
 	}
 
 

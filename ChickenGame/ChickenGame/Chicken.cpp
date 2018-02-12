@@ -128,33 +128,80 @@ void Chicken::checkIfGoal()
 {
 	bool isOutOfBounds = false;
 	sf::Vector2f pos = getPosition();
-	if (pos.x < 100.f) {
-		if (pos.y > 4600.f && pos.y < 4710.f) {
-			//Goal for Player 2
-			
+	if (pos.x < 160.f) 
+	{
+		//LEFT
+		isOutOfBounds = true;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		{
+			isOutOfBounds = false;
 		}
-		//out of bounds
-		//isOutOfBounds = true;
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		{
+			isOutOfBounds = false;
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+		{
+			isOutOfBounds = false;
+		}
+	}
+	if (pos.x > 1775.f) 
+	{
+		//RIGHT
+		isOutOfBounds = true;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		{
+			isOutOfBounds = false;
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+		{
+			isOutOfBounds = false;
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+		{
+			isOutOfBounds = false;
+		}
 	}
 
-	if (pos.x > 1090.f) {
-		if (pos.y > 4600.f && pos.y < 4710.f) {
-			//Goal for Player 1
-			
+	if (pos.y > 4900.f) {
+		//BOTTOM
+		isOutOfBounds = true;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+		{
+			isOutOfBounds = false;
 		}
-		//out of bounds
-		//isOutOfBounds = true;
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		{
+			isOutOfBounds = false;
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		{
+			isOutOfBounds = false;
+		}
 	}
 
-	if (pos.y > 4900.f || pos.y < 4440.f) {
-		//out of bounds
-		//isOutOfBounds = true;
+	if (pos.y < 4023.f)
+	{
+		//TOP
+		isOutOfBounds = true;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+		{
+			isOutOfBounds = false;
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		{
+			isOutOfBounds = false;
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+		{
+			isOutOfBounds = false;
+		}
 	}
 
 
 	if (isOutOfBounds) {
 		setVelocity(0.f, 0.f);
-		setPosition(600.f, 4670.f);
+		//setPosition(600.f, 4670.f);
 	}
 }
 

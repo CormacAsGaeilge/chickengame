@@ -197,7 +197,7 @@ void World::adaptPlayerPosition()
 {
 	// Keep player's position inside the screen bounds, at least borderDistance units from the border
 	sf::FloatRect viewBounds = getViewBounds();
-	const float borderDistance = 100.f; // place player in arean
+	const float borderDistance = 1000.f; // place player in arean
 
 	/*FOREACH(Chicken* Chicken, mPlayerChickens)
 	{
@@ -307,7 +307,7 @@ void World::handleCollisions()
 	}
 	else if (matchesCategories(pair, Category::EnemyChicken, Category::Goal)) {
 		//Ball hit goal
-		int x = 5;
+		//int x = 5;
 	}
 	}
 
@@ -405,7 +405,7 @@ void World::buildScene()
 
 	// Add the background sprite to the scene
 	std::unique_ptr<SpriteNode> FootballPitchSprite(new SpriteNode(FootballPitchTexture, textureRect));
-	FootballPitchSprite->setPosition(mWorldBounds.left, mWorldBounds.top - 280.0f);
+	FootballPitchSprite->setPosition(mWorldBounds.left, mWorldBounds.top - 400.0f);
 	mSceneLayers[Background]->attachChild(std::move(FootballPitchSprite));
 
 	// Add the finish line to the scene
@@ -460,9 +460,8 @@ void World::addGoals() {
 
 void World::addEnemies()
 {
-	// Add enemies to the spawn point container
-	addEnemy(Chicken::Raptor, 0.f, 0.f);
-	//addEnemy(Chicken::Avenger, 0.f, 200.f);
+	addEnemy(Chicken::Avenger, 0.f, 0.f);
+
 
 	// Sort all enemies according to their y value, such that lower enemies are checked first for spawning
 	sortEnemies();
@@ -492,7 +491,7 @@ void World::spawnEnemies()
 		SpawnPoint spawn = mEnemySpawnPoints.back();
 
 		std::unique_ptr<Chicken> enemy(new Chicken(spawn.type, mTextures, mFonts));
-		//enemy->setPosition(spawn.x, spawn.y);
+		enemy->setPosition(spawn.x, spawn.y);
 		enemy->setRotation(180.f);
 
 		mSceneLayers[UpperAir]->attachChild(std::move(enemy));
@@ -569,8 +568,8 @@ sf::FloatRect World::getBattlefieldBounds() const
 {
 	// Return view bounds + some area at top, where enemies spawn
 	sf::FloatRect bounds = getViewBounds();
-	bounds.top =- 100.f;
-	bounds.height =+ 100.f;
+	bounds.top -= 100.f;
+	bounds.height += 100.f;
 
 	return bounds;
 }

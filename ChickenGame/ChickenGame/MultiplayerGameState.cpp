@@ -101,22 +101,22 @@ MultiplayerGameState::MultiplayerGameState(StateStack& stack, Context context, b
 	mTeam1Score = mWorld.getScore();
 
 	mTeam1ScoreText.setFont(context.fonts->get(Fonts::Digi));
-	mTeam1ScoreText.setCharacterSize(60u);
-	mTeam1ScoreText.setPosition((mLegth / 2) - 90, 40);
+	mTeam1ScoreText.setCharacterSize(40u);
+	mTeam1ScoreText.setPosition((mLegth / 2) - 90, 10);
 	mTeam1ScoreText.setColor(sf::Color::Blue);
 	mTeam1ScoreText.setString(toString(mTeam1Score));
 	centerOrigin(mTeam1ScoreText);
 
 	mTeam2ScoreText.setFont(context.fonts->get(Fonts::Digi));
-	mTeam2ScoreText.setCharacterSize(60u);
-	mTeam2ScoreText.setPosition((mLegth / 2) + 90, 40);
+	mTeam2ScoreText.setCharacterSize(40u);
+	mTeam2ScoreText.setPosition((mLegth / 2) + 90, 10);
 	mTeam2ScoreText.setColor(sf::Color::Red);
 	mTeam2ScoreText.setString(toString(mTeam2Score));
 	centerOrigin(mTeam2ScoreText);
 
 	mGameTime.setFont(context.fonts->get(Fonts::Digi));
-	mGameTime.setCharacterSize(45u);
-	mGameTime.setPosition((mLegth / 2 - 7), 40);
+	mGameTime.setCharacterSize(35u);
+	mGameTime.setPosition((mLegth / 2 - 7), 10);
 	mGameTime.setString("5:00");
 	centerOrigin(mGameTime);
 
@@ -411,8 +411,9 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 		sf::Vector2f ChickenPosition;
 		packet >> ChickenIdentifier >> ChickenPosition.x >> ChickenPosition.y;
 
+		ChickenPosition.x -= 500;
 		Chicken* Chicken = mWorld.addChicken(ChickenIdentifier);
-		Chicken->setPosition(ChickenPosition);
+		Chicken->setPosition(ChickenPosition.x, ChickenPosition.y);
 
 		mPlayers[ChickenIdentifier].reset(new Player(&mSocket, ChickenIdentifier, getContext().keys1));
 		mLocalPlayerIdentifiers.push_back(ChickenIdentifier);

@@ -19,18 +19,15 @@ std::vector<ChickenData> initializeChickenData()
 	data[Chicken::Eagle].textureRect = sf::IntRect(15, 19, 75, 73);
 	data[Chicken::Eagle].hasRollAnimation = true;
 
-	data[Chicken::Raptor].hitpoints = 20;
-	data[Chicken::Raptor].speed = 80.f;
-	data[Chicken::Raptor].texture = Textures::Chicken;
-	data[Chicken::Raptor].textureRect = sf::IntRect(1, 131, 38, 38);
-	data[Chicken::Raptor].fireInterval = sf::Time::Zero;
-	data[Chicken::Raptor].hasRollAnimation = false;
-
-	data[Chicken::Avenger].hitpoints = 40;
-	data[Chicken::Avenger].speed = 50.f;
+	data[Chicken::Avenger].hitpoints = 100;
+	data[Chicken::Avenger].speed = 80.f;
+	data[Chicken::Avenger].fireInterval = sf::seconds(1);
 	data[Chicken::Avenger].texture = Textures::Chicken;
-	data[Chicken::Avenger].fireInterval = sf::seconds(2);
-	data[Chicken::Avenger].hasRollAnimation = false;
+	data[Chicken::Avenger].textureRect = sf::IntRect(19, 781, 82, 82);
+
+	//Red (163, 781)
+
+	//Blue (168, 781)
 
 	
 

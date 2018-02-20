@@ -3,6 +3,7 @@
 #include "ResourceIdentifiers.hpp"
 
 #include <SFML/System/Time.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Rect.hpp>
 
@@ -61,6 +62,11 @@ struct ParticleData
 	sf::Time						lifetime;
 };
 
+struct FormationData {
+	sf::Vector2f	aPlayer1, aPlayer2, aPlayer3, aPlayer4, aPlayer5, aPlayer6, aPlayer7, aPlayer8, aPlayer9, aPlayer10, aPlayer11,
+					bPlayer1, bPlayer2, bPlayer3, bPlayer4, bPlayer5, bPlayer6, bPlayer7, bPlayer8, bPlayer9, bPlayer10, bPlayer11;
+};
+
 //struct ChickenData
 //{
 //	int hitpoints;
@@ -74,3 +80,4 @@ std::vector<ProjectileData> initializeProjectileData();
 std::vector<PickupData> initializePickupData();
 std::vector<ParticleData> initializeParticleData();
 std::vector<BallData> initializeBallData();
+std::vector<FormationData> initializeFormationData();

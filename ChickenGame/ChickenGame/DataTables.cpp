@@ -4,6 +4,7 @@
 #include "Pickup.hpp"
 #include "Particle.hpp"
 #include "Ball.hpp"
+#include "Formation.hpp"
 
 // For std::bind() placeholders _1, _2, ...
 using namespace std::placeholders;
@@ -101,6 +102,66 @@ std::vector<ParticleData> initializeParticleData()
 
 	data[Particle::Smoke].color = sf::Color(50, 50, 50);
 	data[Particle::Smoke].lifetime = sf::seconds(4.f);
+
+	return data;
+}
+
+std::vector<FormationData> initializeFormationData() {
+	std::vector<FormationData> data(Formation::FormationCount);
+
+	//443 formation
+	//Team A
+	data[Formation::FourFourTwo].aPlayer1 = sf::Vector2f(234.f, 540.f);		//keeper
+	data[Formation::FourFourTwo].aPlayer2 = sf::Vector2f(441.f, 405.f);		//defender
+	data[Formation::FourFourTwo].aPlayer3 = sf::Vector2f(441.f, 675.f);		//defender
+	data[Formation::FourFourTwo].aPlayer4 = sf::Vector2f(441.f, 135.f);		//defender
+	data[Formation::FourFourTwo].aPlayer5 = sf::Vector2f(441.f, 945.f);		//defender
+	data[Formation::FourFourTwo].aPlayer6 = sf::Vector2f(649.f, 405.f);		//midfielder
+	data[Formation::FourFourTwo].aPlayer7 = sf::Vector2f(649.f, 675.f);		//midfielder
+	data[Formation::FourFourTwo].aPlayer8 = sf::Vector2f(649.f, 945.f);		//midfielder
+	data[Formation::FourFourTwo].aPlayer9 = sf::Vector2f(649.f, 405.f);		//midfielder
+	data[Formation::FourFourTwo].aPlayer10 = sf::Vector2f(856.f, 405.f);	//striker
+	data[Formation::FourFourTwo].aPlayer11 = sf::Vector2f(856.f, 675.f);	//striker
+
+	//Team B
+	data[Formation::FourFourTwo].bPlayer1 = sf::Vector2f(1686.f, 540.f);	//keeper
+	data[Formation::FourFourTwo].bPlayer2 = sf::Vector2f(1479.f, 405.f);	//defender
+	data[Formation::FourFourTwo].bPlayer3 = sf::Vector2f(1479.f, 675.f);	//defender
+	data[Formation::FourFourTwo].bPlayer4 = sf::Vector2f(1479.f, 135.f);	//defender
+	data[Formation::FourFourTwo].bPlayer5 = sf::Vector2f(1479.f, 945.f);	//defender
+	data[Formation::FourFourTwo].bPlayer6 = sf::Vector2f(1271.f, 405.f);	//midfielder
+	data[Formation::FourFourTwo].bPlayer7 = sf::Vector2f(1271.f, 675.f);	//midfielder
+	data[Formation::FourFourTwo].bPlayer8 = sf::Vector2f(1271.f, 135.f);	//midfielder
+	data[Formation::FourFourTwo].bPlayer9 = sf::Vector2f(1271.f, 945.f);	//midfielder
+	data[Formation::FourFourTwo].bPlayer10 = sf::Vector2f(1064.f, 405.f);	//striker
+	data[Formation::FourFourTwo].bPlayer11 = sf::Vector2f(1064.f, 675.f);	//striker
+
+	//443 formation
+	//Team A
+	data[Formation::ThreeFourThree].aPlayer1 = sf::Vector2f(234.f, 540.f);		//keeper
+	data[Formation::ThreeFourThree].aPlayer2 = sf::Vector2f(441.f, 540.f);		//defender
+	data[Formation::ThreeFourThree].aPlayer3 = sf::Vector2f(441.f, 180.f);		//defender
+	data[Formation::ThreeFourThree].aPlayer4 = sf::Vector2f(441.f, 900.f);		//defender
+	data[Formation::ThreeFourThree].aPlayer5 = sf::Vector2f(649.f, 405.f);		//midfielder
+	data[Formation::ThreeFourThree].aPlayer6 = sf::Vector2f(649.f, 675.f);		//midfielder
+	data[Formation::ThreeFourThree].aPlayer7 = sf::Vector2f(649.f, 135.f);		//midfielder
+	data[Formation::ThreeFourThree].aPlayer8 = sf::Vector2f(649.f, 945.f);		//midfielder
+	data[Formation::ThreeFourThree].aPlayer9 = sf::Vector2f(856.f, 540.f);		//striker
+	data[Formation::ThreeFourThree].aPlayer10 = sf::Vector2f(856.f, 180.f);		//striker
+	data[Formation::ThreeFourThree].aPlayer11 = sf::Vector2f(856.f, 900.f);		//striker
+
+	//Team B
+	data[Formation::ThreeFourThree].bPlayer1 = sf::Vector2f(1686.f, 540.f);		//keeper
+	data[Formation::ThreeFourThree].bPlayer2 = sf::Vector2f(1479.f, 540.f);		//defender
+	data[Formation::ThreeFourThree].bPlayer3 = sf::Vector2f(1479.f, 180.f);		//defender
+	data[Formation::ThreeFourThree].bPlayer4 = sf::Vector2f(1479.f, 900.f);		//defender
+	data[Formation::ThreeFourThree].bPlayer5 = sf::Vector2f(1271.f, 405.f);		//midfielder
+	data[Formation::ThreeFourThree].bPlayer6 = sf::Vector2f(1271.f, 675.f);		//midfielder
+	data[Formation::ThreeFourThree].bPlayer7 = sf::Vector2f(1271.f, 135.f);		//midfielder
+	data[Formation::ThreeFourThree].bPlayer8 = sf::Vector2f(1271.f, 945.f);		//midfielder
+	data[Formation::ThreeFourThree].bPlayer9 = sf::Vector2f(1064.f, 540.f);		//striker
+	data[Formation::ThreeFourThree].bPlayer10 = sf::Vector2f(1064.f, 180.f);	//striker
+	data[Formation::ThreeFourThree].bPlayer11 = sf::Vector2f(1064.f, 900.f);	//striker
 
 	return data;
 }

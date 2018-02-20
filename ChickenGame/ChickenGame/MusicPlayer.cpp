@@ -6,7 +6,7 @@ MusicPlayer::MusicPlayer()
 	, mVolume(100.f)
 {
 	mFilenames[Music::MenuTheme] = "Media/Music/chickenTheme.wav";
-	mFilenames[Music::MissionTheme] = "Media/Music/chickenTheme.wav";
+	mFilenames[Music::MissionTheme] = "Media/Music/MissionTheme.ogg";
 }
 
 void MusicPlayer::play(Music::ID theme)

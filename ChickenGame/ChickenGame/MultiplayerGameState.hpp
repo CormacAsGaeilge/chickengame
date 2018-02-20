@@ -5,7 +5,7 @@
 #include "Player.hpp"
 #include "GameServer.hpp"
 #include "NetworkProtocol.hpp"
-
+#include "Formation.hpp"
 #include <SFML/System/Clock.hpp>
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Network/TcpSocket.hpp>
@@ -40,7 +40,6 @@ private:
 	World						mWorld;
 	sf::RenderWindow&			mWindow;
 	TextureHolder&				mTextureHolder;
-
 	std::map<int, PlayerPtr>	mPlayers;
 	std::vector<sf::Int32>		mLocalPlayerIdentifiers;
 	sf::TcpSocket				mSocket;
@@ -67,7 +66,7 @@ private:
 	sf::Text					mTeam1ScoreText;
 	sf::Text					mTeam2ScoreText;
 	sf::Text					mGameTime;
-
+	Formation					mFormation;
 	float						mLegth;
 	float						mTeam1Score;
 	float						mTeam2Score;

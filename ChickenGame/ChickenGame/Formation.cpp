@@ -7,6 +7,8 @@ namespace
 }
 
 Formation::Formation()
+	: ATeamPositions(21)
+	, BTeamPositions(21)
 {
 	initialiseTeams(FourFourTwo);
 }
@@ -16,6 +18,8 @@ Formation::~Formation()
 }
 
 Formation::Formation(Formation::Type formationType)
+	: ATeamPositions(21)
+	, BTeamPositions(21)
 {
 	initialiseTeams(formationType);
 }
@@ -23,10 +27,10 @@ Formation::Formation(Formation::Type formationType)
 sf::Vector2f Formation::getTeamMemberPosition(bool isATeam, int teamMember) const
 {
 	if (isATeam) {
-		return ATeamPositions.at(teamMember);
+		return ATeamPositions.at(teamMember-1) + sf::Vector2f(0.f,3920.f);
 	}
 	else {
-		return BTeamPositions.at(teamMember);
+		return BTeamPositions.at(teamMember-1);
 	}
 }
 

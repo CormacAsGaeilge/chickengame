@@ -528,7 +528,7 @@ void Chicken::updateTexts()
 	if (isDestroyed())
 		mHealthDisplay->setString("");
 	else
-		mHealthDisplay->setString(toString(mBoost) + " BOOST|" + "Velocity: (" + toString(velocity.x) + "," + toString(velocity.x) + ")");
+		mHealthDisplay->setString(" Position: [" + toString(getPosition().x) +"," + toString(getPosition().y) + "]");//setString(toString(mBoost) + " BOOST|" + "Velocity: (" + toString(velocity.x) + "," + toString(velocity.x) + ")");
 	mHealthDisplay->setPosition(0.f, 50.f);
 	mHealthDisplay->setRotation(-getRotation());
 	/*if (mMissileDisplay)
@@ -543,12 +543,8 @@ void Chicken::updateTexts()
 	//}
 }
 
-
-
-
 void Chicken::updateRollAnimation(sf::Time dt)
 {
-
 	if (Table[mType].hasRollAnimation)
 	{
 		sf::IntRect textureRect = Table[mType].textureRect;

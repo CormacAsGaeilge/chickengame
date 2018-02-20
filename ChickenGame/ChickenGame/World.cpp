@@ -25,7 +25,7 @@ World::World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sou
 	, mSounds(sounds)
 	, mSceneGraph()
 	, mSceneLayers()
-	, mWorldBounds(0.0f, 0.0f, mWorldView.getSize().x, 5000.0f/*250.f, 200.f, 650.f, 800.f*/)
+	, mWorldBounds(0.0f, 0.0f, mWorldView.getSize().x, 1080.f /*5000.0f, 250.f, 200.f, 650.f, 800.f*/)
 	, mSpawnPosition(mWorldView.getSize().x / 2.f, mWorldBounds.height - mWorldView.getSize().y / 2.f)
 	, mScrollSpeed(-50.f)
 	, mScrollSpeedCompensation(1.f)
@@ -47,7 +47,7 @@ World::World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sou
 	mP1Score = 0;
 
 	// Prepare the view
-	mWorldView.setCenter(mSpawnPosition);
+	mWorldView.setCenter(sf::Vector2f(mWorldView.getSize().x / 2.f, mWorldBounds.height - mWorldView.getSize().y / 2.f));
 }
 
 void World::setWorldScrollCompensation(float compensation)
@@ -57,8 +57,6 @@ void World::setWorldScrollCompensation(float compensation)
 
 void World::update(sf::Time dt)
 {
-
-	
 	// Scroll the world, reset player velocity
 	//mWorldView.move(0.f, mScrollSpeed * dt.asSeconds() * mScrollSpeedCompensation);
 
@@ -76,7 +74,6 @@ void World::update(sf::Time dt)
 
 	// Collision detection and response (may destroy entities)
 	handleCollisions();
-
 	addGoals();
 
 	// Remove Chickens that were destroyed (World::removeWrecks() only destroys the entities, not the pointers in mPlayerChicken)
@@ -147,10 +144,10 @@ void World::removeChicken(int identifier)
 	}
 }
 
-Chicken* World::addChicken(int identifier)
+Chicken* World::addChicken(int identifier, sf::Vector2f startPos)
 {
 
-	sf::Vector2f startPos(mWorldView.getCenter().x + (identifier * 25), mWorldView.getCenter().y + (identifier * 25));
+	//sf::Vector2f startPos(mWorldView.getCenter().x + (identifier * 25), mWorldView.getCenter().y + (identifier * 25));
 
 	std::unique_ptr<Chicken> player(new Chicken(Chicken::Eagle, mTextures, mFonts));
 
@@ -172,8 +169,8 @@ void World::createPickup(sf::Vector2f position, Pickup::Type type)
 
 void World::setCurrentBattleFieldPosition(float lineY)
 {
-	mWorldView.setCenter(mWorldView.getCenter().x, lineY - mWorldView.getSize().y / 2);
-	mSpawnPosition.y = mWorldBounds.height;
+	//mWorldView.setCenter(mWorldView.getCenter().x, lineY - mWorldView.getSize().y / 2);
+	//mSpawnPosition.y = mWorldBounds.height;
 }
 
 void World::setWorldHeight(float height)

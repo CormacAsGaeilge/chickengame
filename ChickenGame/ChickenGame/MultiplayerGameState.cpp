@@ -44,6 +44,7 @@ MultiplayerGameState::MultiplayerGameState(StateStack& stack, Context context, b
 	, mTeam2Score()
 	, mGameTime()
 	, mCountdown()
+	, mFormation(Formation::FourFourTwo)
 	//, mWinner()
 	, mMins()
 	, mSec()
@@ -172,7 +173,6 @@ void MultiplayerGameState::onDestroy()
 
 bool MultiplayerGameState::update(sf::Time dt)
 {
-
 	// Connected to server: Handle all the network logic
 	if (mConnected)
 	{
@@ -415,7 +415,7 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 		}
 	} break;
 
-	// Sent by the server to order to spawn player 1 airplane on connect
+	// Sent by the server to order to spawn player 1 chicken on connect
 	case Server::SpawnSelf:
 	{
 		sf::Int32 ChickenIdentifier;
@@ -423,7 +423,7 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 		packet >> ChickenIdentifier >> ChickenPosition.x >> ChickenPosition.y;
 
 		ChickenPosition.x -= 500;
-		Chicken* Chicken = mWorld.addChicken(ChickenIdentifier);
+		Chicken* Chicken = mWorld.addChicken(ChickenIdentifier, mFormation.getTeamMemberPosition(true, (int)ChickenIdentifier ));
 		Chicken->setPosition(ChickenPosition.x, ChickenPosition.y);
 
 		mPlayers[ChickenIdentifier].reset(new Player(&mSocket, ChickenIdentifier, getContext().keys1));
@@ -439,7 +439,7 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 		sf::Vector2f ChickenPosition;
 		packet >> ChickenIdentifier >> ChickenPosition.x >> ChickenPosition.y;
 
-		Chicken* Chicken = mWorld.addChicken(ChickenIdentifier);
+		Chicken* Chicken = mWorld.addChicken(ChickenIdentifier, mFormation.getTeamMemberPosition(ChickenIdentifier % 2 == 0, (int)ChickenIdentifier));
 		Chicken->setPosition(ChickenPosition);
 
 		mPlayers[ChickenIdentifier].reset(new Player(&mSocket, ChickenIdentifier, nullptr));
@@ -474,7 +474,7 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 			sf::Vector2f ChickenPosition;
 			packet >> ChickenIdentifier >> ChickenPosition.x >> ChickenPosition.y >> hitpoints >> missileAmmo;
 
-			Chicken* Chicken = mWorld.addChicken(ChickenIdentifier);
+			Chicken* Chicken = mWorld.addChicken(ChickenIdentifier, mFormation.getTeamMemberPosition(ChickenIdentifier % 2 == 0, (int)ChickenIdentifier));
 			Chicken->setPosition(ChickenPosition);
 			Chicken->setHitpoints(hitpoints);
 			Chicken->setMissileAmmo(missileAmmo);
@@ -489,7 +489,7 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 		sf::Int32 ChickenIdentifier;
 		packet >> ChickenIdentifier;
 
-		mWorld.addChicken(ChickenIdentifier);
+		mWorld.addChicken(ChickenIdentifier, mFormation.getTeamMemberPosition(ChickenIdentifier % 2 == 0, (int)ChickenIdentifier));
 		mPlayers[ChickenIdentifier].reset(new Player(&mSocket, ChickenIdentifier, getContext().keys1));
 		mLocalPlayerIdentifiers.push_back(ChickenIdentifier);
 	} break;

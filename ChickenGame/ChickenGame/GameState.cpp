@@ -20,7 +20,7 @@ GameState::GameState(StateStack& stack, Context context)
 	, mSec()
 
 {
-	mWorld.addChicken(1);
+	mWorld.addChicken(1, sf::Vector2f(150.f,150.f));
 	mPlayerOne.setMissionStatus(Player::MissionRunning);
 
 	mLegth = 1920; // screen width

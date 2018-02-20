@@ -34,8 +34,8 @@ public:
 
 	sf::FloatRect getViewBounds() const;
 	CommandQueue& getCommandQueue();
-	Chicken* addChicken(int identifier);
 	void removeChicken(int identifier);
+	Chicken * addChicken(int identifier, sf::Vector2f startPos);
 	void setCurrentBattleFieldPosition(float lineY);
 	void setWorldHeight(float height);
 

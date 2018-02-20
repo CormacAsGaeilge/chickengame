@@ -47,6 +47,9 @@ public:
 	void  setScore(const float);
 	float getScore() const;
 
+	void  setP2Score(const float);
+	float getP2Score() const;
+
 
 	void setWorldScrollCompensation(float compensation);
 
@@ -111,6 +114,7 @@ private:
 	sf::FloatRect						mWorldBounds;
 	sf::Vector2f						mSpawnPosition;
 	float								mP1Score;
+	float								mP2Score;
 	float								mScrollSpeed;
 	float								mScrollSpeedCompensation;
 	float								mBlueTeamScore;

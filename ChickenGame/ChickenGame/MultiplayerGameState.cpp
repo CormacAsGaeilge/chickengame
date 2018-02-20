@@ -121,6 +121,7 @@ void MultiplayerGameState::getScore()
 	mTeam1ScoreText.setString(toString(mTeam1Score));
 	centerOrigin(mTeam1ScoreText);
 
+	mTeam2Score = mWorld.getP2Score();
 	
 	mTeam2ScoreText.setCharacterSize(40u);
 	mTeam2ScoreText.setPosition((mLegth / 2) + 90, 10);

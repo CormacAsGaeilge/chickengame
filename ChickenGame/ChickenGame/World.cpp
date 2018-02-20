@@ -33,6 +33,7 @@ World::World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sou
 	, mEnemySpawnPoints()
 	, mActiveEnemies()
 	, mP1Score()
+	, mP2Score()
 	, mReadTeamScore()
 	, mBlueTeamScore()
 	, mFinishSprite(nullptr)
@@ -45,6 +46,7 @@ World::World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sou
 	mBlueTeamScore = 0;
 	mReadTeamScore = 0;
 	mP1Score = 0;
+	mP2Score = 0;
 
 	// Prepare the view
 	mWorldView.setCenter(mSpawnPosition);
@@ -226,9 +228,19 @@ void  World::setScore(float score)
 	mP1Score = score;
 }
 
-float World::getScore() const
+float World::getP2Score() const
 {
 	return mP1Score;
+}
+
+void  World::setP2Score(float score)
+{
+	mP2Score = score;
+}
+
+float World::getScore() const
+{
+	return mP2Score;
 }
 
 void World::adaptPlayerVelocity()
@@ -467,53 +479,33 @@ void World::addGoals() {
 		matchesCategories(pair, Category::PlayerChicken, Category::EnemyChicken);
 		auto& enemy = static_cast<Chicken&>(*pair.second);
 
-
-		//Goal For Blue Team
-
-		//To_do fix positions Y
-
-		if (enemy.getPosition().x > 1785.f && enemy.getPosition().y > 100 || enemy.getPosition().y < 100)
+		if (enemy.getPosition().x > 1752.56f)
 		{
-			//To-Do
-			//Restet ball position
-			//Update Score
-			enemy.setPosition(0.f, 0.f);
-			//mBlueTeamScore++;
-			mP1Score = mP1Score + 1;
-
-			setScore(mP1Score);
+			if (enemy.getPosition().y > 4360.22 && enemy.getPosition().y < 4558.4)
+			{
+				if (enemy.getPosition().x > 1760.56f)
+				{
+					//GOAL Blue Team
+					enemy.setPosition(960.0f, 4460.0f);
+					mP1Score = mP1Score + 1;
+					setScore(mP1Score);
+				}
+			}
 		}
-		if (enemy.getPosition().x < 160.f && enemy.getPosition().y > 100 || enemy.getPosition().y < 100)
+		if (enemy.getPosition().x < 156.958f)
 		{
-			enemy.setPosition(0.f, 0.f);
-
-			//mReadTeamScore++;
+			if (enemy.getPosition().y > 4360.22 && enemy.getPosition().y < 4558.4)
+			{
+				if (enemy.getPosition().x < 148.958f)
+				{
+					//GOAL Red Team
+					enemy.setPosition(960.0f, 4460.0f);
+					mP2Score = mP2Score + 1;
+					setP2Score(mP2Score);
+				}
+			}
 		}
 	}
-
-	/*sf::RectangleShape goalOne(sf::Vector2f(70.f, 110.f));
-	goalOne.setPosition(sf::Vector2f(30.f, 290.f));
-	goalOne.setOutlineThickness(1);
-	goalOne.setOutlineColor(sf::Color(250, 150, 100));
-
-	sf::RectangleShape goalTwo(sf::Vector2f(70.f, 110.f));
-	goalTwo.setPosition(sf::Vector2f(1090.f, 290.f));
-	goalTwo.setOutlineThickness(1);
-	goalTwo.setOutlineColor(sf::Color(250, 150, 100));*/
-
-	//std::unique_ptr<Goals> goalOne(new Goals(30.f, 290.f, 70.f, 110.f));
-	//goalOne->setPosition(30.f, 290.f);
-	//goalOne->setScale(70.f, 110.f);
-	//goalOne->setRotation(180.f);
-
-	//mSceneLayers[UpperAir]->attachChild(std::move(goalOne));
-
-	//std::unique_ptr<Goals> goalTwo(new Goals(1090.f, 290.f, 70.f, 110.f));
-	//goalTwo->setPosition(1090.f, 290.f);
-	//goalTwo->setScale(70.f, 110.f);
-	//goalTwo->setRotation(180.f);
-
-	//mSceneLayers[UpperAir]->attachChild(std::move(goalTwo));
 }
 
 void World::addEnemies()

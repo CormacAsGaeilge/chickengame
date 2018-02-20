@@ -128,10 +128,22 @@ void Chicken::checkIfGoal()
 {
 	bool isOutOfBounds = false;
 	sf::Vector2f pos = getPosition();
-	if (pos.x < 150.f) 
+	//if (pos.x < 13.7166f)
+	if (pos.x < 156.958f)
 	{
 		//LEFT
-		setVelocity(150.f, 0.f);
+		if (pos.y > 4360.22f && pos.y < 4558.4f)
+		{
+			if (pos.x < 13.7166f)
+			{
+				setVelocity(150.f, 0.f);
+			}
+		}
+		else
+		{
+			setVelocity(150.f, 0.f);
+		}
+
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 		{
 			isOutOfBounds = false;
@@ -145,10 +157,22 @@ void Chicken::checkIfGoal()
 			isOutOfBounds = false;
 		}
 	}
-	if (pos.x > 1800.f) 
+	if (pos.x > 1752.56f) 
 	{
 		//RIGHT
-		setVelocity(-150.f, 0.f);
+		if (pos.y > 4360.22 && pos.y < 4558.4)
+		{
+			if (pos.x > 1890.56)
+			{
+				setVelocity(-150.f, 0.f);
+			}
+		}
+		else
+		{
+			setVelocity(-150.f, 0.f);
+		}
+
+
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 		{
 			isOutOfBounds = false;
@@ -166,6 +190,9 @@ void Chicken::checkIfGoal()
 	if (pos.y > 4900.f) {
 		//BOTTOM
 		setVelocity(0.f, -150.f);
+
+		isOutOfBounds = true;
+
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 		{
 			isOutOfBounds = false;
@@ -184,6 +211,9 @@ void Chicken::checkIfGoal()
 	{
 		//TOP
 		setVelocity(0.f, 150.f);
+
+		isOutOfBounds = true;
+
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 		{
 			isOutOfBounds = false;
@@ -203,8 +233,7 @@ void Chicken::checkIfGoal()
 
 	if (isOutOfBounds) 
 	{
-		setVelocity(10.f, 0.f);
-
+		//setVelocity(150.f, 0.f);
 		//setVelocity().y = 12.f;
 	}
 }
@@ -523,12 +552,13 @@ void Chicken::createPickup(SceneNode& node, const TextureHolder& textures) const
 void Chicken::updateTexts()
 {
 	sf::Vector2f velocity(0, 0);
+	sf::Vector2f pos = getPosition();
 	velocity = getVelocity();
 	// Display hitpoints
 	if (isDestroyed())
 		mHealthDisplay->setString("");
 	else
-		mHealthDisplay->setString(toString(mBoost) + " BOOST|" + "Velocity: (" + toString(velocity.x) + "," + toString(velocity.x) + ")");
+		mHealthDisplay->setString(toString(mBoost) + " BOOST|" + "Position: (" + toString(pos.x) + "," + toString(pos.y) + ")");
 	mHealthDisplay->setPosition(0.f, 50.f);
 	mHealthDisplay->setRotation(-getRotation());
 	/*if (mMissileDisplay)

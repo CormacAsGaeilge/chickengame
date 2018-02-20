@@ -128,36 +128,36 @@ void Chicken::checkIfGoal()
 {
 	bool isOutOfBounds = false;
 	sf::Vector2f pos = getPosition();
-	if (pos.x < 160.f) 
+	if (pos.x < 150.f) 
 	{
 		//LEFT
-		isOutOfBounds = true;
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		setVelocity(150.f, 0.f);
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 		{
 			isOutOfBounds = false;
 		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 		{
 			isOutOfBounds = false;
 		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 		{
 			isOutOfBounds = false;
 		}
 	}
-	if (pos.x > 1775.f) 
+	if (pos.x > 1800.f) 
 	{
 		//RIGHT
-		isOutOfBounds = true;
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		setVelocity(-150.f, 0.f);
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 		{
 			isOutOfBounds = false;
 		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 		{
 			isOutOfBounds = false;
 		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 		{
 			isOutOfBounds = false;
 		}
@@ -165,16 +165,16 @@ void Chicken::checkIfGoal()
 
 	if (pos.y > 4900.f) {
 		//BOTTOM
-		isOutOfBounds = true;
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+		setVelocity(0.f, -150.f);
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 		{
 			isOutOfBounds = false;
 		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 		{
 			isOutOfBounds = false;
 		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 		{
 			isOutOfBounds = false;
 		}
@@ -183,25 +183,29 @@ void Chicken::checkIfGoal()
 	if (pos.y < 4023.f)
 	{
 		//TOP
-		isOutOfBounds = true;
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+		setVelocity(0.f, 150.f);
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 		{
 			isOutOfBounds = false;
 		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 		{
 			isOutOfBounds = false;
 		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 		{
 			isOutOfBounds = false;
 		}
 	}
 
+	//To-DO add Angles
 
-	if (isOutOfBounds) {
-		setVelocity(0.f, 0.f);
-		//setPosition(600.f, 4670.f);
+
+	if (isOutOfBounds) 
+	{
+		setVelocity(10.f, 0.f);
+
+		//setVelocity().y = 12.f;
 	}
 }
 

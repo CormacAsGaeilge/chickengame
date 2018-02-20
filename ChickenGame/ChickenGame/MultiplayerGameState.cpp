@@ -94,25 +94,11 @@ MultiplayerGameState::MultiplayerGameState(StateStack& stack, Context context, b
 	mLegth = 1920; // screen width
 	mMins = 240;
 	mSec = 60;
-	mTeam1Score = 0;
-	mTeam2Score = 0;
 	float mCountdown = 60;
 
-	mTeam1Score = mWorld.getScore();
-
 	mTeam1ScoreText.setFont(context.fonts->get(Fonts::Digi));
-	mTeam1ScoreText.setCharacterSize(40u);
-	mTeam1ScoreText.setPosition((mLegth / 2) - 90, 10);
-	mTeam1ScoreText.setColor(sf::Color::Blue);
-	mTeam1ScoreText.setString(toString(mTeam1Score));
-	centerOrigin(mTeam1ScoreText);
-
 	mTeam2ScoreText.setFont(context.fonts->get(Fonts::Digi));
-	mTeam2ScoreText.setCharacterSize(40u);
-	mTeam2ScoreText.setPosition((mLegth / 2) + 90, 10);
-	mTeam2ScoreText.setColor(sf::Color::Red);
-	mTeam2ScoreText.setString(toString(mTeam2Score));
-	centerOrigin(mTeam2ScoreText);
+
 
 	mGameTime.setFont(context.fonts->get(Fonts::Digi));
 	mGameTime.setCharacterSize(35u);
@@ -122,6 +108,25 @@ MultiplayerGameState::MultiplayerGameState(StateStack& stack, Context context, b
 
 	// Play game theme
 	context.music->play(Music::MissionTheme);
+}
+
+void MultiplayerGameState::getScore()
+{
+	mTeam1Score = mWorld.getScore();
+	//mTeam2Score = mWorld.getScoreTwo();
+
+	mTeam1ScoreText.setCharacterSize(40u);
+	mTeam1ScoreText.setPosition((mLegth / 2) - 90, 10);
+	mTeam1ScoreText.setColor(sf::Color::Blue);
+	mTeam1ScoreText.setString(toString(mTeam1Score));
+	centerOrigin(mTeam1ScoreText);
+
+	
+	mTeam2ScoreText.setCharacterSize(40u);
+	mTeam2ScoreText.setPosition((mLegth / 2) + 90, 10);
+	mTeam2ScoreText.setColor(sf::Color::Red);
+	mTeam2ScoreText.setString(toString(mTeam2Score));
+	centerOrigin(mTeam2ScoreText);
 }
 
 void MultiplayerGameState::draw()
@@ -167,6 +172,7 @@ void MultiplayerGameState::onDestroy()
 
 bool MultiplayerGameState::update(sf::Time dt)
 {
+
 	// Connected to server: Handle all the network logic
 	if (mConnected)
 	{
@@ -199,6 +205,11 @@ bool MultiplayerGameState::update(sf::Time dt)
 
 
 		}
+
+
+		//Score
+		getScore();
+
 
 		// Remove players whose Chickens were destroyed
 		bool foundLocalPlane = false;

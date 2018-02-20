@@ -22,6 +22,7 @@ public:
 	virtual bool				handleEvent(const sf::Event& event);
 	virtual void				onActivate();
 	void						onDestroy();
+	void						getScore();
 
 	void						disableAllRealtimeActions();
 

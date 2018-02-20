@@ -30,6 +30,7 @@ public:
 	virtual void			remove();
 	virtual bool 			isMarkedForRemoval() const;
 	bool					getMoving() const;
+	float					getBlueScore();
 	bool					isAllied() const;
 	bool					isBoosting() const;
 	float					getMaxSpeed() const;
@@ -49,6 +50,7 @@ public:
 	void					setIdentifier(int identifier);
 	int						getMissileAmmo() const;
 	void					setMissileAmmo(int ammo);
+	void					setBlueScore();
 	void					updateFriction(sf::Time dt);
 
 private:

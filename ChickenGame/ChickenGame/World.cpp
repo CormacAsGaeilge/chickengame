@@ -33,6 +33,8 @@ World::World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sou
 	, mEnemySpawnPoints()
 	, mActiveEnemies()
 	, mP1Score()
+	, mReadTeamScore()
+	, mBlueTeamScore()
 	, mFinishSprite(nullptr)
 {
 	mSceneTexture.create(1920, 1080);
@@ -40,8 +42,9 @@ World::World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sou
 	loadTextures();
 	buildScene();
 
-
-
+	mBlueTeamScore = 0;
+	mReadTeamScore = 0;
+	mP1Score = 0;
 
 	// Prepare the view
 	mWorldView.setCenter(mSpawnPosition);
@@ -55,7 +58,7 @@ void World::setWorldScrollCompensation(float compensation)
 void World::update(sf::Time dt)
 {
 
-	setScore(3);
+	
 	// Scroll the world, reset player velocity
 	//mWorldView.move(0.f, mScrollSpeed * dt.asSeconds() * mScrollSpeedCompensation);
 
@@ -74,6 +77,8 @@ void World::update(sf::Time dt)
 	// Collision detection and response (may destroy entities)
 	handleCollisions();
 
+	addGoals();
+
 	// Remove Chickens that were destroyed (World::removeWrecks() only destroys the entities, not the pointers in mPlayerChicken)
 	auto firstToRemove = std::remove_if(mPlayerChickens.begin(), mPlayerChickens.end(), std::mem_fn(&Chicken::isMarkedForRemoval));
 	mPlayerChickens.erase(firstToRemove, mPlayerChickens.end());
@@ -87,6 +92,10 @@ void World::update(sf::Time dt)
 	adaptPlayerPosition();
 
 	updateSounds();
+
+	//Check if ball it the wall
+	//ballOutOfbounds(Chicken& enemy);
+
 }
 
 void World::draw()
@@ -109,6 +118,8 @@ void World::draw()
 		mTarget.draw(mSceneGraph);
 	}
 }
+
+
 
 CommandQueue& World::getCommandQueue()
 {
@@ -260,55 +271,66 @@ void World::handleCollisions()
 {
 	std::set<SceneNode::Pair> collisionPairs;
 	mSceneGraph.checkSceneCollision(mSceneGraph, collisionPairs);
-
+	
+	
 	FOREACH(SceneNode::Pair pair, collisionPairs)
 	{
-		/*auto& player = static_cast<Chicken&>(*pair.first);
-		auto& enemy = static_cast<Chicken&>(*pair.second);
-		handleBounceCollision(player, enemy)*/;
+		//auto& player = static_cast<Chicken&>(*pair.first);
+		//auto& enemy = static_cast<Chicken&>(*pair.second);
+		//handleBounceCollision(player, enemy);
 		// Collision: Player damage = enemy's remaining HP
 		/*player.damage(enemy.getHitpoints());
 		enemy.destroy();*/
-	if (matchesCategories(pair, Category::PlayerChicken, Category::EnemyChicken))
-	{
-		auto& player = static_cast<Chicken&>(*pair.first);
-		auto& enemy = static_cast<Chicken&>(*pair.second);
+		if (matchesCategories(pair, Category::PlayerChicken, Category::EnemyChicken))
+		{
+			auto& player = static_cast<Chicken&>(*pair.first);
+			auto& enemy = static_cast<Chicken&>(*pair.second);
 
-		handleBounceCollision(player, enemy);
-	}
+			handleBounceCollision(player, enemy);
+		}
 
-	else if (matchesCategories(pair, Category::PlayerChicken, Category::PlayerChicken))
-	{
-		auto& player = static_cast<Chicken&>(*pair.first);
-		auto& enemy = static_cast<Chicken&>(*pair.second);
+		else if (matchesCategories(pair, Category::PlayerChicken, Category::PlayerChicken))
+		{
+			auto& player = static_cast<Chicken&>(*pair.first);
+			auto& enemy = static_cast<Chicken&>(*pair.second);
 
-		handleBounceCollision(player, enemy);
-	}
+			handleBounceCollision(player, enemy);
+		}
 
-	else if (matchesCategories(pair, Category::PlayerChicken, Category::Pickup))
-	{
-		//auto& player = static_cast<Chicken&>(*pair.first);
-		//auto& pickup = static_cast<Pickup&>(*pair.second);
+		else if (matchesCategories(pair, Category::PlayerChicken, Category::Pickup))
+		{
+			auto& player = static_cast<Chicken&>(*pair.first);
+			auto& pickup = static_cast<Pickup&>(*pair.second);
 
-		//// Apply pickup effect to player, destroy projectile
-		//pickup.apply(player);
-		//pickup.destroy();
-	}
+			//// Apply pickup effect to player, destroy projectile
+			pickup.apply(player);
+			pickup.destroy();
+		}
 
-	else if (matchesCategories(pair, Category::EnemyChicken, Category::AlliedProjectile)
-		|| matchesCategories(pair, Category::PlayerChicken, Category::EnemyProjectile))
-	{
-		//auto& chicken = static_cast<Chicken&>(*pair.first);
-		//auto& projectile = static_cast<Projectile&>(*pair.second);
+		else if (matchesCategories(pair, Category::EnemyChicken, Category::AlliedProjectile)
+			|| matchesCategories(pair, Category::PlayerChicken, Category::EnemyProjectile))
+		{
+			//auto& chicken = static_cast<Chicken&>(*pair.first);
+			//auto& projectile = static_cast<Projectile&>(*pair.second);
 
-		//// Apply projectile damage to Chicken, destroy projectile
-		//chicken.damage(projectile.getDamage());
-		//projectile.destroy();
-	}
-	else if (matchesCategories(pair, Category::EnemyChicken, Category::Goal)) {
-		//Ball hit goal
-		//int x = 5;
-	}
+			//// Apply projectile damage to Chicken, destroy projectile
+			//chicken.damage(projectile.getDamage());
+			//projectile.destroy();
+		}
+		else if (matchesCategories(pair, Category::EnemyChicken, Category::Goal)) {
+			//Ball hit goal
+			//int x = 5;
+		}
+
+		/*auto& enemy = static_cast<Chicken&>(*pair.second);
+
+		if (enemy.getPosition().x < 160.f)
+		{
+			auto& player = static_cast<Chicken&>(*pair.first);
+			auto& enemy = static_cast<Chicken&>(*pair.second);
+
+			handleBounceCollision(player, enemy);
+		}*/
 	}
 
 
@@ -343,6 +365,7 @@ void World::handleBounceCollision(Chicken& player, Chicken& enemy) {
 			player.accelerate(vector1);
 			enemy.accelerate(vector2*2.f);
 			player.playLocalSound(mCommandQueue, SoundEffect::Bump);
+
 		}
 	}
 }
@@ -429,33 +452,68 @@ void World::buildScene()
 	// Add ball
 	addEnemies();
 
-	// Add Goals
-	addGoals();
+	// ball in Goal??
+	
 }
 
 void World::addGoals() {
+
+	std::set<SceneNode::Pair> collisionPairs;
+	mSceneGraph.checkSceneCollision(mSceneGraph, collisionPairs);
+
+
+	FOREACH(SceneNode::Pair pair, collisionPairs)
+	{
+		matchesCategories(pair, Category::PlayerChicken, Category::EnemyChicken);
+		auto& enemy = static_cast<Chicken&>(*pair.second);
+
+
+		//Goal For Blue Team
+
+		//To_do fix positions Y
+
+		if (enemy.getPosition().x > 1785.f && enemy.getPosition().y > 100 || enemy.getPosition().y < 100)
+		{
+			//To-Do
+			//Restet ball position
+			//Update Score
+			enemy.setPosition(0.f, 0.f);
+			//mBlueTeamScore++;
+			mP1Score = mP1Score + 1;
+
+			setScore(mP1Score);
+		}
+		if (enemy.getPosition().x < 160.f && enemy.getPosition().y > 100 || enemy.getPosition().y < 100)
+		{
+			enemy.setPosition(0.f, 0.f);
+
+			//mReadTeamScore++;
+		}
+	}
+
 	/*sf::RectangleShape goalOne(sf::Vector2f(70.f, 110.f));
 	goalOne.setPosition(sf::Vector2f(30.f, 290.f));
 	goalOne.setOutlineThickness(1);
 	goalOne.setOutlineColor(sf::Color(250, 150, 100));
+
 	sf::RectangleShape goalTwo(sf::Vector2f(70.f, 110.f));
 	goalTwo.setPosition(sf::Vector2f(1090.f, 290.f));
 	goalTwo.setOutlineThickness(1);
 	goalTwo.setOutlineColor(sf::Color(250, 150, 100));*/
 
-	std::unique_ptr<Goals> goalOne(new Goals(30.f, 290.f, 70.f, 110.f));
+	//std::unique_ptr<Goals> goalOne(new Goals(30.f, 290.f, 70.f, 110.f));
 	//goalOne->setPosition(30.f, 290.f);
 	//goalOne->setScale(70.f, 110.f);
-	goalOne->setRotation(180.f);
+	//goalOne->setRotation(180.f);
 
-	mSceneLayers[UpperAir]->attachChild(std::move(goalOne));
+	//mSceneLayers[UpperAir]->attachChild(std::move(goalOne));
 
-	std::unique_ptr<Goals> goalTwo(new Goals(1090.f, 290.f, 70.f, 110.f));
+	//std::unique_ptr<Goals> goalTwo(new Goals(1090.f, 290.f, 70.f, 110.f));
 	//goalTwo->setPosition(1090.f, 290.f);
 	//goalTwo->setScale(70.f, 110.f);
-	goalTwo->setRotation(180.f);
+	//goalTwo->setRotation(180.f);
 
-	mSceneLayers[UpperAir]->attachChild(std::move(goalTwo));
+	//mSceneLayers[UpperAir]->attachChild(std::move(goalTwo));
 }
 
 void World::addEnemies()

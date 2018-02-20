@@ -113,6 +113,8 @@ private:
 	float								mP1Score;
 	float								mScrollSpeed;
 	float								mScrollSpeedCompensation;
+	float								mBlueTeamScore;
+	float								mReadTeamScore;
 	std::vector<Chicken*>				mPlayerChickens;
 
 	std::vector<SpawnPoint>				mEnemySpawnPoints;

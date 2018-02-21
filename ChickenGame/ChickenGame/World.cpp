@@ -67,7 +67,7 @@ void World::update(sf::Time dt)
 
 	// Setup commands to destroy entities, and guide missiles
 	destroyEntitiesOutsideView();
-	guideMissiles();
+	//guideMissiles();
 
 	// Forward commands to scene graph, adapt velocity (scrolling, diagonal correction)
 	while (!mCommandQueue.isEmpty())
@@ -563,47 +563,47 @@ void World::destroyEntitiesOutsideView()
 
 void World::guideMissiles()
 {
-	// Setup command that stores all enemies in mActiveEnemies
-	Command enemyCollector;
-	enemyCollector.category = Category::EnemyChicken;
-	enemyCollector.action = derivedAction<Chicken>([this](Chicken& enemy, sf::Time)
-	{
-		if (!enemy.isDestroyed())
-			mActiveEnemies.push_back(&enemy);
-	});
+	//// Setup command that stores all enemies in mActiveEnemies
+	//Command enemyCollector;
+	//enemyCollector.category = Category::EnemyChicken;
+	//enemyCollector.action = derivedAction<Chicken>([this](Chicken& enemy, sf::Time)
+	//{
+	//	if (!enemy.isDestroyed())
+	//		mActiveEnemies.push_back(&enemy);
+	//});
 
-	// Setup command that guides all missiles to the enemy which is currently closest to the player
-	Command missileGuider;
-	missileGuider.category = Category::AlliedProjectile;
-	missileGuider.action = derivedAction<Projectile>([this](Projectile& missile, sf::Time)
-	{
-		// Ignore unguided bullets
-		if (!missile.isGuided())
-			return;
+	//// Setup command that guides all missiles to the enemy which is currently closest to the player
+	//Command missileGuider;
+	//missileGuider.category = Category::AlliedProjectile;
+	//missileGuider.action = derivedAction<Projectile>([this](Projectile& missile, sf::Time)
+	//{
+	//	// Ignore unguided bullets
+	//	if (!missile.isGuided())
+	//		return;
 
-		float minDistance = std::numeric_limits<float>::max();
-		Chicken* closestEnemy = nullptr;
+	//	float minDistance = std::numeric_limits<float>::max();
+	//	Chicken* closestEnemy = nullptr;
 
-		// Find closest enemy
-		FOREACH(Chicken* enemy, mActiveEnemies)
-		{
-			float enemyDistance = distance(missile, *enemy);
+	//	// Find closest enemy
+	//	FOREACH(Chicken* enemy, mActiveEnemies)
+	//	{
+	//		float enemyDistance = distance(missile, *enemy);
 
-			if (enemyDistance < minDistance)
-			{
-				closestEnemy = enemy;
-				minDistance = enemyDistance;
-			}
-		}
+	//		if (enemyDistance < minDistance)
+	//		{
+	//			closestEnemy = enemy;
+	//			minDistance = enemyDistance;
+	//		}
+	//	}
 
-		if (closestEnemy)
-			missile.guideTowards(closestEnemy->getWorldPosition());
-	});
+	//	if (closestEnemy)
+	//		missile.guideTowards(closestEnemy->getWorldPosition());
+	//});
 
-	// Push commands, reset active enemies
-	mCommandQueue.push(enemyCollector);
-	mCommandQueue.push(missileGuider);
-	mActiveEnemies.clear();
+	//// Push commands, reset active enemies
+	//mCommandQueue.push(enemyCollector);
+	//mCommandQueue.push(missileGuider);
+	//mActiveEnemies.clear();
 }
 
 sf::FloatRect World::getViewBounds() const

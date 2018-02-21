@@ -56,6 +56,10 @@ Chicken::Chicken(Type type, const TextureHolder& textures, const FontHolder& fon
 	mExplosion.setDuration(sf::seconds(3));
 
 	mChicken.setFrameSize(sf::Vector2i(75, 73));
+	//mChicken.setScale(sf::Vector2i(50, 47));
+	//mSprite.setScale(sf::Vector2i(50, 47));
+
+	//mSprite.setScale(0.00002f, 0.000002f);
 	//mChicken.getPosition();
 
 	centerOrigin(mSprite);
@@ -65,7 +69,7 @@ Chicken::Chicken(Type type, const TextureHolder& textures, const FontHolder& fon
 	mFireCommand.category = Category::SceneAirLayer;
 	mFireCommand.action = [this, &textures](SceneNode& node, sf::Time)
 	{
-		createBullets(node, textures);
+		//createBullets(node, textures);
 	};
 
 	mMissileCommand.category = Category::SceneAirLayer;

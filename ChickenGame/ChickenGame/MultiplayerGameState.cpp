@@ -8,7 +8,6 @@
 
 #include <fstream>
 
-
 sf::IpAddress getAddressFromFile()
 {
 	{ // Try to open existing file (RAII block)

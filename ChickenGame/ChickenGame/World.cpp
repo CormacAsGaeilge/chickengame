@@ -26,7 +26,7 @@ World::World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sou
 	, mSceneGraph()
 	, mSceneLayers()
 	, mWorldBounds(0.0f, 0.0f, mWorldView.getSize().x, 1080.f /*5000.0f, 250.f, 200.f, 650.f, 800.f*/)
-	, mSpawnPosition(mWorldView.getSize().x / 2.f, mWorldBounds.height - mWorldView.getSize().y / 2.f)
+	, mSpawnPosition(mWorldView.getSize().x / 2.f, mWorldView.getSize().y / 2.f)
 	, mScrollSpeed(-50.f)
 	, mScrollSpeedCompensation(1.f)
 	, mPlayerChickens()
@@ -49,7 +49,7 @@ World::World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sou
 	mP2Score = 0;
 
 	// Prepare the view
-	mWorldView.setCenter(sf::Vector2f(mWorldView.getSize().x / 2.f, mWorldBounds.height - mWorldView.getSize().y / 2.f));
+	mWorldView.setCenter(sf::Vector2f(mWorldView.getSize().x / 2.f, mWorldView.getSize().y / 2.f));
 }
 
 void World::setWorldScrollCompensation(float compensation)
@@ -437,7 +437,7 @@ void World::buildScene()
 
 	// Add the background sprite to the scene
 	std::unique_ptr<SpriteNode> FootballPitchSprite(new SpriteNode(FootballPitchTexture, textureRect));
-	FootballPitchSprite->setPosition(mWorldBounds.left, mWorldBounds.top - 400.0f);
+	FootballPitchSprite->setPosition(mWorldBounds.left, mWorldBounds.top);
 	mSceneLayers[Background]->attachChild(std::move(FootballPitchSprite));
 
 	// Add the finish line to the scene
@@ -478,7 +478,7 @@ void World::addGoals() {
 
 		if (enemy.getPosition().x > 1752.56f)
 		{
-			if (enemy.getPosition().y > 4360.22 && enemy.getPosition().y < 4558.4)
+			if (enemy.getPosition().y > 440.22f && enemy.getPosition().y < 638.4f)
 			{
 				if (enemy.getPosition().x > 1760.56f)
 				{
@@ -491,12 +491,12 @@ void World::addGoals() {
 		}
 		if (enemy.getPosition().x < 156.958f)
 		{
-			if (enemy.getPosition().y > 4360.22 && enemy.getPosition().y < 4558.4)
+			if (enemy.getPosition().y > 440.22f && enemy.getPosition().y < 638.4f)
 			{
 				if (enemy.getPosition().x < 148.958f)
 				{
-					//GOAL Red Team
-					enemy.setPosition(960.0f, 4460.0f);
+					//GOAL Red Team 1080  + x - 5000
+					enemy.setPosition(960.0f, 540.0f);
 					mP2Score = mP2Score + 1;
 					setP2Score(mP2Score);
 				}

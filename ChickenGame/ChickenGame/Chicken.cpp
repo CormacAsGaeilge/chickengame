@@ -132,7 +132,7 @@ void Chicken::checkIfGoal()
 	if (pos.x < 156.958f)
 	{
 		//LEFT
-		if (pos.y > 4360.22f && pos.y < 4558.4f)
+		if (pos.y > 440.22f && pos.y < 638.4f)
 		{
 			if (pos.x < 13.7166f)
 			{
@@ -160,7 +160,7 @@ void Chicken::checkIfGoal()
 	if (pos.x > 1752.56f) 
 	{
 		//RIGHT
-		if (pos.y > 4360.22 && pos.y < 4558.4)
+		if (pos.y > 440.22f && pos.y < 638.4f)
 		{
 			if (pos.x > 1890.56)
 			{
@@ -187,7 +187,7 @@ void Chicken::checkIfGoal()
 		}
 	}
 
-	if (pos.y > 4900.f) {
+	if (pos.y > 980.f) {
 		//BOTTOM
 		setVelocity(0.f, -150.f);
 
@@ -207,7 +207,7 @@ void Chicken::checkIfGoal()
 		}
 	}
 
-	if (pos.y < 4023.f)
+	if (pos.y < 103.f)
 	{
 		//TOP
 		setVelocity(0.f, 150.f);

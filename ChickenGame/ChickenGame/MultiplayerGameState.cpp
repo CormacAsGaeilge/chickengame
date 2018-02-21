@@ -422,7 +422,7 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 		sf::Vector2f ChickenPosition;
 		packet >> ChickenIdentifier >> ChickenPosition.x >> ChickenPosition.y;
 
-		ChickenPosition.x -= 500;
+		ChickenPosition = mFormation.getTeamMemberPosition(ChickenIdentifier % 2 == 0, (int)ChickenIdentifier);
 		Chicken* Chicken = mWorld.addChicken(ChickenIdentifier, mFormation.getTeamMemberPosition(true, (int)ChickenIdentifier ));
 		Chicken->setPosition(ChickenPosition.x, ChickenPosition.y);
 
@@ -439,6 +439,7 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 		sf::Vector2f ChickenPosition;
 		packet >> ChickenIdentifier >> ChickenPosition.x >> ChickenPosition.y;
 
+		ChickenPosition = mFormation.getTeamMemberPosition(ChickenIdentifier % 2 == 0, (int)ChickenIdentifier);
 		Chicken* Chicken = mWorld.addChicken(ChickenIdentifier, mFormation.getTeamMemberPosition(ChickenIdentifier % 2 == 0, (int)ChickenIdentifier));
 		Chicken->setPosition(ChickenPosition);
 

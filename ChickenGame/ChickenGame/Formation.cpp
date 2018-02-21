@@ -27,10 +27,10 @@ Formation::Formation(Formation::Type formationType)
 sf::Vector2f Formation::getTeamMemberPosition(bool isATeam, int teamMember) const
 {
 	if (isATeam) {
-		return ATeamPositions.at(teamMember-1) + sf::Vector2f(0.f,3920.f);
+		return ATeamPositions.at((teamMember-1)*0.5f);
 	}
 	else {
-		return BTeamPositions.at(teamMember-1);
+		return BTeamPositions.at((teamMember-1)*0.5f);
 	}
 }
 

@@ -13,20 +13,17 @@
 
 using namespace std::placeholders;
 
-
 namespace
 {
 	const std::vector<ChickenData> Table = initializeChickenData();
 }
 
-
-
 Chicken::Chicken(Type type, const TextureHolder& textures, const FontHolder& fonts)
 	: Entity(Table[type].hitpoints)
 	, mType(type)
 	, mSprite(textures.get(Table[type].texture), Table[type].textureRect)
-	, mExplosion(textures.get(Textures::Explosion))
-	, mChicken(textures.get(Textures::Chicken))
+	, mExplosion(textures.get(Textures::Explosion), false)
+	, mChicken(textures.get(Textures::Chicken), true)
 	, mFireCommand()
 	, mMissileCommand()
 	, mFireCountdown(sf::Time::Zero)
@@ -437,6 +434,8 @@ int	Chicken::getIdentifier()
 void Chicken::setIdentifier(int identifier)
 {
 	mIdentifier = identifier;
+	//even number is TeamA/ sets team colour
+	mChicken.setIsTeamA(identifier % 2 == 0);
 }
 
 void Chicken::updateMovementPattern(sf::Time dt)
@@ -627,7 +626,10 @@ void Chicken::updateRollAnimation(sf::Time dt)
 		else
 		{
 			mMoving = false;
-			textureRect = sf::IntRect(15, 19, 75, 73);
+			if(mChicken.getIsTeamA())
+				textureRect = sf::IntRect(15, 19, 75, 73);
+			else
+				textureRect = sf::IntRect(29, 667, 63, 75);
 		}
 		
 		mSprite.setTextureRect(textureRect);

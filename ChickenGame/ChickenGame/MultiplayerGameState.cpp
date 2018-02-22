@@ -600,7 +600,7 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 			sf::Vector2f interpolatedBallPosition = ball->getPosition() + (ballPosition - ball->getPosition()) * 0.1f;
 			sf::Vector2f interpolatedBallVelocity = ball->getVelocity() + (ballVelocity - ball->getVelocity()) * 0.1f;
 			//ball->setPosition(interpolatedBallPosition);
-			ball->setVelocity(interpolatedBallVelocity);
+			//ball->setVelocity(interpolatedBallVelocity);
 		}
 
 	} break;

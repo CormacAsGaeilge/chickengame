@@ -16,7 +16,7 @@ Animation::Animation()
 {
 }
 
-Animation::Animation(const sf::Texture& texture)
+Animation::Animation(const sf::Texture& texture, bool isTeamA)
 	: mSprite(texture)
 	, mFrameSize()
 	, mNumFrames(0)
@@ -24,6 +24,7 @@ Animation::Animation(const sf::Texture& texture)
 	, mDuration(sf::Time::Zero)
 	, mElapsedTime(sf::Time::Zero)
 	, mRepeat(false)
+	, mIsTeamA(isTeamA)
 {
 }
 
@@ -65,6 +66,16 @@ void Animation::setDuration(sf::Time duration)
 sf::Time Animation::getDuration() const
 {
 	return mDuration;
+}
+
+void Animation::setIsTeamA(bool isTeamA)
+{
+	mIsTeamA = isTeamA;
+}
+
+bool Animation::getIsTeamA() const
+{
+	return mIsTeamA;
 }
 
 void Animation::setDirection(float direction)
@@ -109,13 +120,14 @@ sf::FloatRect Animation::getGlobalBounds() const
 
 void Animation::update(sf::Time dt)
 {
-	//spriteAnimationOne(dt);
-
-	srpiteAnimationTwo(dt);
+	if(mIsTeamA)
+		spriteAnimationOne(dt);
+	else
+		spriteAnimationTwo(dt);
 }
 
 
-void Animation::srpiteAnimationTwo(sf::Time dt)
+void Animation::spriteAnimationTwo(sf::Time dt)
 {
 	sf::Time timePerFrame = mDuration / static_cast<float>(mNumFrames);
 	mElapsedTime += dt;

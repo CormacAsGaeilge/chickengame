@@ -22,7 +22,13 @@ public:
 	virtual bool				handleEvent(const sf::Event& event);
 	virtual void				onActivate();
 	void						onDestroy();
+	void						timer(sf::Time dt);
 	void						getScore();
+
+	void						setSec(const float);
+	float						getSec() const;
+	void						setMin(const float);
+	float						getMin() const;
 
 	void						disableAllRealtimeActions();
 

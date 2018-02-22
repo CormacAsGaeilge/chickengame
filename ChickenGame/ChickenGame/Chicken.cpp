@@ -148,7 +148,7 @@ void Chicken::checkIfGoal()
 			setVelocity(150.f, 0.f);
 		}
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+		/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 		{
 			isOutOfBounds = false;
 		}
@@ -158,8 +158,8 @@ void Chicken::checkIfGoal()
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 		{
-			isOutOfBounds = false;
-		}
+			*///isOutOfBounds = false;
+		//}
 	}
 	if (pos.x > 1752.56f) 
 	{
@@ -177,7 +177,7 @@ void Chicken::checkIfGoal()
 		}
 
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 		{
 			isOutOfBounds = false;
 		}
@@ -188,16 +188,16 @@ void Chicken::checkIfGoal()
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 		{
 			isOutOfBounds = false;
-		}
+		}*/
 	}
 
 	if (pos.y > 980.f) {
 		//BOTTOM
 		setVelocity(0.f, -150.f);
 
-		isOutOfBounds = true;
+		//isOutOfBounds = true;
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+		/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 		{
 			isOutOfBounds = false;
 		}
@@ -208,7 +208,7 @@ void Chicken::checkIfGoal()
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 		{
 			isOutOfBounds = false;
-		}
+		}*/
 	}
 
 	if (pos.y < 103.f)
@@ -216,9 +216,9 @@ void Chicken::checkIfGoal()
 		//TOP
 		setVelocity(0.f, 150.f);
 
-		isOutOfBounds = true;
+		//isOutOfBounds = true;
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 		{
 			isOutOfBounds = false;
 		}
@@ -229,7 +229,7 @@ void Chicken::checkIfGoal()
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 		{
 			isOutOfBounds = false;
-		}
+		}*/
 	}
 
 	//To-DO add Angles
@@ -347,7 +347,7 @@ void Chicken::remove()
 
 bool Chicken::isAllied() const
 {
-	return mType == Eagle;
+	return mType == Eagle || mType == redTeam;
 }
 
 bool Chicken::getMoving() const
@@ -587,7 +587,7 @@ void Chicken::updateRollAnimation(sf::Time dt)
 		{
 			//Left
 			mMoving = true;
-			textureRect = sf::IntRect(24, 190, 64, 74);
+			//textureRect = sf::IntRect(24, 190, 64, 74);
 			mChicken.setDirection(1);
 			mChicken.setNumFrames(8  );
 			mChicken.setDuration(sf::seconds(0.8f));
@@ -597,7 +597,7 @@ void Chicken::updateRollAnimation(sf::Time dt)
 		else if (getVelocity().x > 0.f) {
 			//right
 			mMoving = true;
-			textureRect = sf::IntRect(25, 277, 63, 75);
+			//textureRect = sf::IntRect(25, 277, 63, 75);
 			mChicken.setDirection(2);
 			mChicken.setNumFrames(8);
 			mChicken.setDuration(sf::seconds(0.8f));
@@ -607,7 +607,7 @@ void Chicken::updateRollAnimation(sf::Time dt)
 		else if (getVelocity().y < 0.f) {
 			//up
 			mMoving = true;
-			textureRect = sf::IntRect(14, 102, 78, 72);
+			//textureRect = sf::IntRect(14, 102, 78, 72);
 			mChicken.setDirection(3);
 			mChicken.setNumFrames(8);
 			mChicken.setDuration(sf::seconds(0.8f));
@@ -617,7 +617,7 @@ void Chicken::updateRollAnimation(sf::Time dt)
 		else if (getVelocity().y > 0.f) {
 			//down
 			mMoving = true;
-			textureRect = sf::IntRect(15, 19, 75, 73);
+			//textureRect = sf::IntRect(15, 19, 75, 73);
 			mChicken.setDirection(4);
 			mChicken.setNumFrames(8);
 			mChicken.setDuration(sf::seconds(0.8f));

@@ -92,7 +92,8 @@ MultiplayerGameState::MultiplayerGameState(StateStack& stack, Context context, b
 
 
 	mLegth = 1920; // screen width
-	mMins = 240;
+	//mMins = 10;
+	setMin(240);
 	mSec = 60;
 	float mCountdown = 60;
 
@@ -102,12 +103,23 @@ MultiplayerGameState::MultiplayerGameState(StateStack& stack, Context context, b
 
 	mGameTime.setFont(context.fonts->get(Fonts::Digi));
 	mGameTime.setCharacterSize(35u);
-	mGameTime.setPosition((mLegth / 2 - 7), 10);
+	mGameTime.setPosition((mLegth / 2 ), 15);
 	mGameTime.setString("5:00");
 	centerOrigin(mGameTime);
 
 	// Play game theme
 	context.music->play(Music::MissionTheme);
+}
+
+
+void  MultiplayerGameState::setMin(float min)
+{
+	mMins = min;
+}
+
+float MultiplayerGameState::getMin() const
+{
+	return mMins;
 }
 
 void MultiplayerGameState::getScore()
@@ -171,6 +183,22 @@ void MultiplayerGameState::onDestroy()
 	}
 }
 
+//Create timer at the top
+void MultiplayerGameState::timer(sf::Time dt)
+{
+	mCountdown = dt.asSeconds();
+	//mHours -= mMins;
+	mSec -= mCountdown;
+	mMins = getMin();
+	if (mSec < 0)
+	{
+		mSec = 60;
+		setMin(mMins -= 60);
+	}
+
+	mGameTime.setString((toString(mMins / 60)) + " : " + toString((int)mSec));
+}
+
 bool MultiplayerGameState::update(sf::Time dt)
 {
 	// Connected to server: Handle all the network logic
@@ -178,16 +206,7 @@ bool MultiplayerGameState::update(sf::Time dt)
 	{
 		mWorld.update(dt);
 
-		mCountdown = dt.asSeconds();
-		//mHours -= mMins;
-		mSec -= mCountdown;
-
-		if (mSec < 0)
-		{
-			mSec = 60;
-			mMins -= 60;
-		}
-		mGameTime.setString((toString(mMins / 60)) + " : " + toString((int)mSec));
+		timer(dt);
 
 		if (mMins < 0)
 		{

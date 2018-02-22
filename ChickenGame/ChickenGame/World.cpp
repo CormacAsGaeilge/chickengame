@@ -153,11 +153,17 @@ Chicken* World::addChicken(int identifier, sf::Vector2f startPos)
 
 	std::unique_ptr<Chicken> player(new Chicken(Chicken::Eagle, mTextures, mFonts));
 
+	//std::unique_ptr<Chicken> playerTwo(new Chicken(Chicken::redTeam, mTextures, mFonts));
+
+
 	player->setPosition(startPos);
 	player->setIdentifier(identifier);
 
 	mPlayerChickens.push_back(player.get());
 	mSceneLayers[UpperAir]->attachChild(std::move(player));
+
+
+
 	return mPlayerChickens.back();
 }
 
@@ -255,6 +261,8 @@ void World::adaptPlayerVelocity()
 	}
 }
 
+
+
 bool matchesCategories(SceneNode::Pair& colliders, Category::Type type1, Category::Type type2)
 {
 	unsigned int category1 = colliders.first->getCategory();
@@ -284,6 +292,10 @@ void World::handleCollisions()
 	
 	FOREACH(SceneNode::Pair pair, collisionPairs)
 	{
+
+		//check if ball in goal??
+		auto& enemy = static_cast<Chicken&>(*pair.second);
+
 		//auto& player = static_cast<Chicken&>(*pair.first);
 		//auto& enemy = static_cast<Chicken&>(*pair.second);
 		//handleBounceCollision(player, enemy);
@@ -470,11 +482,15 @@ void World::addGoals() {
 	std::set<SceneNode::Pair> collisionPairs;
 	mSceneGraph.checkSceneCollision(mSceneGraph, collisionPairs);
 
+	//Chicken::Avenger.getPosition()
 
 	FOREACH(SceneNode::Pair pair, collisionPairs)
 	{
 		matchesCategories(pair, Category::PlayerChicken, Category::EnemyChicken);
+
 		auto& enemy = static_cast<Chicken&>(*pair.second);
+		auto& player = static_cast<Chicken&>(*pair.first);
+		
 
 		if (enemy.getPosition().x > 1752.56f)
 		{
@@ -483,7 +499,8 @@ void World::addGoals() {
 				if (enemy.getPosition().x > 1760.56f)
 				{
 					//GOAL Blue Team
-					enemy.setPosition(960.0f, 4460.0f);
+					enemy.setPosition(960.0f, 540.0f);
+					enemy.setVelocity(0.f, 0.f);
 					mP1Score = mP1Score + 1;
 					setScore(mP1Score);
 				}
@@ -497,6 +514,7 @@ void World::addGoals() {
 				{
 					//GOAL Red Team 1080  + x - 5000
 					enemy.setPosition(960.0f, 540.0f);
+					enemy.setVelocity(0.f, 0.f);
 					mP2Score = mP2Score + 1;
 					setP2Score(mP2Score);
 				}
@@ -508,7 +526,6 @@ void World::addGoals() {
 void World::addEnemies()
 {
 	addEnemy(Chicken::Avenger, 0.f, 0.f);
-
 
 	// Sort all enemies according to their y value, such that lower enemies are checked first for spawning
 	sortEnemies();

@@ -35,6 +35,9 @@ public:
 
 	void 					update(sf::Time dt);
 
+	void					spriteAnimationOne(sf::Time dt);
+	void					srpiteAnimationTwo(sf::Time dt);
+
 
 private:
 	void 					draw(sf::RenderTarget& target, sf::RenderStates states) const;

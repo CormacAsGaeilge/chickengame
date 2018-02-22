@@ -30,6 +30,7 @@ World::World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sou
 	, mScrollSpeed(-50.f)
 	, mScrollSpeedCompensation(1.f)
 	, mPlayerChickens()
+	, mBall()
 	, mEnemySpawnPoints()
 	, mActiveEnemies()
 	, mP1Score()
@@ -294,7 +295,7 @@ void World::handleCollisions()
 		{
 			auto& player = static_cast<Chicken&>(*pair.first);
 			auto& enemy = static_cast<Chicken&>(*pair.second);
-
+			
 			handleBounceCollision(player, enemy);
 		}
 
@@ -459,10 +460,10 @@ void World::buildScene()
 	mSceneGraph.attachChild(std::move(soundNode));
 
 	// Add ball
-	addEnemies();
-
+	/*addBall();*/
+	addBall();
 	// ball in Goal??
-	
+	int x = 5;
 }
 
 void World::addGoals() {
@@ -505,13 +506,14 @@ void World::addGoals() {
 	}
 }
 
-void World::addEnemies()
+Chicken* World::addBall()
 {
-	addEnemy(Chicken::Avenger, 0.f, 0.f);
-
-
-	// Sort all enemies according to their y value, such that lower enemies are checked first for spawning
-	sortEnemies();
+	std::unique_ptr<Chicken> ball(new Chicken(Chicken::Avenger, mTextures, mFonts));
+	ball->setPosition(960.f, 540.f);
+	ball->setRotation(180.f);
+	mBall = ball.get();
+	mSceneLayers[UpperAir]->attachChild(std::move(ball));
+	return ball.get();
 }
 
 void World::sortEnemies()
@@ -532,17 +534,16 @@ void World::addEnemy(Chicken::Type type, float relX, float relY)
 void World::spawnEnemies()
 {
 	// Spawn all enemies entering the view area (including distance) this frame
-	while (!mEnemySpawnPoints.empty()
-		&& mEnemySpawnPoints.back().y > getBattlefieldBounds().top)
+	while (!mEnemySpawnPoints.empty() && mEnemySpawnPoints.back().y > getBattlefieldBounds().top)
 	{
 		SpawnPoint spawn = mEnemySpawnPoints.back();
 
 		std::unique_ptr<Chicken> enemy(new Chicken(spawn.type, mTextures, mFonts));
 		enemy->setPosition(spawn.x, spawn.y);
 		enemy->setRotation(180.f);
-
+		 
 		mSceneLayers[UpperAir]->attachChild(std::move(enemy));
-
+		mBall = enemy.get();
 		// Enemy is spawned, remove from the list to spawn
 		mEnemySpawnPoints.pop_back();
 	}
@@ -609,6 +610,11 @@ void World::guideMissiles()
 sf::FloatRect World::getViewBounds() const
 {
 	return sf::FloatRect(mWorldView.getCenter() - mWorldView.getSize() / 2.f, mWorldView.getSize());
+}
+
+Chicken * World::getBall() const
+{
+	return mBall;
 }
 
 sf::FloatRect World::getBattlefieldBounds() const

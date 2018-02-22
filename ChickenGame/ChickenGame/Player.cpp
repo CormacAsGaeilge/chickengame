@@ -178,29 +178,29 @@ void Player::handleEvent(const sf::Event& event, CommandQueue& commands)
 				commands.push(mActionBinding[PlayerAction::ReleaseBoost]);
 		}
 	}
-	//// Realtime change (network connected)
-	//if ((event.type == sf::Event::KeyPressed || event.type == sf::Event::KeyReleased) && mSocket)
-	//{
-	//	Action action;
-	//	
-	//	if (mKeyBinding && mKeyBinding->checkAction(event.key.code, action) && isRealtimeAction(action))
-	//	{
-	//		
-	//		// Send realtime change over network
-	//		sf::Packet packet;
-	//		packet << static_cast<sf::Int32>(Client::PlayerRealtimeChange);
-	//		packet << mIdentifier;
-	//		if (PlayerAction::HandleBoost == action) {
-	//			if (event.type == sf::Event::KeyPressed)
-	//				packet << static_cast<sf::Int32>(PlayerAction::HoldBoost);
-	//			else
-	//				packet << static_cast<sf::Int32>(PlayerAction::ReleaseBoost);
-	//		} else
-	//			packet << static_cast<sf::Int32>(action);
-	//		packet << (event.type == sf::Event::KeyPressed);
-	//		mSocket->send(packet);
-	//	}
-	//}
+	// Realtime change (network connected)
+	if ((event.type == sf::Event::KeyPressed || event.type == sf::Event::KeyReleased) && mSocket)
+	{
+		Action action;
+		
+		if (mKeyBinding && mKeyBinding->checkAction(event.key.code, action) && isRealtimeAction(action))
+		{
+			
+			// Send realtime change over network
+			sf::Packet packet;
+			packet << static_cast<sf::Int32>(Client::PlayerRealtimeChange);
+			packet << mIdentifier;
+			if (PlayerAction::HandleBoost == action) {
+				if (event.type == sf::Event::KeyPressed)
+					packet << static_cast<sf::Int32>(PlayerAction::HoldBoost);
+				else
+					packet << static_cast<sf::Int32>(PlayerAction::ReleaseBoost);
+			} else
+				packet << static_cast<sf::Int32>(action);
+			packet << (event.type == sf::Event::KeyPressed);
+			mSocket->send(packet);
+		}
+	}
 }
 
 bool Player::isLocal() const

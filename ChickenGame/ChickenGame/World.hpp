@@ -40,6 +40,7 @@ public:
 	void setWorldHeight(float height);
 
 	void addEnemy(Chicken::Type type, float relX, float relY);
+	Chicken* addBall();
 	void sortEnemies();
 
 	bool  hasAlivePlayer() const;
@@ -54,6 +55,7 @@ public:
 	void setWorldScrollCompensation(float compensation);
 
 	Chicken* getChicken(int identifier) const;
+	Chicken* getBall() const;
 	sf::FloatRect getBattlefieldBounds() const;
 
 	void createPickup(sf::Vector2f position, Pickup::Type type);
@@ -120,7 +122,7 @@ private:
 	float								mBlueTeamScore;
 	float								mReadTeamScore;
 	std::vector<Chicken*>				mPlayerChickens;
-
+	Chicken*							mBall;
 	std::vector<SpawnPoint>				mEnemySpawnPoints;
 	std::vector<Chicken*>				mActiveEnemies;
 

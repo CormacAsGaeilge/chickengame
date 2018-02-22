@@ -72,6 +72,8 @@ MultiplayerGameState::MultiplayerGameState(StateStack& stack, Context context, b
 	mFailedConnectionText.setString("Could not connect to the remote server!");
 	centerOrigin(mFailedConnectionText);
 
+	/*mBall = new Chicken*/
+	//mWorld.addBall(); //AddBall
 	sf::IpAddress ip;
 	if (isHost)
 	{
@@ -90,7 +92,6 @@ MultiplayerGameState::MultiplayerGameState(StateStack& stack, Context context, b
 
 	mSocket.setBlocking(false);
 
-
 	mLegth = 1920; // screen width
 	//mMins = 10;
 	setMin(240);
@@ -99,7 +100,6 @@ MultiplayerGameState::MultiplayerGameState(StateStack& stack, Context context, b
 
 	mTeam1ScoreText.setFont(context.fonts->get(Fonts::Digi));
 	mTeam2ScoreText.setFont(context.fonts->get(Fonts::Digi));
-
 
 	mGameTime.setFont(context.fonts->get(Fonts::Digi));
 	mGameTime.setCharacterSize(35u);
@@ -221,14 +221,10 @@ bool MultiplayerGameState::update(sf::Time dt)
 				//mPlayerOne.setMissionStatus(Player::MissionFailure);
 				requestStackPush(States::GameOver);
 			}
-
-
 		}
-
 
 		//Score
 		getScore();
-
 
 		// Remove players whose Chickens were destroyed
 		bool foundLocalPlane = false;
@@ -303,17 +299,17 @@ bool MultiplayerGameState::update(sf::Time dt)
 			mPlayerInvitationTime = sf::Time::Zero;
 
 		// Events occurring in the game
-		/*GameActions::Action gameAction;
-		while (mWorld.pollGameAction(gameAction))
-		{
-			sf::Packet packet;
-			packet << static_cast<sf::Int32>(Client::GameEvent);
-			packet << static_cast<sf::Int32>(gameAction.type);
-			packet << gameAction.position.x;
-			packet << gameAction.position.y;
+		///*GameActions::Action gameAction;
+		//while (mWorld.pollGameAction(gameAction))
+		//{
+		//	sf::Packet packet;
+		//	packet << static_cast<sf::Int32>(Client::GameEvent);
+		//	packet << static_cast<sf::Int32>(gameAction.type);
+		//	packet << gameAction.position.x;
+		//	packet << gameAction.position.y;
 
-			mSocket.send(packet);
-		}*/
+		//	mSocket.send(packet);
+		//}*/
 
 		// Regular position updates
 		if (mTickClock.getElapsedTime() > sf::seconds(1.f / 20.f))
@@ -327,6 +323,8 @@ bool MultiplayerGameState::update(sf::Time dt)
 				if (Chicken* Chicken = mWorld.getChicken(identifier))
 					positionUpdatePacket << identifier << Chicken->getPosition().x << Chicken->getPosition().y << static_cast<sf::Int32>(Chicken->getHitpoints()) << static_cast<sf::Int32>(Chicken->getMissileAmmo());
 			}
+			if(Chicken* ball = mWorld.getBall())
+				positionUpdatePacket << ball->getPosition().x << ball->getPosition().x << ball->getVelocity().x << ball->getVelocity().x;
 
 			mSocket.send(positionUpdatePacket);
 			mTickClock.restart();
@@ -434,7 +432,7 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 		}
 	} break;
 
-	// Sent by the server to order to spawn player 1 chicken on connect
+	// Sent by the server in order to spawn player 1 chicken on connect
 	case Server::SpawnSelf:
 	{
 		sf::Int32 ChickenIdentifier;
@@ -593,6 +591,18 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 				Chicken->setPosition(interpolatedPosition);
 			}
 		}
+		sf::Vector2f ballPosition, ballVelocity;
+
+		packet >> ballPosition.x >> ballPosition.y >> ballVelocity.x >> ballVelocity.y;
+
+		if (Chicken* ball = mWorld.getBall())
+		{
+			sf::Vector2f interpolatedBallPosition = ball->getPosition() + (ballPosition - ball->getPosition()) * 0.1f;
+			sf::Vector2f interpolatedBallVelocity = ball->getVelocity() + (ballVelocity - ball->getVelocity()) * 0.1f;
+			//ball->setPosition(interpolatedBallPosition);
+			ball->setVelocity(interpolatedBallVelocity);
+		}
+
 	} break;
 	}
 }

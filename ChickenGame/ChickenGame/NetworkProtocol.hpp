@@ -3,7 +3,6 @@
 #include <SFML/Config.hpp>
 #include <SFML/System/Vector2.hpp>
 
-
 const unsigned short ServerPort = 5000;
 
 namespace Server
@@ -33,8 +32,10 @@ namespace Client
 	{
 		PlayerEvent,
 		PlayerRealtimeChange,
+		BallRealtimeChange,
 		RequestCoopPartner,
 		PositionUpdate,
+		BallPositionUpdate,
 		GameEvent,
 		Quit
 	};

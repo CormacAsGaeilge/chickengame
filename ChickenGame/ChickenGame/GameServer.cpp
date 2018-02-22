@@ -327,7 +327,21 @@ void GameServer::handleIncomingPacket(sf::Packet& packet, RemotePeer& receivingP
 			mChickenInfo[ChickenIdentifier].hitpoints = ChickenHitpoints;
 			mChickenInfo[ChickenIdentifier].missileAmmo = missileAmmo;
 		}
+
+		sf::Vector2f BallPosition, BallVelocity;
+		packet >> BallPosition.x >> BallPosition.y >> BallVelocity.x >> BallVelocity.y;
+		mBallInfo.position = BallPosition;
+		mBallInfo.velocity = BallVelocity;
 	} break;
+/*
+	case Client::BallPositionUpdate:
+	{
+		sf::Vector2f BallPosition, BallVelocity;
+		packet >> BallPosition.x >> BallPosition.y >> BallVelocity.x >> BallVelocity.y;
+		mBallInfo.position = BallPosition;
+		mBallInfo.velocity = BallVelocity;
+		
+	} break;*/
 
 	case Client::GameEvent:
 	{
@@ -364,6 +378,9 @@ void GameServer::updateClientState()
 
 	FOREACH(auto Chicken, mChickenInfo)
 		updateClientStatePacket << Chicken.first << Chicken.second.position.x << Chicken.second.position.y;
+
+	//add ball info to client State update
+	updateClientStatePacket << mBallInfo.position.x << mBallInfo.position.y << mBallInfo.velocity.x << mBallInfo.velocity.y;
 
 	sendToAll(updateClientStatePacket);
 }

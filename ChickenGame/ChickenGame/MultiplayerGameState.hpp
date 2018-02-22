@@ -11,7 +11,6 @@
 #include <SFML/Network/TcpSocket.hpp>
 #include <SFML/Network/Packet.hpp>
 
-
 class MultiplayerGameState : public State
 {
 public:
@@ -32,21 +31,20 @@ public:
 
 	void						disableAllRealtimeActions();
 
-
 private:
 	void						updateBroadcastMessage(sf::Time elapsedTime);
 	void						handlePacket(sf::Int32 packetType, sf::Packet& packet);
 
-
 private:
 	typedef std::unique_ptr<Player> PlayerPtr;
-
+	typedef std::unique_ptr<Chicken> BallPtr;
 
 private:
 	World						mWorld;
 	sf::RenderWindow&			mWindow;
 	TextureHolder&				mTextureHolder;
 	std::map<int, PlayerPtr>	mPlayers;
+	BallPtr						mBall;
 	std::vector<sf::Int32>		mLocalPlayerIdentifiers;
 	sf::TcpSocket				mSocket;
 	bool						mConnected;

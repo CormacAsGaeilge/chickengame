@@ -22,8 +22,7 @@ public:
 	void								notifyPlayerSpawn(sf::Int32 ChickenIdentifier);
 	void								notifyPlayerRealtimeChange(sf::Int32 ChickenIdentifier, sf::Int32 action, bool actionEnabled);
 	void								notifyPlayerEvent(sf::Int32 ChickenIdentifier, sf::Int32 action);
-
-
+	
 private:
 	// A GameServerRemotePeer refers to one instance of the game, may it be local or from another computer
 	struct RemotePeer
@@ -44,6 +43,13 @@ private:
 		sf::Int32					hitpoints;
 		sf::Int32                   missileAmmo;
 		std::map<sf::Int32, bool>	realtimeActions;
+	};
+
+	// Structure to store information about current state of the ball
+	struct BallInfo
+	{
+		sf::Vector2f				position;
+		sf::Vector2f				velocity;
 	};
 
 	// Unique pointer to remote peers
@@ -84,7 +90,7 @@ private:
 
 	std::size_t							mChickenCount;
 	std::map<sf::Int32, ChickenInfo>	mChickenInfo;
-
+	BallInfo							mBallInfo;
 	std::vector<PeerPtr>				mPeers;
 	sf::Int32							mChickenIdentifierCounter;
 	bool								mWaitingThreadEnd;

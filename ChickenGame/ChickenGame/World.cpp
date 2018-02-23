@@ -494,6 +494,7 @@ void World::addGoals() {
 				//GOAL Blue Team
 				ball->setPosition(960.0f, 540.0f);
 				ball->setVelocity(0.f, 0.f);
+
 				mP1Score = mP1Score + 1;
 				setScore(mP1Score);
 			}
@@ -508,6 +509,7 @@ void World::addGoals() {
 				//GOAL Red Team 1080  + x - 5000
 				ball->setPosition(960.0f, 540.0f);
 				ball->setVelocity(0.f, 0.f);
+
 				mP2Score = mP2Score + 1;
 				setP2Score(mP2Score);
 			}

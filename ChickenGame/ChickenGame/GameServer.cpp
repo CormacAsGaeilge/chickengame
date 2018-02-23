@@ -29,6 +29,9 @@ GameServer::GameServer(sf::Vector2f battlefieldSize)
 	, mWaitingThreadEnd(false)
 	, mLastSpawnTime(sf::Time::Zero)
 	, mTimeForNextSpawn(sf::seconds(5.f))
+	, mRedTeamScore(0)
+	, mBlueTeamScore(0)
+
 {
 	mListenerSocket.setBlocking(false);
 	mPeers[0].reset(new RemotePeer());
@@ -330,6 +333,7 @@ void GameServer::handleIncomingPacket(sf::Packet& packet, RemotePeer& receivingP
 
 		sf::Vector2f BallPosition, BallVelocity;
 		packet >> BallPosition.x >> BallPosition.y >> BallVelocity.x >> BallVelocity.y;
+		packet >> mRedTeamScore >> mBlueTeamScore;
 		mBallInfo.position = BallPosition;
 		mBallInfo.velocity = BallVelocity;
 	} break;
@@ -381,9 +385,7 @@ void GameServer::updateClientState()
 
 	//add ball info to client State update
 	updateClientStatePacket << mBallInfo.position.x << mBallInfo.position.y << mBallInfo.velocity.x << mBallInfo.velocity.y;
-
-	//Score to client update
-	updateClientStatePacket << mBlueTeamScore << mRedTeamScore;
+	updateClientStatePacket << mRedTeamScore << mBlueTeamScore;
 
 	sendToAll(updateClientStatePacket);
 }
@@ -491,7 +493,10 @@ void GameServer::broadcastMessage(const std::string& message)
 		{
 			sf::Packet packet;
 			packet << static_cast<sf::Int32>(Server::BroadcastMessage);
+			
 			packet << message;
+
+			
 
 			mPeers[i]->socket.send(packet);
 		}

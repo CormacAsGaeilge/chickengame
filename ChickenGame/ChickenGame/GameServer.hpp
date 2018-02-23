@@ -73,6 +73,12 @@ private:
 	void								sendToAll(sf::Packet& packet);
 	void								updateClientState();
 
+	void								setRedTeamScore(const float);
+	float								getRedTeamScore() const;
+	void								setBlueTeamScore(const float);
+	float								getBlueTeamScore() const;
+
+
 
 private:
 	sf::Thread							mThread;

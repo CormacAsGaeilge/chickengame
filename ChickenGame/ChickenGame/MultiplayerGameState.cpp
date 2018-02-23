@@ -126,7 +126,7 @@ void MultiplayerGameState::getScore()
 	//mTeam1Score = mWorld.getScore();
 	//mTeam2Score = mWorld.getScoreTwo();
 
-	mTeam1ScoreText.setCharacterSize(40u);
+	mTeam1ScoreText.setCharacterSize(80u);
 	mTeam1ScoreText.setPosition((mLegth / 2) - 90, 10);
 	mTeam1ScoreText.setColor(sf::Color::Blue);
 	mTeam1ScoreText.setString(toString(mTeam1Score));
@@ -134,7 +134,7 @@ void MultiplayerGameState::getScore()
 
 	//mTeam2Score = mWorld.getP2Score();
 	
-	mTeam2ScoreText.setCharacterSize(40u);
+	mTeam2ScoreText.setCharacterSize(80u);
 	mTeam2ScoreText.setPosition((mLegth / 2) + 90, 10);
 	mTeam2ScoreText.setColor(sf::Color::Red);
 	mTeam2ScoreText.setString(toString(mTeam2Score));
@@ -333,6 +333,8 @@ bool MultiplayerGameState::update(sf::Time dt)
 			if(Chicken* ball = mWorld.getBall())
 				positionUpdatePacket << ball->getPosition().x << ball->getPosition().x << ball->getVelocity().x << ball->getVelocity().x;
 
+			positionUpdatePacket << mWorld.getScore() << mWorld.getP2Score();
+
 			mSocket.send(positionUpdatePacket);
 			mTickClock.restart();
 		}
@@ -426,6 +428,8 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 		// Send message to all clients
 	case Server::BroadcastMessage:
 	{
+
+
 		std::string message;
 		packet >> message;
 		mBroadcasts.push_back(message);
@@ -437,19 +441,6 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 			centerOrigin(mBroadcastText);
 			mBroadcastElapsedTime = sf::Time::Zero;
 		}
-
-		//adding score accross all games
-
-		/*float redTeamScore, blueTeamScore;
-
-		packet >> redTeamScore >> blueTeamScore;
-
-		redTeamScore = mWorld.getP2Score();
-		blueTeamScore = mWorld.getScore();
-
-		mWorld.setScore(blueTeamScore);
-		mWorld.setP2Score(redTeamScore);
-*/
 
 	} break;
 
@@ -617,6 +608,10 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 		sf::Vector2f ballPosition, ballVelocity;
 
 		packet >> ballPosition.x >> ballPosition.y >> ballVelocity.x >> ballVelocity.y;
+		//adding score accross all games
+		float redTeamScore, blueTeamScore;
+
+		packet >> redTeamScore >> blueTeamScore;
 
 		if (Chicken* ball = mWorld.getBall())
 		{
@@ -625,16 +620,14 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 			//ball->setPosition(interpolatedBallPosition);
 			//ball->setVelocity(interpolatedBallVelocity);
 		}
-
-		float redTeamScore, blueTeamScore;
-
-		packet >> redTeamScore >> blueTeamScore;
-
-		redTeamScore = mWorld.getScore();
-		blueTeamScore = mWorld.getP2Score();
+		/*redTeamScore = mWorld.getScore();
+		blueTeamScore = mWorld.getP2Score();*/
 
 		mWorld.setScore(blueTeamScore);
 		mWorld.setP2Score(redTeamScore);
+
+		mTeam1Score = redTeamScore;
+		mTeam2Score = blueTeamScore;
 
 	} break;
 	}

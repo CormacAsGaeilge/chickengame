@@ -121,6 +121,38 @@ float MultiplayerGameState::getMin() const
 	return mMins;
 }
 
+void MultiplayerGameState::updateScoreFile()
+{
+	char date[10];
+	_strdate_s(date);
+	char filename[] = "score_history.txt";
+	std::fstream myFile;
+
+	myFile.open(filename, std::fstream::in | std::fstream::out | std::fstream::app);
+
+
+	// If file does not exist, Create new file
+	if (!myFile)
+	{
+		myFile.open(filename, std::fstream::in | std::fstream::out | std::fstream::trunc);
+		myFile << "Blue Team " << mTeam1Score << " : " << mTeam2Score << " Red Team" << "  -  " << date << std::endl;
+		myFile.close();
+
+	}
+	else
+	{    // use existing file
+		myFile << "Blue Team " << mTeam1Score << " : " << mTeam2Score << " Red Team" << "  -  " << date << std::endl;
+		myFile.close();
+
+	}
+
+
+	
+		//std::ofstream myfile;
+		//myfile.open("scoreHistory.txt");
+		
+}
+
 void MultiplayerGameState::getScore()
 {
 	//mTeam1Score = mWorld.getScore();
@@ -225,8 +257,13 @@ bool MultiplayerGameState::update(sf::Time dt)
 			else
 			{
 				//mPlayerOne.setMissionStatus(Player::MissionFailure);
-				requestStackPush(States::GameOver);
+				requestStackPush(States::MissionSuccess);
 			}
+
+			//Create text file saving score and date
+			updateScoreFile();
+
+
 		}
 
 		//Score
@@ -626,8 +663,8 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 		mWorld.setScore(blueTeamScore);
 		mWorld.setP2Score(redTeamScore);
 
-		mTeam1Score = redTeamScore;
-		mTeam2Score = blueTeamScore;
+		mTeam1Score = blueTeamScore;
+		mTeam2Score = redTeamScore;
 
 	} break;
 	}

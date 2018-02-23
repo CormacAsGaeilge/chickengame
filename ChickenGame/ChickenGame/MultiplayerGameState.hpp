@@ -23,6 +23,7 @@ public:
 	void						onDestroy();
 	void						timer(sf::Time dt);
 	void						getScore();
+	void						updateScoreFile();
 
 	void						setSec(const float);
 	float						getSec() const;

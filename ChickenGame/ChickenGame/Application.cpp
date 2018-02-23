@@ -122,6 +122,6 @@ void Application::registerStates()
 	mStateStack.registerState<MultiplayerGameState>(States::HostGame,true);
 	mStateStack.registerState<MultiplayerGameState>(States::JoinGame,false);
 	mStateStack.registerState<SettingsState>(States::Settings);
-	mStateStack.registerState<GameOverState>(States::GameOver, "Player Two Wins");
-	mStateStack.registerState<GameOverState>(States::MissionSuccess, "Player One Wins");
+	mStateStack.registerState<GameOverState>(States::GameOver, "Blue Team Wins");
+	mStateStack.registerState<GameOverState>(States::MissionSuccess, "Red Team Wins");
 }

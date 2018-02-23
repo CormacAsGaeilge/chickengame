@@ -632,14 +632,9 @@ void Chicken::updateTexts()
 	}
 	else if(mType == Chicken::Eagle) {
 		mNameDisplay->setString(getName());
-
-
 		mBoostDisplay->setSize(boostNum + 15);
+		mBoostDisplay->setColor(mBoostDisplay->LerpColor(sf::Color::Red, sf::Color::Green, boostNum * 0.1f));
 		mBoostDisplay->setString(toString(boostNum) + " BOOST");
-
-
-
-
 		mPositionDisplay->setString("Position: (" + toString(posX) + "," + toString(posY) + ")");
 	}
 	mNameDisplay->setPosition(0.f, -50.f);

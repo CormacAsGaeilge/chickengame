@@ -14,6 +14,9 @@ public:
 
 	void				setString(const std::string& text);
 	void				setSize(int size);
+	void				setColor(sf::Color color);
+
+	sf::Color LerpColor(sf::Color a, sf::Color b, float t);
 
 private:
 	virtual void		drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;

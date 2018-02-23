@@ -29,3 +29,19 @@ void TextNode::setSize(int size)
 	if(size>1)
 	mText.setCharacterSize(size);
 }
+
+void TextNode::setColor(sf::Color color)
+{
+	mText.setColor(color);
+}
+
+sf::Color TextNode::LerpColor(sf::Color a, sf::Color b, float t)
+{
+	return sf::Color
+	(
+		a.r + (b.r - a.r) * t,
+		a.g + (b.g - a.g) * t,
+		a.b + (b.b - a.b) * t,
+		a.a + (b.a - a.a) * t
+	);
+}

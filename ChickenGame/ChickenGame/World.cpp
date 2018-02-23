@@ -483,46 +483,38 @@ void World::addGoals() {
 	std::set<SceneNode::Pair> collisionPairs;
 	mSceneGraph.checkSceneCollision(mSceneGraph, collisionPairs);
 
-	//Chicken::Avenger.getPosition()
+	Chicken* ball = getBall();
 
-	FOREACH(SceneNode::Pair pair, collisionPairs)
+	if (ball->getPosition().x > 1752.56f)
 	{
-		matchesCategories(pair, Category::PlayerChicken, Category::EnemyChicken);
-
-		auto& enemy = static_cast<Chicken&>(*pair.second);
-		auto& player = static_cast<Chicken&>(*pair.first);
-		
-
-		if (enemy.getPosition().x > 1752.56f)
+		if (ball->getPosition().y > 440.22f && ball->getPosition().y < 638.4f)
 		{
-			if (enemy.getPosition().y > 440.22f && enemy.getPosition().y < 638.4f)
+			if (ball->getPosition().x > 1760.56f)
 			{
-				if (enemy.getPosition().x > 1760.56f)
-				{
-					//GOAL Blue Team
-					enemy.setPosition(960.0f, 540.0f);
-					enemy.setVelocity(0.f, 0.f);
-					mP1Score = mP1Score + 1;
-					setScore(mP1Score);
-				}
+				//GOAL Blue Team
+				ball->setPosition(960.0f, 540.0f);
+				ball->setVelocity(0.f, 0.f);
+				mP1Score = mP1Score + 1;
+				setScore(mP1Score);
 			}
 		}
-		if (enemy.getPosition().x < 156.958f)
+	}
+	if (ball->getPosition().x < 156.958f)
+	{
+		if (ball->getPosition().y > 440.22f && ball->getPosition().y < 638.4f)
 		{
-			if (enemy.getPosition().y > 440.22f && enemy.getPosition().y < 638.4f)
+			if (ball->getPosition().x < 148.958f)
 			{
-				if (enemy.getPosition().x < 148.958f)
-				{
-					//GOAL Red Team 1080  + x - 5000
-					enemy.setPosition(960.0f, 540.0f);
-					enemy.setVelocity(0.f, 0.f);
-					mP2Score = mP2Score + 1;
-					setP2Score(mP2Score);
-				}
+				//GOAL Red Team 1080  + x - 5000
+				ball->setPosition(960.0f, 540.0f);
+				ball->setVelocity(0.f, 0.f);
+				mP2Score = mP2Score + 1;
+				setP2Score(mP2Score);
 			}
 		}
 	}
 }
+
 
 Chicken* World::addBall()
 {

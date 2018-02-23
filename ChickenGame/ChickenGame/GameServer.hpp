@@ -88,6 +88,9 @@ private:
 	sf::FloatRect						mBattleFieldRect;
 	float								mBattleFieldScrollSpeed;
 
+	float								mRedTeamScore;
+	float								mBlueTeamScore;
+
 	std::size_t							mChickenCount;
 	std::map<sf::Int32, ChickenInfo>	mChickenInfo;
 	BallInfo							mBallInfo;

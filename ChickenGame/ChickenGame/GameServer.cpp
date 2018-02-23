@@ -382,6 +382,9 @@ void GameServer::updateClientState()
 	//add ball info to client State update
 	updateClientStatePacket << mBallInfo.position.x << mBallInfo.position.y << mBallInfo.velocity.x << mBallInfo.velocity.y;
 
+	//Score to client update
+	updateClientStatePacket << mBlueTeamScore << mRedTeamScore;
+
 	sendToAll(updateClientStatePacket);
 }
 
@@ -405,7 +408,7 @@ void GameServer::handleIncomingConnections()
 
 		mPeers[mConnectedPlayers]->ChickenIdentifiers.push_back(mChickenIdentifierCounter);
 
-		broadcastMessage("New player!");
+		broadcastMessage("New player has joined the match");
 		informWorldState(mPeers[mConnectedPlayers]->socket);
 		notifyPlayerSpawn(mChickenIdentifierCounter++);
 
@@ -419,6 +422,9 @@ void GameServer::handleIncomingConnections()
 			setListening(false);
 		else // Add a new waiting peer
 			mPeers.push_back(PeerPtr(new RemotePeer()));
+
+		//set score to be current score
+
 	}
 }
 
@@ -448,7 +454,7 @@ void GameServer::handleDisconnections()
 				setListening(true);
 			}
 
-			broadcastMessage("An ally has disconnected.");
+			broadcastMessage("A player has recived a Red card and has left the pitch!");
 		}
 		else
 		{

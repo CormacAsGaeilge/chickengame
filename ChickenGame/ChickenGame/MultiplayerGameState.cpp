@@ -100,10 +100,9 @@ MultiplayerGameState::MultiplayerGameState(StateStack& stack, Context context, b
 
 	mTeam1ScoreText.setFont(context.fonts->get(Fonts::Digi));
 	mTeam2ScoreText.setFont(context.fonts->get(Fonts::Digi));
-
 	mGameTime.setFont(context.fonts->get(Fonts::Digi));
-	mGameTime.setCharacterSize(35u);
-	mGameTime.setPosition((mLegth / 2 ), 15);
+
+	
 	mGameTime.setString("5:00");
 	centerOrigin(mGameTime);
 
@@ -124,7 +123,7 @@ float MultiplayerGameState::getMin() const
 
 void MultiplayerGameState::getScore()
 {
-	mTeam1Score = mWorld.getScore();
+	//mTeam1Score = mWorld.getScore();
 	//mTeam2Score = mWorld.getScoreTwo();
 
 	mTeam1ScoreText.setCharacterSize(40u);
@@ -133,7 +132,7 @@ void MultiplayerGameState::getScore()
 	mTeam1ScoreText.setString(toString(mTeam1Score));
 	centerOrigin(mTeam1ScoreText);
 
-	mTeam2Score = mWorld.getP2Score();
+	//mTeam2Score = mWorld.getP2Score();
 	
 	mTeam2ScoreText.setCharacterSize(40u);
 	mTeam2ScoreText.setPosition((mLegth / 2) + 90, 10);
@@ -186,6 +185,13 @@ void MultiplayerGameState::onDestroy()
 //Create timer at the top
 void MultiplayerGameState::timer(sf::Time dt)
 {
+	mWorld.draw();
+	sf::RenderWindow& window = *getContext().window;
+
+	
+	mGameTime.setCharacterSize(35u);
+	mGameTime.setPosition((mLegth / 2), 15);
+
 	mCountdown = dt.asSeconds();
 	//mHours -= mMins;
 	mSec -= mCountdown;
@@ -206,7 +212,7 @@ bool MultiplayerGameState::update(sf::Time dt)
 	{
 		mWorld.update(dt);
 
-		timer(dt);
+		
 
 		if (mMins < 0)
 		{
@@ -225,6 +231,7 @@ bool MultiplayerGameState::update(sf::Time dt)
 
 		//Score
 		getScore();
+		timer(dt);
 
 		// Remove players whose Chickens were destroyed
 		bool foundLocalPlane = false;
@@ -430,6 +437,20 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 			centerOrigin(mBroadcastText);
 			mBroadcastElapsedTime = sf::Time::Zero;
 		}
+
+		//adding score accross all games
+
+		/*float redTeamScore, blueTeamScore;
+
+		packet >> redTeamScore >> blueTeamScore;
+
+		redTeamScore = mWorld.getP2Score();
+		blueTeamScore = mWorld.getScore();
+
+		mWorld.setScore(blueTeamScore);
+		mWorld.setP2Score(redTeamScore);
+*/
+
 	} break;
 
 	// Sent by the server in order to spawn player 1 chicken on connect
@@ -591,6 +612,8 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 				Chicken->setPosition(interpolatedPosition);
 			}
 		}
+
+
 		sf::Vector2f ballPosition, ballVelocity;
 
 		packet >> ballPosition.x >> ballPosition.y >> ballVelocity.x >> ballVelocity.y;
@@ -602,6 +625,16 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 			//ball->setPosition(interpolatedBallPosition);
 			//ball->setVelocity(interpolatedBallVelocity);
 		}
+
+		float redTeamScore, blueTeamScore;
+
+		packet >> redTeamScore >> blueTeamScore;
+
+		redTeamScore = mWorld.getScore();
+		blueTeamScore = mWorld.getP2Score();
+
+		mWorld.setScore(blueTeamScore);
+		mWorld.setP2Score(redTeamScore);
 
 	} break;
 	}

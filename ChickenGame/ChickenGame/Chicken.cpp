@@ -48,9 +48,9 @@ Chicken::Chicken(Type type, const TextureHolder& textures, const FontHolder& fon
 	mMass = 5.972f;
 	if(type == Type::Raptor)
 		mMass = 35.972f;
-	mExplosion.setFrameSize(sf::Vector2i(256, 256));
-	mExplosion.setNumFrames(16);
-	mExplosion.setDuration(sf::seconds(3));
+	//mExplosion.setFrameSize(sf::Vector2i(256, 256));
+	//mExplosion.setNumFrames(16);
+	//mExplosion.setDuration(sf::seconds(3));
 
 	mChicken.setFrameSize(sf::Vector2i(75, 73));
 	//mChicken.setScale(sf::Vector2i(50, 47));
@@ -61,7 +61,7 @@ Chicken::Chicken(Type type, const TextureHolder& textures, const FontHolder& fon
 
 	centerOrigin(mSprite);
 	centerOrigin(mChicken);
-	centerOrigin(mExplosion);
+	//centerOrigin(mExplosion);
 
 	mFireCommand.category = Category::SceneAirLayer;
 	mFireCommand.action = [this, &textures](SceneNode& node, sf::Time)
@@ -108,9 +108,9 @@ void Chicken::setMissileAmmo(int ammo)
 
 void Chicken::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	if (isDestroyed() && mShowExplosion)
-		target.draw(mExplosion, states);
-	else if (mMoving)
+	//if (isDestroyed() && mShowExplosion)
+		//target.draw(mExplosion, states);
+	if (mMoving)
 	{
 		target.draw(mChicken, states);
 	}
@@ -253,7 +253,7 @@ void Chicken::updateCurrent(sf::Time dt, CommandQueue& commands)
 	if (isDestroyed())
 	{
 		checkPickupDrop(commands);
-		mExplosion.update(dt);
+		//mExplosion.update(dt);
 
 		// Play explosion sound only once
 		if (!mExplosionBegan)
@@ -588,7 +588,7 @@ void Chicken::updateRollAnimation(sf::Time dt)
 			mMoving = true;
 			//textureRect = sf::IntRect(24, 190, 64, 74);
 			mChicken.setDirection(1);
-			mChicken.setNumFrames(8  );
+			mChicken.setNumFrames(8);
 			mChicken.setDuration(sf::seconds(0.8f));
 			mChicken.setRepeating(true);
 			mChicken.update(dt);
@@ -629,7 +629,7 @@ void Chicken::updateRollAnimation(sf::Time dt)
 			if(mChicken.getIsTeamA())
 				textureRect = sf::IntRect(15, 19, 75, 73);
 			else
-				textureRect = sf::IntRect(29, 667, 63, 75);
+				textureRect = sf::IntRect(28, 580, 64, 74);
 		}
 		
 		mSprite.setTextureRect(textureRect);

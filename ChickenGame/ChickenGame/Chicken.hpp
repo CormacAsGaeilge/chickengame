@@ -83,6 +83,8 @@ public:
 	void					initialiseNames();
 	std::string				getName();
 
+	void					setBoost(float boost);
+	float					getBoost() const;
 
 private:
 	virtual void			drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;
@@ -129,6 +131,7 @@ private:
 	float					mFriction = 10.f;
 	std::size_t				mDirectionIndex;
 	TextNode*				mNameDisplay;
+	TextNode*				mJerseyDisplay;
 	TextNode*				mPositionDisplay;
 	TextNode*				mBoostDisplay;
 

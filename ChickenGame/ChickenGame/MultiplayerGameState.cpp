@@ -42,6 +42,7 @@ MultiplayerGameState::MultiplayerGameState(StateStack& stack, Context context, b
 	, mTeam1Score()
 	, mTeam2Score()
 	, mGameTime()
+	, mChickenName()
 	, mCountdown()
 	, mFormation(Formation::FourFourTwo)
 	//, mWinner()
@@ -100,11 +101,17 @@ MultiplayerGameState::MultiplayerGameState(StateStack& stack, Context context, b
 
 	mTeam1ScoreText.setFont(context.fonts->get(Fonts::Digi));
 	mTeam2ScoreText.setFont(context.fonts->get(Fonts::Digi));
-	mGameTime.setFont(context.fonts->get(Fonts::Digi));
 
-	
+	mGameTime.setFont(context.fonts->get(Fonts::Digi));
 	mGameTime.setString("5:00");
 	centerOrigin(mGameTime);
+
+	mChickenName.setFont(context.fonts->get(Fonts::Main));
+	mChickenName.setString("Loading Player");
+	centerOrigin(mChickenName);
+
+	mChickenName.setCharacterSize(35u);
+	mChickenName.setPosition(200, 15);
 
 	// Play game theme
 	context.music->play(Music::MissionTheme);
@@ -182,7 +189,7 @@ void MultiplayerGameState::draw()
 		window.draw(mTeam1ScoreText);
 		window.draw(mTeam2ScoreText);
 		window.draw(mGameTime);
-
+		window.draw(mChickenName);
 		// Broadcast messages in default view
 		mWindow.setView(mWindow.getDefaultView());
 
@@ -494,7 +501,7 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 
 		mPlayers[ChickenIdentifier].reset(new Player(&mSocket, ChickenIdentifier, getContext().keys1));
 		mLocalPlayerIdentifiers.push_back(ChickenIdentifier);
-
+		mChickenName.setString("Player " + toString(ChickenIdentifier) + " : " + mWorld.getChicken(ChickenIdentifier)->getName());
 		mGameStarted = true;
 	} break;
 

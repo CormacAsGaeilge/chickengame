@@ -71,6 +71,7 @@ private:
 	sf::Text					mTeam1ScoreText;
 	sf::Text					mTeam2ScoreText;
 	sf::Text					mGameTime;
+	sf::Text					mChickenName;
 	Formation					mFormation;
 	float						mLegth;
 	float						mTeam1Score;

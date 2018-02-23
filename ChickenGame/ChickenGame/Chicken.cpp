@@ -42,6 +42,7 @@ Chicken::Chicken(Type type, const TextureHolder& textures, const FontHolder& fon
 	, mDirectionIndex(0)
 	, mPositionDisplay(nullptr)
 	, mBoostDisplay(nullptr)
+	, mJerseyDisplay(nullptr)
 	, mIdentifier(0)
 	, mIsBoosting(false)
 	, mBoost(1)
@@ -98,6 +99,11 @@ Chicken::Chicken(Type type, const TextureHolder& textures, const FontHolder& fon
 	mBoostDisplay = boostDisplay.get();
 	attachChild(std::move(boostDisplay));
 
+	std::unique_ptr<TextNode> jerseyDisplay(new TextNode(fonts, ""));
+	mJerseyDisplay = jerseyDisplay.get();
+	mJerseyDisplay->setColor(sf::Color::Black);
+	mJerseyDisplay->setSize(20);
+	attachChild(std::move(jerseyDisplay));
 
 	updateTexts();
 }
@@ -383,6 +389,16 @@ std::string Chicken::getName()
 	return name;
 }
 
+void Chicken::setBoost(float boost)
+{
+	mBoost = boost;
+}
+
+float Chicken::getBoost() const
+{
+	return mBoost;
+}
+
 unsigned int Chicken::getCategory() const
 {
 	if (isAllied())
@@ -629,6 +645,7 @@ void Chicken::updateTexts()
 		mNameDisplay->setString("");
 		mBoostDisplay->setString("");
 		mPositionDisplay->setString("");
+		mJerseyDisplay->setString("");
 	}
 	else if(mType == Chicken::Eagle) {
 		mNameDisplay->setString(getName());
@@ -636,6 +653,7 @@ void Chicken::updateTexts()
 		mBoostDisplay->setColor(mBoostDisplay->LerpColor(sf::Color::Red, sf::Color::Green, boostNum * 0.1f));
 		mBoostDisplay->setString(toString(boostNum) + " BOOST");
 		mPositionDisplay->setString("Position: (" + toString(posX) + "," + toString(posY) + ")");
+		mJerseyDisplay->setString(toString(mIdentifier));
 	}
 	mNameDisplay->setPosition(0.f, -50.f);
 	mNameDisplay->setRotation(-getRotation());

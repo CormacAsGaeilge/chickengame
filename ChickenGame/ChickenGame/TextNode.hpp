@@ -13,7 +13,7 @@ public:
 	explicit			TextNode(const FontHolder& fonts, const std::string& text);
 
 	void				setString(const std::string& text);
-
+	void				setSize(int size);
 
 private:
 	virtual void		drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;

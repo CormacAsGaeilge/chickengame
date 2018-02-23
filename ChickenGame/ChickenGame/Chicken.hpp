@@ -5,7 +5,7 @@
 #include "Projectile.hpp"
 #include "TextNode.hpp"
 #include "Animation.hpp"
-
+#include "vector"
 #include <SFML/Graphics/Sprite.hpp>
 
 
@@ -18,8 +18,34 @@ public:
 		redTeam,
 		Raptor,
 		Avenger,
-		TypeCount, 
+		TypeCount,
 		Number,
+	};
+
+	enum Names
+	{
+		CluckNorris,
+		Chickira,
+		MotherClucker,
+		Waddles,
+		LindeyLoHen,
+		LilPecker,
+		Birdzilla,
+		HenSolo,
+		ChickJagger,
+		LarryBird,
+		ColonelSanders,
+		PoppyCock,
+		ChickFoley,
+		HeniferAniston,
+		AlfredHitchcock,
+		MaxCluctice,
+		CHKen,
+		Nugget,
+		Breaded,
+		BigDipper,
+		LittleDipper,
+		GobbleGobble
 	};
 
 
@@ -54,10 +80,14 @@ public:
 	void					setBlueScore();
 	void					updateFriction(sf::Time dt);
 
+	void					initialiseNames();
+	std::string				getName();
+
+
 private:
 	virtual void			drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;
 	virtual void 			updateCurrent(sf::Time dt, CommandQueue& commands);
-	
+
 	void					updateMovementPattern(sf::Time dt);
 	void					checkPickupDrop(CommandQueue& commands);
 	void					checkProjectileLaunch(sf::Time dt, CommandQueue& commands);
@@ -98,8 +128,10 @@ private:
 	float					mMass;
 	float					mFriction = 10.f;
 	std::size_t				mDirectionIndex;
-	TextNode*				mHealthDisplay;
-	TextNode*				mMissileDisplay;
+	TextNode*				mNameDisplay;
+	TextNode*				mPositionDisplay;
+	TextNode*				mBoostDisplay;
 
 	int						mIdentifier;
+	std::vector<std::string>mNames;
 };

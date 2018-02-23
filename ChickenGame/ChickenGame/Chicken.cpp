@@ -40,13 +40,16 @@ Chicken::Chicken(Type type, const TextureHolder& textures, const FontHolder& fon
 	, mDropPickupCommand()
 	, mTravelledDistance(0.f)
 	, mDirectionIndex(0)
-	, mMissileDisplay(nullptr)
+	, mPositionDisplay(nullptr)
+	, mBoostDisplay(nullptr)
 	, mIdentifier(0)
 	, mIsBoosting(false)
 	, mBoost(1)
-{ 
+	, mNames(45)
+{
+	initialiseNames();
 	mMass = 5.972f;
-	if(type == Type::Raptor)
+	if (type == Type::Raptor)
 		mMass = 35.972f;
 	//mExplosion.setFrameSize(sf::Vector2i(256, 256));
 	//mExplosion.setNumFrames(16);
@@ -81,17 +84,20 @@ Chicken::Chicken(Type type, const TextureHolder& textures, const FontHolder& fon
 		createPickup(node, textures);
 	};
 
-	std::unique_ptr<TextNode> healthDisplay(new TextNode(fonts, ""));
-	mHealthDisplay = healthDisplay.get();
-	attachChild(std::move(healthDisplay));
 
-	if (getCategory() == Category::PlayerChicken)
-	{
-		std::unique_ptr<TextNode> missileDisplay(new TextNode(fonts, ""));
-		missileDisplay->setPosition(0, 70);
-		mMissileDisplay = missileDisplay.get();
-		attachChild(std::move(missileDisplay));
-	}
+	std::unique_ptr<TextNode> nameDisplay(new TextNode(fonts, ""));
+	mNameDisplay = nameDisplay.get();
+	attachChild(std::move(nameDisplay));
+
+	std::unique_ptr<TextNode> positionDisplay(new TextNode(fonts, ""));
+	positionDisplay->setSize(15);
+	mPositionDisplay = positionDisplay.get();
+	attachChild(std::move(positionDisplay));
+
+	std::unique_ptr<TextNode> boostDisplay(new TextNode(fonts, ""));
+	mBoostDisplay = boostDisplay.get();
+	attachChild(std::move(boostDisplay));
+
 
 	updateTexts();
 }
@@ -109,7 +115,7 @@ void Chicken::setMissileAmmo(int ammo)
 void Chicken::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	//if (isDestroyed() && mShowExplosion)
-		//target.draw(mExplosion, states);
+	//target.draw(mExplosion, states);
 	if (mMoving)
 	{
 		target.draw(mChicken, states);
@@ -147,18 +153,18 @@ void Chicken::checkIfGoal()
 
 		/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 		{
-			isOutOfBounds = false;
+		isOutOfBounds = false;
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 		{
-			isOutOfBounds = false;
+		isOutOfBounds = false;
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 		{
-			*///isOutOfBounds = false;
+		*///isOutOfBounds = false;
 		//}
 	}
-	if (pos.x > 1752.56f) 
+	if (pos.x > 1752.56f)
 	{
 		//RIGHT
 		if (pos.y > 440.22f && pos.y < 638.4f)
@@ -176,15 +182,15 @@ void Chicken::checkIfGoal()
 
 		/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 		{
-			isOutOfBounds = false;
+		isOutOfBounds = false;
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 		{
-			isOutOfBounds = false;
+		isOutOfBounds = false;
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 		{
-			isOutOfBounds = false;
+		isOutOfBounds = false;
 		}*/
 	}
 
@@ -196,15 +202,15 @@ void Chicken::checkIfGoal()
 
 		/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 		{
-			isOutOfBounds = false;
+		isOutOfBounds = false;
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 		{
-			isOutOfBounds = false;
+		isOutOfBounds = false;
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 		{
-			isOutOfBounds = false;
+		isOutOfBounds = false;
 		}*/
 	}
 
@@ -217,22 +223,22 @@ void Chicken::checkIfGoal()
 
 		/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 		{
-			isOutOfBounds = false;
+		isOutOfBounds = false;
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 		{
-			isOutOfBounds = false;
+		isOutOfBounds = false;
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 		{
-			isOutOfBounds = false;
+		isOutOfBounds = false;
 		}*/
 	}
 
 	//To-DO add Angles
 
 
-	if (isOutOfBounds) 
+	if (isOutOfBounds)
 	{
 		//setVelocity(150.f, 0.f);
 		//setVelocity().y = 12.f;
@@ -316,6 +322,65 @@ void Chicken::updateFriction(sf::Time dt) {
 	else {
 		setVelocity(0.f, 0.f);
 	}
+}
+
+void Chicken::initialiseNames()
+{
+	//footballer pun  names
+	mNames.at(0) = "Petr Chick";
+	mNames.at(1) = "Mark-Andre ter Chicken";
+	mNames.at(2) = "Chicken	Hazard";
+	mNames.at(3) = "Chickarito";
+	mNames.at(4) = "Chickinho";
+	mNames.at(5) = "Aiden McGobble";
+	mNames.at(6) = "Robert Lewanchickski";
+	mNames.at(7) = "Gobbriel Jesus";
+	mNames.at(8) = "Angle Di Marinated";
+	mNames.at(9) = "Gareth Beak";
+	mNames.at(10) = "Cluckinho";
+	mNames.at(11) = "Fowl Ribery";
+	mNames.at(12) = "Breast	Dost";
+	mNames.at(13) = "Mo	Chicken Salad";
+	mNames.at(14) = "Radja Nuggolan";
+	mNames.at(15) = "Steven	Chickard";
+	mNames.at(16) = "Cristiano Coopaldo";
+	mNames.at(17) = "Curry Benzema";
+	mNames.at(18) = "Luis Skewarez";
+	mNames.at(19) = "Coopinho";
+	mNames.at(20) = "Roberto Fowlino";
+	mNames.at(21) = "Wingilan";
+	mNames.at(22) = "Xherdan Squalkiri";
+	//additional pun names
+	mNames.at(23) = "Chickira";
+	mNames.at(24) = "MotherClucker";
+	mNames.at(25) = "Waddles";
+	mNames.at(26) = "LindeyLoHen";
+	mNames.at(27) = "LilPecker";
+	mNames.at(28) = "Birdzilla";
+	mNames.at(29) = "HenSolo";
+	mNames.at(30) = "ChickJagger";
+	mNames.at(31) = "LarryBird";
+	mNames.at(32) = "ColonelSanders";
+	mNames.at(33) = "PoppyCock";
+	mNames.at(34) = "ChickFoley";
+	mNames.at(35) = "HeniferAniston";
+	mNames.at(36) = "AlfredHitchcock";
+	mNames.at(37) = "MaxCluctice";
+	mNames.at(38) = "CHKen";
+	mNames.at(39) = "Nugget";
+	mNames.at(40) = "Breaded";
+	mNames.at(41) = "BigDipper";
+	mNames.at(42) = "LittleDipper";
+	mNames.at(43) = "GobbleGobble";
+	mNames.at(44) = "CluckNorris";
+}
+
+std::string Chicken::getName()
+{
+	std::string name = "NONAME";
+	if (mIdentifier)
+		name = mNames.at(mIdentifier);
+	return name;
 }
 
 unsigned int Chicken::getCategory() const
@@ -556,16 +621,39 @@ void Chicken::updateTexts()
 {
 	sf::Vector2f velocity(0, 0);
 	sf::Vector2f pos = getPosition();
-	velocity = getVelocity();
+	int boostNum, posX = pos.x, posY = pos.y;
+	if((boostNum = (mBoost - 1.f)* 100.f )< 0)
+		boostNum = 0;
 	// Display hitpoints
-	if (isDestroyed())
-		mHealthDisplay->setString("");
-	else
-		mHealthDisplay->setString(toString(mBoost) + " BOOST|" + "Position: (" + toString(pos.x) + "," + toString(pos.y) + ")");
-	mHealthDisplay->setPosition(0.f, 50.f);
-	mHealthDisplay->setRotation(-getRotation());
+	if (isDestroyed()) {
+		mNameDisplay->setString("");
+		mBoostDisplay->setString("");
+		mPositionDisplay->setString("");
+	}
+	else if(mType == Chicken::Eagle) {
+		mNameDisplay->setString(getName());
+
+
+		mBoostDisplay->setSize(boostNum + 15);
+		mBoostDisplay->setString(toString(boostNum) + " BOOST");
+
+
+
+
+		mPositionDisplay->setString("Position: (" + toString(posX) + "," + toString(posY) + ")");
+	}
+	mNameDisplay->setPosition(0.f, -50.f);
+	mNameDisplay->setRotation(-getRotation());
+	mBoostDisplay->setPosition(0.f, 50.f);
+	mBoostDisplay->setRotation(-getRotation());
+	mPositionDisplay->setPosition(0.f, 80.f);
+	mPositionDisplay->setRotation(-getRotation());
+
+
+
+
 	/*if (mMissileDisplay)
-		mMissileDisplay->setString("Velocity: (" + toString(velocity.x) + "," + toString(velocity.x) + ")");
+	mMissileDisplay->setString("Velocity: (" + toString(velocity.x) + "," + toString(velocity.x) + ")");
 	*///// Display missiles, if available
 	//if (mMissileDisplay)
 	//{
@@ -581,7 +669,7 @@ void Chicken::updateRollAnimation(sf::Time dt)
 	if (Table[mType].hasRollAnimation)
 	{
 		sf::IntRect textureRect = Table[mType].textureRect;
-		
+
 		if (getVelocity().x < 0.f)
 		{
 			//Left
@@ -626,13 +714,13 @@ void Chicken::updateRollAnimation(sf::Time dt)
 		else
 		{
 			mMoving = false;
-			if(mChicken.getIsTeamA())
+			if (mChicken.getIsTeamA())
 				textureRect = sf::IntRect(15, 19, 75, 73);
 			else
 				textureRect = sf::IntRect(28, 580, 64, 74);
 		}
-		
+
 		mSprite.setTextureRect(textureRect);
-		
+
 	}
 }
